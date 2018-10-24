@@ -2,6 +2,7 @@
 import os
 from setup import pantheon_setup
 from graphing.graph_utils import convert_pantheon_log
+from python_utils.test_utils import read_topology_to_dict
 import subprocess
 import sys
 import time
@@ -21,12 +22,14 @@ from mininet.net import Mininet
 
 username = "pcc"
 
+"""
 def load_topology(topology_name):
     topo_file = os.path.join(testing_dir, "topos", topology_name + ".json")
     topo_json = None
     with open(topo_file) as f:
         topo_json = json.load(f)
     return topo_json
+"""
 
 def get_free_run_id():
     return random.randint(0, 2e9)
@@ -38,7 +41,7 @@ def run_test(test_dict):
     results_dir = os.path.join(results_base_dir, test["Name"], "%s_%s" % (test_name, date_string))
     os.system("mkdir -p %s" % results_dir)
     test_topo_name = test_dict["Topology"]
-    test_topo_dict = load_topology(test_topo_name)
+    test_topo_dict = read_topology_to_dict(test_topo_name)
     net = Mininet(topo=sshd.MyTopo(test_topo_dict), link=TCLink)
     sshd.sshd(net)
     flows = test_dict["Flows"]
