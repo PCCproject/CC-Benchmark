@@ -2,6 +2,12 @@ from python_utils import file_locations
 import json
 import os
 
+SUPPORTED_PANTHEON_SCHEMES = [
+    "copa",
+    "pcc_vivace",
+    "default_tcp"
+]
+
 ##
 #  Takes a topology name and reads the corresponding topology json into a dict.
 ##
