@@ -29,12 +29,12 @@ def load_topology(topology_name):
     return topo_json
 
 def get_free_run_id():
-    return random.randint(1, 2e9)
+    return random.randint(0, 2e9)
 
 def run_test(test_dict):
     print(test_dict)
     test_name = "temp_test_name"
-    date_string = datetime.date.today().strftime("%B_%d_%Y")
+    date_string = datetime.date.today().strftime("%B_%d_%Y") + "_%d" % (int(round(time.time() * 1000)))
     results_dir = os.path.join(results_base_dir, test["Name"], "%s_%s" % (test_name, date_string))
     os.system("mkdir -p %s" % results_dir)
     test_topo_name = test_dict["Topology"]
@@ -59,7 +59,7 @@ def run_test(test_dict):
         flow = flows[i]
         run_id = run_ids[i]
         convert_pantheon_log("%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id),
-            "%s/%s_%d.json" % (results_dir, flow["protocol"], run_id))
+            "%s/%s_%s.json" % (results_dir, flow["protocol"], flow["name"]))
         #os.system("chmod 666 %s/%s_%d.json" % (results_dir, flow["protocol"], run_id))
 
     graphing_script = os.path.join(pantheon_setup.pan_dir, "..", "graphing", "pcc_grapher.py")
