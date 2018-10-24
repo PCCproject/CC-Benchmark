@@ -1,0 +1,25 @@
+
+<html>
+    <head>
+        <title>Verification</title>
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+    </head>
+    <body>
+        <h1>Verification</h1>
+                    <p>
+            To reduce wasted bandwidth from poorly-behaved scrapers and web
+            crawlers, please verify below that you intend to download a very
+            large file.
+            </p>
+            <p>
+            We provide these datasets as a courtesy to the video compression
+            research community. Please be considerate in your use and set up
+            a local cache if you need repeated access to a resource here.
+            </p>
+            <form method="post">
+                <div class="g-recaptcha" data-sitekey="6LeOdTcUAAAAANqZynroyiky239BKkRyvVGj0r7E"></div>
+                <input type="hidden" name="file" value="/video/derf/y4m/blue_sky_1080p25.y4m">
+                <input type="submit">
+            </form>
+            </body>
+</html>

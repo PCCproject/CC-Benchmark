@@ -1,0 +1,100 @@
+schemes:
+  default_tcp:
+    friendly_name: TCP Cubic
+    color: black
+    marker: '*'
+  vegas:
+    friendly_name: TCP Vegas
+    color: silver
+    marker: 'h'
+  bbr:
+    friendly_name: TCP BBR
+    color: gold
+    marker: '^'
+    qdisc: 'fq'
+  ledbat:
+    friendly_name: LEDBAT
+    color: green
+    marker: '<'
+  pcc:
+    friendly_name: PCC-Allegro
+    color: cyan
+    marker: '>'
+  verus:
+    friendly_name: Verus
+    color: skyblue
+    marker: 'H'
+  sprout:
+    friendly_name: Sprout
+    color: orange
+    marker: 'p'
+  quic:
+    friendly_name: QUIC Cubic
+    color: magenta
+    marker: '8'
+  scream:
+    friendly_name: SCReAM
+    color: pink
+    marker: '1'
+  webrtc:
+    friendly_name: WebRTC media
+    color: brown
+    marker: 'v'
+  copa:
+    friendly_name: Copa
+    color: red
+    marker: 'o'
+  taova:
+    friendly_name: TaoVA-100x
+    color: gray
+    marker: 'd'
+  calibrated_koho:
+    friendly_name: CalibratedKoho
+    color: olive
+    marker: 'D'
+  indigo:
+    friendly_name: Indigo-2-256
+    color: indigo
+    marker: 's'
+  indigo_1_128:
+    friendly_name: Indigo-1-128
+    color: '#8A2BE2'
+    marker: '^'
+  fillp:
+    friendly_name: FillP
+    color: violet
+    marker: '+'
+  vivace_loss:
+    friendly_name: Vivace-Loss
+    color: '#0149D0'
+    marker: '<'
+  vivace_latency:
+    friendly_name: PCC-Vivace
+    color: '#0149D0'
+    marker: '<'
+  pcc_rl_loss:
+    friendly_name: PCC-RL-Loss
+    color: orange
+    marker: '<'
+  pcc_experimental:
+    friendly_name: PCC-Expr
+    color: orange
+    marker: '<'
+  pcc_kernel:
+    friendly_name: PCC-Kernel
+    color: orange
+    marker: '*'
+  pcc_test_scheme:
+    friendly_name: pcc_test_scheme
+    color: blue
+    marker: EXPERIMENTAL_MARKER_PLACEHOLDER
+
+kernel_attrs:
+  default_qdisc: pfifo_fast
+  sock_recv_bufs:
+    remote:
+      max: '33554432'
+      default: '16777216'
+    local:
+      max: '33554432'
+      default: '16777216'

@@ -1,0 +1,15 @@
+{
+    "title":"Congestion Control Metrics",
+    "type":"event",
+    "event":"Sample",
+    "legend param":"None",
+    "x-axis":"Time",
+    "y-axis":[
+        "Target Rate",
+        "Packets Sent",
+        "Acks Received",
+        "Throughput",
+        "Avg Rtt",
+        "Loss Rate"
+    ]
+}

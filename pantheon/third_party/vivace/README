@@ -1,0 +1,16 @@
+1. First run receiver:
+$ export LD_LIBRARY_PATH=/path/to/receiver/libudt.so
+$ ./path/to/receiver/appserver
+
+2. Then run sender (fixed port number 9000 is used)
+$ export LD_LIBRARY_PATH=/path/to/sender/libudt.so
+$ ./path/to/sender/gradient_descent_pcc_client receiver_ip 9000 [utility choice] [packet size]
+
+You can set [utility choice] to 0 to run Vivace-Loss, 1 to run Vivace-Latency, 2 to run Vivace-Latency/LTE. The optional [packet size] parameter is to set the data packet size our UDT codes will send.
+
+In the output logs at the sender side,
+column 1: seconds since connection starts
+column 2: average sending rate within the 1-sec period
+column 3: average rtt within the 1-sec period
+column 4: total number of packets sent since connection starts
+column 5: total number of packets lost since connection starts

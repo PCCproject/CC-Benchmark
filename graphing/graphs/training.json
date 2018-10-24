@@ -1,0 +1,11 @@
+{
+    "title":"Smoothed Training Episode Rewards",
+    "legend param":"Link Config",
+    "type":"event",
+    "event":"Training Epoch",
+    "smooth":40,
+    "x-axis":"Time",
+    "y-axis":[
+        "Episode Reward"
+    ]
+}

@@ -1,0 +1,31 @@
+{
+    "Hosts": [
+        {
+            "Name":"h1"
+        },
+        {
+            "Name":"h2"
+        }
+    ],
+    "Switches": [
+        {
+            "Name":"s1"
+        }
+    ],
+    "Links":[
+        {
+            "src":"h1",
+            "dst":"s1",
+            "bw":10,
+            "dl":"5ms",
+            "queue":1000
+        },
+        {
+            "src":"h2",
+            "dst":"s1",
+            "bw":10,
+            "dl":"5ms",
+            "queue":1000
+        }
+    ]
+}

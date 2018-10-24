@@ -1,0 +1,13 @@
+{
+    "Name":"test_1",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":30.0
+        }
+    ]
+}
