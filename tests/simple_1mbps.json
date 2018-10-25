@@ -1,5 +1,5 @@
 {
-    "Name":"test_1",
+    "Name":"simple_1mbps",
     "Topology":"dumbell-1",
     "Flows":[
         {
@@ -13,8 +13,8 @@
     ],
     "Link Types":{
         "L1":{
-            "bw":10,
-            "dl":"5ms",
+            "bw":1,
+            "dl":"30ms",
             "queue":1000
         }
     }

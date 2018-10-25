@@ -1,0 +1,14 @@
+{
+    "Tests": [
+        "simple_1mbps",
+        "simple_2mbps",
+        "simple_4mbps",
+        "simple_8mbps",
+        "simple_16mbps",
+        "simple_32mbps",
+        "simple_64mbps",
+        "simple_128mbps",
+        "simple_256mbps",
+        "simple_512mbps"
+    ]
+}

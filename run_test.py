@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import os
-from setup import pantheon_setup
 from graphing.graph_utils import convert_pantheon_log
 from python_utils import file_locations
 from python_utils import test_utils
@@ -34,22 +33,30 @@ def get_free_run_id():
 
 def run_test(test_dict):
     date_string = datetime.date.today().strftime("%B_%d_%Y") + "_%d" % (int(round(time.time() * 1000)))
-    results_dir = os.path.join(file_locations.results_dir, date_string, test["Name"])
+    results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
     os.system("mkdir -p %s" % results_dir)
     test_topo_dict = read_topology_to_dict(test_dict["Topology"])
-    net = Mininet(topo=sshd.MyTopo(test_topo_dict), link=TCLink)
+    test_link_types = test_dict["Link Types"]
+    net = Mininet(topo=sshd.MyTopo(test_topo_dict, test_link_types), link=TCLink)
     sshd.sshd(net)
     flows = test_dict["Flows"]
     run_ids = {}
+    max_dur = 0
     for i in range(0, len(flows)):
         flow = flows[i]
         run_id = run_ids[i] = get_free_run_id()
         if flow["protocol"] == "TEST":
             flow["protocol"] = scheme_to_test
-        test_command = "%s/test/test.py remote --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_id, data_dir, 
+        run_dur = 30
+        if ("dur" in flow.keys()):
+            run_dur = flow["dur"]
+        if (run_dur > max_dur):
+            max_dur = run_dur
+        test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir, 
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
         os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
-    time.sleep(40)
+    sys.stderr.write("Sleeping for %d seconds" % (int(20 + max_dur)))
+    time.sleep(30 + max_dur)
     net.stop()
     os.system("mn -c")
 
