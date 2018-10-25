@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 import os
-from graphing.graph_utils import convert_pantheon_log
 from python_utils import file_locations
 from python_utils import test_utils
 from python_utils import pantheon_setup
 from python_utils.test_utils import read_topology_to_dict
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
+from python_utils.pantheon_log_conversion import convert_pantheon_log
 import subprocess
 import sys
 import time

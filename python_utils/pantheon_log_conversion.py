@@ -1,6 +1,5 @@
 import json
 import numpy as np
-import multiprocessing
 
 def convert_interval_to_event(lines, start_line_number, start_time, end_time):
     bytes_sent = 0
@@ -11,7 +10,6 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
 
     cur_time = start_time
     cur_line_number = start_line_number
-    #print("start_time %f, end_time %f" % (start_time, end_time))
     while cur_time < end_time and cur_line_number < len(lines):
         line = lines[cur_line_number]
         cur_time = float(line[0])
@@ -64,11 +62,9 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
 def get_base_rtt(lines):
     start_time = float(lines[0][0])
     event, lines_used = convert_interval_to_event(lines, 0, start_time, 10000.0)
-    print(event)
     return float(event["Min Rtt"])
 
 def convert_file_to_data_dict(filename):
-    print("Reading data from %s" % filename)
     lines = []
     with open(filename) as f:
         lines = f.readlines()
@@ -80,14 +76,13 @@ def convert_file_to_data_dict(filename):
 
     lines = good_lines
     base_rtt = get_base_rtt(lines)
-    print("Converting log into slices of %f ms" % base_rtt)
 
     events = []
     cur_line_number = 0
     cur_start_time = 0.0
     dur = base_rtt
     while cur_line_number < len(lines):
-        new_event, lines_used = convert_interval_to_event(lines, cur_line_number,#[cur_line_number:],
+        new_event, lines_used = convert_interval_to_event(lines, cur_line_number,
             cur_start_time, cur_start_time + dur)
         cur_line_number = lines_used
         cur_start_time += dur
