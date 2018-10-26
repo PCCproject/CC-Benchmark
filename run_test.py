@@ -64,7 +64,12 @@ def run_test(test_dict):
         flow = flows[i]
         run_id = run_ids[i]
         convert_pantheon_log("%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id),
-            "%s/%s_%s.json" % (results_dir, flow["protocol"], flow["name"]))
+            "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"]))
+
+    metadata = {"Scheme":scheme_to_test}
+    with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
+        json.dump(metadata, f)
+    os.system("rm -rf %s/*" % data_dir)
 
     graphing_script = os.path.join(file_locations.graphing_dir, "pcc_grapher.py")
     graph_config = os.path.join(file_locations.graphing_dir, "..", "graphing", "graphs", "sample.json")
