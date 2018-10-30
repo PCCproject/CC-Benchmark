@@ -72,7 +72,7 @@ def run_test(test_dict):
     metadata = {"Scheme":scheme_to_test}
     with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
         json.dump(metadata, f)
-    #os.system("rm -rf %s/*" % data_dir)
+    os.system("rm -rf %s/*" % data_dir)
 
     graphing_script = os.path.join(file_locations.graphing_dir, "pcc_grapher.py")
     graph_config = os.path.join(file_locations.graphing_dir, "..", "graphing", "graphs", "sample.json")
