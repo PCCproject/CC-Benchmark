@@ -8,7 +8,6 @@ SUPPORTED_PANTHEON_SCHEMES = [
     "default_tcp",
     "pcc",
     "bbr",
-    "fillp",
     "taova",
     "vegas",
     "sprout"
