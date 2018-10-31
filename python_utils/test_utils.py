@@ -32,8 +32,13 @@ def read_test_list_to_list(test_list):
     if not ("Tests" in test_json.keys()):
         return [test_list]
 
+    tests = []
+
     # The filename passed in is for a test list, so return the list of tests
-    return test_json["Tests"]
+    for test_name in test_json["Tests"]:
+        tests += read_test_list_to_list(test_name)
+    
+    return tests
 
 ##
 #   Takes a test name and reads the corresponding test json into a dict.
