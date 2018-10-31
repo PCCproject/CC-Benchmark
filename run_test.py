@@ -66,10 +66,13 @@ def run_test(test_dict):
     for i in range(0, len(flows)):
         flow = flows[i]
         run_id = run_ids[i]
-        convert_pantheon_log("%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id),
-            "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"]))
+        log_name = "%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id)
+        saved_name = "%s/%s_datalink.%s.log" % (results_dir, flow["protocol"], flow["name"]) 
+        converted_name = "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"])
+        os.system("cp %s %s" % (log_name, saved_name))
+        convert_pantheon_log(log_name, converted_name) 
 
-    metadata = {"Scheme":scheme_to_test}
+    metadata = {"Scheme":scheme_to_test, "Finish Time":int(round(time.time() * 1000))}
     with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
         json.dump(metadata, f)
     os.system("rm -rf %s/*" % data_dir)
