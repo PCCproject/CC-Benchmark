@@ -29,7 +29,7 @@ class TestResult():
         for filename in filenames:
             if filename == "test_metadata.json":
                 continue
-            else:
+            elif ".json" in filename:
                 flow_name = filename.split('.')[1]
                 print("Loading flow %s" % flow_name)
                 self.flows[flow_name] = FlowTrace(os.path.join(self.dir_name, filename))
