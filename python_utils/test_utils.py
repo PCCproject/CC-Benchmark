@@ -6,7 +6,12 @@ SUPPORTED_PANTHEON_SCHEMES = [
     "copa",
     "vivace_latency",
     "default_tcp",
-    "pcc"
+    "pcc",
+    "bbr",
+    "fillp",
+    "taova",
+    "vegas",
+    "sprout"
 ]
 
 ##
