@@ -4,8 +4,9 @@ import os
 
 SUPPORTED_PANTHEON_SCHEMES = [
     "copa",
-    "pcc_vivace",
-    "default_tcp"
+    "vivace_latency",
+    "default_tcp",
+    "pcc"
 ]
 
 ##
