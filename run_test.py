@@ -15,7 +15,7 @@ import datetime
 import random
 mininet_dir = "/home/pcc/mininet/"
 sys.path.append(mininet_dir)
-from examples import sshd
+from python_utils import mininet_utils
 from mininet.link import TCLink
 from mininet.net import Mininet
 
@@ -37,9 +37,9 @@ def run_test(test_dict):
     os.system("mkdir -p %s" % results_dir)
     test_topo_dict = read_topology_to_dict(test_dict["Topology"])
     test_link_types = test_dict["Link Types"]
-    topo = sshd.MyTopo(test_topo_dict, test_link_types)
+    topo = mininet_utils.MyTopo(test_topo_dict, test_link_types)
     net = Mininet(topo=topo, link=TCLink)
-    sshd.sshd(net)
+    mininet_utils.sshd(net)
     topo.start_all_link_managers(net)
     flows = test_dict["Flows"]
     run_ids = {}

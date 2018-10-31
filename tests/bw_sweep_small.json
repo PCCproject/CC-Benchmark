@@ -1,0 +1,8 @@
+{
+    "Tests": [
+        "simple_1mbps",
+        "simple_2mbps",
+        "simple_4mbps",
+        "simple_8mbps"
+    ]
+}
