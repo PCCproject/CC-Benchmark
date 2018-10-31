@@ -119,10 +119,10 @@ class MyTopo(Topo):
         src = self.get_entity_by_name(link_def["src"], switches, hosts)
         dst = self.get_entity_by_name(link_def["dst"], switches, hosts)
 
-        loss = 0.0
-        if "loss" in link_def.keys():
-            loss = float(link_def["loss"])
         this_link_type = link_types[link_def["type"]]
+        loss = 0.0
+        if "loss" in this_link_type.keys():
+            loss = float(this_link_type["loss"])
         new_link = self.addLink(src, dst, bw=int(this_link_type["bw"]),
             delay=this_link_type["dl"], max_queue_size=int(this_link_type["queue"]),
             loss=loss)
