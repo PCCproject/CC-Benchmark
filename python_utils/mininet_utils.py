@@ -70,38 +70,71 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
     for host in network.hosts:
         info( host.name, host.IP(), '\n' )
 
+def oscillate_half_bw(link, link_def, link_state):
+    bw = link_state["bw"]
+    if bw == link_def["bw"]:
+        new_bw = link_def["bw"] * 0.5
+    else:
+        new_bw = link_def["bw"]
+    link_state["bw"] = new_bw
+    cmds, parent = link.intf1.bwCmds(bw=new_bw)
+    cmd = cmds[1].replace("add", "change")
+    link.intf1.tc(cmd)
+    cmds, parent = link.intf2.bwCmds(bw=new_bw)
+    cmd = cmds[1].replace("add", "change")
+    link.intf2.tc(cmd)
+    return link_state
+
+LINK_VARIATION_FUNCS = {
+    "oscillate_half_bw":oscillate_half_bw
+}
+
+def get_initial_link_state(link_def):
+    state = {}
+    state["bw"] = link_def["bw"]
+    return state
+
 class LinkManager():
     
-    def __init__(self, link):
+    def __init__(self, link, link_def):
         self.link = link
+        self.link_def = link_def
+        self.variation_func = None
+        self.variation_period = None
+        if "variation" in link_def.keys():
+            self.variation_func = LINK_VARIATION_FUNCS[link_def["variation"]["func"]]
+            self.variation_period = link_def["variation"]["period"]
+        self.link_state = get_initial_link_state(link_def)
         self.done = multiprocessing.Value('i')
         self.done.value = 0
         self.cur_bw = 10
         self.proc = multiprocessing.Process(target=self.run, args=(0, 0))
-        self.proc.start()
+        self.running = False
+        if (self.variation_func is not None):
+            self.running = True
+            self.proc.start()
 
     def run(self, dummy1, dummy2):
-        # Do nothing, for now
-
-        """
+        time_offset = time.time()
+        next_variation = 1
         while (self.done.value == 0):
-            time.sleep(5)
-            if (self.cur_bw == 10):
-                self.cur_bw = 5
-            else:
-                self.cur_bw = 10
-            cmds, parent = self.link.intf1.bwCmds(bw=self.cur_bw)
-            cmd = cmds[1].replace("add", "change")
-            print("Changing bandwidth with command:")
-            print(cmd)
-            self.link.intf1.tc(cmd)
-            #cmds, parent = self.link.intf2.bwCmds(bw=self.cur_bw)
-            #self.link.intf2.tc(cmds)
-        """
+            next_oscillation_time = time_offset + next_variation * self.variation_period
+            sleep_time = next_oscillation_time - time.time()
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+            print("Running variation %d" % next_variation)
+            self.link_state = self.variation_func(self.link, self.link_def, self.link_state)
+            next_variation += 1
 
     def stop(self):
-        self.done.value = 1
-        self.proc.join()
+        if (self.running):
+            self.done.value = 1
+            self.proc.terminate()
+            self.proc.join()
+
+def link_matches_def(link, link_def):
+    link_str = str(link)
+    return ("%s-" % link_def["src"] in link_str) and ("<->%s" % link_def["dst"] in link_str)
 
 class MyTopo(Topo):
 
@@ -150,14 +183,24 @@ class MyTopo(Topo):
         for link_def in link_defs:
             self.add_link_by_def(link_def, link_types, switches, hosts)
 
+    def get_net_link_type(self, link):
+        for link_def in self.topo_dict["Links"]:
+            if link_matches_def(link, link_def):
+                return link_def["type"]
+        print("ERROR: PCC-Tester could not find a type for link %s" % str(link))
+        return None
+
     def start_all_link_managers(self, net):
         for link in net.links:
             if "root" in ("%s" % link):
                 continue
-            self.link_managers.append(LinkManager(link))
+            link_type = self.get_net_link_type(link)
+            print("Found net link type %s" % link_type)
+            self.link_managers.append(LinkManager(link, self.link_types[link_type]))
 
     def stop_all_link_managers(self):
         for link_manager in self.link_managers:
+            print("Stopping link manager")
             link_manager.stop()
 
     def print_all_links(self, net):
