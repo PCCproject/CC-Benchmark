@@ -54,7 +54,7 @@ def run_test(test_dict):
     flows = sort_by_start_time(test_dict["Flows"])
     run_ids = {}
     max_end = 0
-    cur_time = 0.0
+    time_offset = time.time()
     for i in range(0, len(flows)):
         flow = flows[i]
         run_id = run_ids[i] = get_free_run_id()
@@ -66,14 +66,13 @@ def run_test(test_dict):
         run_end = flow["start"] + run_dur
         if (run_end > max_end):
             max_end = run_end
-        sleep_dur = flow["start"] - cur_time
+        sleep_dur = flow["start"] + time_offset - time.time()
         if (sleep_dur > 0.0):
             time.sleep(sleep_dur)
-            cur_time += sleep_dur
         test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir, 
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
         os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
-    time.sleep(30 + max_end - cur_time)
+    time.sleep(30.0 + max_end + time_offset - time.time())
     topo.stop_all_link_managers()
     net.stop()
     os.system("mn -c")
