@@ -4,11 +4,11 @@ from python_utils import file_locations
 import os
 
 class SchemeConfig:
-    def __init__(self, src_dir):
+    def __init__(self, src_dir, extra_args=None):
         self.simple_name = "pcc_test_scheme"
         self.pantheon_dir = file_locations.pantheon_dir
         self.ld_library_path = src_dir + "core/"
-        self.extra_args = None
+        self.extra_args = extra_args
         self.recv_command = src_dir + "app/pccserver recv"
         self.send_command = src_dir + "app/pccclient send"
         self.pantheon_color = "blue"
@@ -18,8 +18,8 @@ def is_scheme_in_pantheon(scheme_config):
     return file_utils.is_word_in_file(scheme_config.simple_name,
         os.path.join(scheme_config.pantheon_dir, TRAVIS_FILENAME))
 
-def add_scheme_to_pantheon(src_dir):
-    scheme_config = SchemeConfig(src_dir)
+def add_scheme_to_pantheon(src_dir, extra_args=None):
+    scheme_config = SchemeConfig(src_dir, extra_args=extra_args)
     create_scheme_running_script(scheme_config)
     add_scheme_to_config(scheme_config)
     add_scheme_to_travis(scheme_config)

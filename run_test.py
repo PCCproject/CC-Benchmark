@@ -21,9 +21,12 @@ from mininet.net import Mininet
 
 scheme_to_test = sys.argv[1]
 tests_to_run = sys.argv[2]
+extra_args = None
+if (len(sys.argv) > 3):
+    extra_args = sys.argv[3].split(' ')
 
 if (scheme_to_test not in test_utils.SUPPORTED_PANTHEON_SCHEMES):
-    scheme_to_test = pantheon_setup.add_scheme_to_pantheon(scheme_to_test)
+    scheme_to_test = pantheon_setup.add_scheme_to_pantheon(scheme_to_test, extra_args)
 
 data_dir = "/tmp/pcc_automated_testing/data/"
 username = "pcc"
