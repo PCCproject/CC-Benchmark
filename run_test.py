@@ -31,6 +31,13 @@ if (scheme_to_test not in test_utils.SUPPORTED_PANTHEON_SCHEMES):
 data_dir = "/tmp/pcc_automated_testing/data/"
 username = "pcc"
 
+def sort_by_start_time(flows):
+    for flow in flows:
+        if "start" not in flow.keys():
+            flow["start"] = 0.0
+
+    return sorted(flows, key=lambda k: k["start"])
+
 def get_free_run_id():
     return random.randint(0, 2e9)
 
@@ -44,9 +51,10 @@ def run_test(test_dict):
     net = Mininet(topo=topo, link=TCLink)
     mininet_utils.sshd(net)
     topo.start_all_link_managers(net)
-    flows = test_dict["Flows"]
+    flows = sort_by_start_time(test_dict["Flows"])
     run_ids = {}
-    max_dur = 0
+    max_end = 0
+    cur_time = 0.0
     for i in range(0, len(flows)):
         flow = flows[i]
         run_id = run_ids[i] = get_free_run_id()
@@ -55,13 +63,17 @@ def run_test(test_dict):
         run_dur = 30
         if ("dur" in flow.keys()):
             run_dur = flow["dur"]
-        if (run_dur > max_dur):
-            max_dur = run_dur
+        run_end = flow["start"] + run_dur
+        if (run_end > max_end):
+            max_end = run_end
+        sleep_dur = flow["start"] - cur_time
+        if (sleep_dur > 0.0):
+            time.sleep(sleep_dur)
+            cur_time += sleep_dur
         test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir, 
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
         os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
-    sys.stderr.write("Sleeping for %d seconds" % (int(20 + max_dur)))
-    time.sleep(30 + max_dur)
+    time.sleep(30 + max_end - cur_time)
     topo.stop_all_link_managers()
     net.stop()
     os.system("mn -c")
@@ -75,7 +87,10 @@ def run_test(test_dict):
         os.system("cp %s %s" % (log_name, saved_name))
         convert_pantheon_log(log_name, converted_name) 
 
-    metadata = {"Scheme":scheme_to_test, "Finish Time":int(round(time.time() * 1000))}
+    metadata = {
+        "Scheme":scheme_to_test,
+        "Finish Time":int(round(time.time() * 1000))
+    }
     with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
         json.dump(metadata, f)
     os.system("rm -rf %s/*" % data_dir)

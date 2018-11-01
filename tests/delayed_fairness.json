@@ -1,0 +1,30 @@
+{
+    "Name":"delayed_fairness",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":30.0
+        },
+        {
+            "name":"flow_2",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":15.0,
+            "dur":30.0
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":30,
+            "dl":"30ms",
+            "queue":1000
+        }
+    }
+
+}

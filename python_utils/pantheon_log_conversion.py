@@ -69,6 +69,7 @@ def convert_file_to_data_dict(filename):
     with open(filename) as f:
         lines = f.readlines()
 
+    start_timestamp = float(lines[0].split(" ")[-1])
     good_lines = []
     for line in lines:
         if "#" not in line: # Remove comments
@@ -84,6 +85,7 @@ def convert_file_to_data_dict(filename):
     while cur_line_number < len(lines):
         new_event, lines_used = convert_interval_to_event(lines, cur_line_number,
             cur_start_time, cur_start_time + dur)
+        new_event["Time"] = str(float(new_event["Time"]) + start_timestamp)
         cur_line_number = lines_used
         cur_start_time += dur
         events.append(new_event)
