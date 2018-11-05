@@ -7,16 +7,16 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
     packets_sent = 0
     acks_received = 0
     rtt_samples = []
+    global _printed_info
 
     cur_time = start_time
     cur_line_number = start_line_number
+    first_packet_sent_time = start_time
+    last_packet_sent_time = 0
     while cur_time < end_time and cur_line_number < len(lines):
         line = lines[cur_line_number]
         cur_time = float(line[0])
         sent_time = cur_time
-        if "-" in line:
-            sent_time = cur_time - float(line[3])
-        #if sent_time >= start_time and sent_time <= end_time:
         if "+" in line:
             bytes_sent += int(line[2])
             packets_sent += 1
@@ -24,7 +24,25 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
             bytes_acked += int(line[2])
             acks_received += 1
             rtt_samples.append(float(line[3]))
+            sent_time = round(cur_time - float(line[3]), 3)
+            if (sent_time < first_packet_sent_time):
+                first_packet_sent_time = sent_time
+            if (sent_time > last_packet_sent_time):
+                last_packet_sent_time = sent_time
         cur_line_number += 1
+
+    bytes_should_have_been_acked = 0
+    packets_should_have_been_acked = 0
+    if (len(rtt_samples) > 0):
+        backtrack_line_number = cur_line_number - 1
+        while (cur_time >= first_packet_sent_time and backtrack_line_number >= 0):
+            line = lines[backtrack_line_number]
+            cur_time = round(float(line[0]), 3)
+
+            if cur_time >= first_packet_sent_time and cur_time <= last_packet_sent_time and "+" in line:
+                bytes_should_have_been_acked += int(line[2])
+                packets_should_have_been_acked += 1
+            backtrack_line_number -= 1
 
     dur = (end_time - start_time)
     throughput = 1000 * 8.0 * bytes_acked / dur
@@ -36,10 +54,10 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
         min_rtt = np.min(rtt_samples)
         max_rtt = np.max(rtt_samples)
     loss_rate = 0.0
-    if bytes_sent > 0:
-        loss_rate = (bytes_sent - bytes_acked) / float(bytes_sent)
-    if loss_rate < 0:
-        loss_rate = 0
+    if bytes_should_have_been_acked > 0:
+        loss_rate = (bytes_should_have_been_acked - bytes_acked) / float(bytes_should_have_been_acked)
+    if bytes_should_have_been_acked < bytes_acked:
+        print("Warning: Conversion of Pantheon log failed align ACKs and expected ACKs")
     latency_inflation = 0
     if len(rtt_samples) >= 2:
         latency_inflation = (rtt_samples[-1] - rtt_samples[0]) / dur
@@ -55,7 +73,8 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
         "Loss Rate":str(loss_rate),
         "Rtt Inflation":str(latency_inflation),
         "Packets Sent":packets_sent,
-        "Acks Received":acks_received
+        "Acks Received":acks_received,
+        "Packets Should Have Been Acked":packets_should_have_been_acked
     }
     return event, cur_line_number
 
