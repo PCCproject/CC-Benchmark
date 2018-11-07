@@ -3,6 +3,7 @@ import os
 from python_utils import file_locations
 from python_utils import test_utils
 from python_utils import pantheon_setup
+from python_utils import github_utils
 from python_utils.test_utils import read_topology_to_dict
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
@@ -19,7 +20,38 @@ from python_utils import mininet_utils
 from mininet.link import TCLink
 from mininet.net import Mininet
 
+default_build_dir = "/home/pcc/pcc_test_scheme/"
 scheme_to_test = sys.argv[1]
+
+is_git_repo = False
+git_repo = None
+git_branch = None
+git_checksum = None
+
+# This means we are testing a branch from a repository -- we probably have to build it first
+if (":" in scheme_to_test):
+    is_git_repo = True
+    parts = scheme_to_test.split(":")
+    repo = parts[0]
+    branch = parts[1]
+
+    # Check if a repo exists in the usual build location
+    if (os.path.isdir(os.path.join(default_build_dir, ".git"))):
+
+        # We have a build dir, but we may not have the correct repo or branch.
+        if (not github_utils.dir_has_repo(repo, branch, default_build_dir)):
+            git_checksum = github_utils.build_repo_in_dir(repo, branch, default_build_dir)
+        else:
+            git_checksum = github_utils.get_repo_checksum(default_build_dir)
+    else:
+        # No dir? Make it and clone there
+        os.system("mkdir -p %s" % default_build_dir)
+        git_checksum = github_utils.build_repo_in_dir(repo, branch, default_build_dir)
+    scheme_to_test = os.path.join(default_build_dir, "src")
+
+    git_repo = repo
+    git_branch = branch
+
 tests_to_run = sys.argv[2]
 extra_args = None
 if (len(sys.argv) > 3):
@@ -90,6 +122,10 @@ def run_test(test_dict):
         "Scheme":scheme_to_test,
         "Finish Time":int(round(time.time() * 1000))
     }
+    if is_git_repo:
+        metadata["Repo"] = git_repo
+        metadata["Branch"] = git_branch
+        metadata["Checksum"] = git_checksum
     with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
         json.dump(metadata, f)
     os.system("rm -rf %s/*" % data_dir)

@@ -7,10 +7,10 @@ class SchemeConfig:
     def __init__(self, src_dir, extra_args=None):
         self.simple_name = "pcc_test_scheme"
         self.pantheon_dir = file_locations.pantheon_dir
-        self.ld_library_path = src_dir + "core/"
+        self.ld_library_path = os.path.join(src_dir, "core")
         self.extra_args = extra_args
-        self.recv_command = src_dir + "app/pccserver recv"
-        self.send_command = src_dir + "app/pccclient send"
+        self.recv_command = os.path.join(src_dir, "app", "pccserver") + " recv"
+        self.send_command = os.path.join(src_dir, "app", "pccclient") + " send"
         self.pantheon_color = "blue"
         self.pantheon_marker = "*"
 
