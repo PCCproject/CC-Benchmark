@@ -1,30 +1,14 @@
 {
-    "Name":"tcp_fairness",
-    "Topology":"dumbell-1",
-    "Flows":[
-        {
-            "name":"flow_1",
-            "protocol":"TEST",
-            "src":"10.0.0.1",
-            "dst":"10.0.0.2",
-            "start":0.0,
-            "dur":30.0
-        },
-        {
-            "name":"tcp_flow",
-            "protocol":"default_tcp",
-            "src":"10.0.0.1",
-            "dst":"10.0.0.2",
-            "start":0.0,
-            "dur":30.0
-        }
-    ],
-    "Link Types":{
-        "L1":{
-            "bw":30,
-            "dl":"30ms",
-            "queue":1000
-        }
-    }
-
+    "Tests": [
+        "tcp_fairness_1_flow",
+        "tcp_fairness_2_flow",
+        "tcp_fairness_4_flow",
+        "tcp_fairness_8_flow",
+        "tcp_fairness_12_flow",
+        "tcp_fairness_16_flow",
+        "tcp_fairness_20_flow",
+        "tcp_fairness_24_flow",
+        "tcp_fairness_28_flow",
+        "tcp_fairness_32_flow"
+    ]
 }
