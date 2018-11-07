@@ -17,8 +17,11 @@ class TestResult():
         self.load_metadata()
 
     def load_metadata(self):
-        with open(os.path.join(self.dir_name, "test_metadata.json")) as f:
-            self.metadata = json.load(f)
+        try:
+            with open(os.path.join(self.dir_name, "test_metadata.json")) as f:
+                self.metadata = json.load(f)
+        except FileNotFoundError as e:
+            print("Warning: Failed to load metadata for %s" % self.dir_name)
 
     def is_loaded(self):
         return self.loaded
@@ -31,7 +34,6 @@ class TestResult():
                 continue
             elif ".json" in filename:
                 flow_name = filename.split('.')[1]
-                print("Loading flow %s" % flow_name)
                 self.flows[flow_name] = FlowTrace(os.path.join(self.dir_name, filename))
 
 class ResultsLibrary():
