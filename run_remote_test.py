@@ -18,11 +18,12 @@ local_testing_dir = "/home/njay2/PCC/testing/"
 local_results_dir = local_testing_dir + "results/"
 remote_testing_dir = "/home/njay2/PCC/testing/"
 remote_hosts = {
-    "localhost":local_testing_dir
+    "ocean0":local_testing_dir
+    #"localhost":local_testing_dir
 }
 
 tests_to_run = sys.argv[2]
-scheme_to_test = sys.argv[1]
+schemes_to_test = sys.argv[1].split(" ")
 
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
@@ -119,8 +120,9 @@ class RemoteHostManager:
 ##
 
 test_queue = multiprocessing.Queue()
-for test_name in read_test_list_to_list(tests_to_run):
-    test_queue.put((test_name, scheme_to_test))
+for scheme_to_test in schemes_to_test:
+    for test_name in read_test_list_to_list(tests_to_run):
+        test_queue.put((test_name, scheme_to_test))
 
 ##
 #   Start the test-running managers for remote machines and VMs.
