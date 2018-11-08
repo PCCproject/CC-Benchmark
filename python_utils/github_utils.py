@@ -15,6 +15,10 @@ def github_url(repo):
     return "https://%s:%s@github.com/%s.git" % (github_username, github_password,
         full_repo_name[repo])
 
+def pull_from_repo(repo, dir_path):
+    return subprocess.check_output(["git", "pull", github_url(repo)],
+        cwd=dir_path).decode("utf-8")
+
 def get_repo_checksum(dir_path):
     return subprocess.check_output(["git", "log", "-1", "--format=\"%H\""],
         cwd=dir_path).decode("utf-8").replace("\"", "").replace("\n", "")
