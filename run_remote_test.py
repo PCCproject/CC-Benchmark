@@ -107,6 +107,7 @@ class RemoteHostManager:
                 if vm_manager.busy_or_test_queued():
                     vms_busy += 1
                 elif (not test_queue.empty()):
+                    print("Tests remaining: %d" % test_queue.qsize())
                     vm_manager.vm_test_queue.put(test_queue.get())
                     vms_busy += 1
             done = test_queue.empty() and (vms_busy == 0)
