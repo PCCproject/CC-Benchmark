@@ -1,5 +1,5 @@
 {
-    "Name":"tcp_fairness_32_flow",
+    "Name":"tcp_fairness_2_flow",
     "Topology":"dumbell-1",
     "Flows":[
         {
