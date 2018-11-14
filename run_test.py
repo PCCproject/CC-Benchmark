@@ -4,6 +4,7 @@ from python_utils import file_locations
 from python_utils import test_utils
 from python_utils import pantheon_setup
 from python_utils import github_utils
+from python_utils import ssh_utils
 from python_utils.test_utils import read_topology_to_dict
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
@@ -77,6 +78,8 @@ def run_test(test_dict):
     date_string = datetime.date.today().strftime("%B_%d_%Y") + "_%d" % (int(round(time.time() * 1000)))
     results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
     os.system("mkdir -p %s" % results_dir)
+    print("Removing any running mininet instance.")
+    mininet_clean_output = subprocess.check_output(["sudo", "mn", "-c"])
     test_topo_dict = read_topology_to_dict(test_dict["Topology"])
     test_link_types = test_dict["Link Types"]
     topo = mininet_utils.MyTopo(test_topo_dict, test_link_types)
@@ -107,7 +110,6 @@ def run_test(test_dict):
     time.sleep(30.0 + max_end + time_offset - time.time())
     topo.stop_all_link_managers()
     net.stop()
-    os.system("mn -c")
 
     for i in range(0, len(flows)):
         flow = flows[i]
@@ -147,5 +149,12 @@ all_tests = [read_test_to_dict(t) for t in all_test_names]
 #   better.
 ##
 
-for test in all_tests:
-    run_test(test)
+try:
+    for test in all_tests:
+        run_test(test)
+except Exception as e:
+    print(e)
+
+if "--is-remote" in sys.argv:
+    ssh_utils.cleanup_ssh_connections()
+    os.system("sudo killall ssh")

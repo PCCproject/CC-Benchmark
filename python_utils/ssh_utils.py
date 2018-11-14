@@ -29,3 +29,28 @@ def get_remote_vm_ips(hostname):
     virtual_lines = [line for line in lines if "vir" in line]
     addresses = [get_address_from_arp_line(line) for line in virtual_lines]
     return addresses 
+
+def cleanup_ssh_connections():
+    
+    # Find the root sshd processes by looking for processes listening on port 22.
+    lines = subprocess.check_output(["sudo", "lsof", "-i", ":22"]).decode("utf-8").split("\n")
+    listen_pids = []
+    for line in lines:
+        if ("LISTEN" in line):
+            fields = [v for v in line.split(" ") if not v == ""]
+            listen_pids.append(int(fields[1]))
+    listen_pids = list(set(listen_pids))
+
+    # Now, find all runnning sshd processes
+    proc_lines = subprocess.check_output(["ps", "-aux"]).decode("utf-8").split("\n")
+    sshd_pids = []
+    for line in proc_lines:
+        if ("/usr/sbin/sshd" in line):
+            fields = [v for v in line.split(" ") if not v == ""]
+            sshd_pids.append(int(fields[1]))
+
+    for listen_pid in listen_pids:
+        sshd_pids.remove(listen_pid)
+
+    for sshd_pid in sshd_pids:
+        os.system("sudo kill -9 %d" % sshd_pid)
