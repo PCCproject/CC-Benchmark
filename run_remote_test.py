@@ -6,6 +6,7 @@ import time
 import os
 import sys
 import json
+import psutil
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
 from python_utils.ssh_utils import get_idle_percent
@@ -37,10 +38,26 @@ class RemoteVmManager:
         self.vm_test_queue = multiprocessing.Queue()
         self.busy = multiprocessing.Value('i', 0)
         self.done_queue = multiprocessing.Queue()
-        self.kill_queue = multiprocessing.Queue()
+        self.error_queue = multiprocessing.Queue()
         self.proc = multiprocessing.Process(target=self.run_manager, args=(self.vm_test_queue,
-            self.done_queue, self.kill_queue))
+            self.done_queue, self.error_queue))
         self.proc.start()
+        self.cur_test = None
+        self.child_pid = self.proc.pid
+
+    def is_up(self):
+        return (self.proc.exitcode is None) and psutil.pid_exists(self.child_pid)
+        #return self.proc.is_alive()
+
+    def restart_proc(self):
+        self.proc = multiprocessing.Process(target=self.run_manager, args=(self.vm_test_queue,
+            self.done_queue, self.error_queue))
+        self.proc.start()
+        self.child_pid = self.proc.pid
+
+    def assign_test(self, test):
+        self.cur_test = test
+        self.vm_test_queue.put(test)
 
     def set_busy(self, flag):
         if flag:
@@ -57,7 +74,7 @@ class RemoteVmManager:
         remote_call(self.hostname, cmd)
         self.test_in_progress = False
 
-    def run_manager(self, test_queue, done_queue, kill_queue):
+    def run_manager(self, test_queue, done_queue, error_queue):
         done = False
         while (not done):
             try:
@@ -104,11 +121,18 @@ class RemoteHostManager:
             vms_busy = 0
             free_cpu = get_idle_percent(self.hostname)
             for vm_manager in self.remote_vm_managers:
-                if vm_manager.busy_or_test_queued():
+                if not vm_manager.is_up():
+                    print("***********************************************")
+                    print("Restarting dead VM at %s" % vm_manager.get_id_string())
+                    print("***********************************************")
+                    test_queue.put(vm_manager.cur_test)
+                    vm_manager.restart_proc()
+                    vms_busy += 1
+                elif vm_manager.busy_or_test_queued():
                     vms_busy += 1
                 elif (not test_queue.empty()):
                     print("Tests remaining: %d" % test_queue.qsize())
-                    vm_manager.vm_test_queue.put(test_queue.get())
+                    vm_manager.assign_test(test_queue.get())
                     vms_busy += 1
             done = test_queue.empty() and (vms_busy == 0)
 
