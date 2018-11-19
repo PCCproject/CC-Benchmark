@@ -8,7 +8,8 @@ github_password = subprocess.check_output(["cat", github_password_filename]).dec
 
 full_repo_name = {
     "PCC":"netarch/PCC",
-    "PCC-Uspace":"PCCProject/PCC-Uspace"
+    "PCC-Uspace":"PCCProject/PCC-Uspace",
+    "PCC-Tester":"PCCProject/PCC-Tester"
 }
 
 def github_url(repo):
