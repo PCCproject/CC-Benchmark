@@ -156,10 +156,6 @@ def run_test(test_dict):
         json.dump(metadata, f)
     os.system("rm -rf %s/*" % data_dir)
 
-    graphing_script = os.path.join(file_locations.graphing_dir, "pcc_grapher.py")
-    graph_config = os.path.join(file_locations.graphing_dir, "..", "graphing", "graphs", "sample.json")
-    #os.system("python %s %s %s" % (graphing_script, results_dir, graph_config))
-
 ##
 #   Load in the test descriptor files.
 ##
