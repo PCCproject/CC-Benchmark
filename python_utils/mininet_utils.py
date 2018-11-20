@@ -96,10 +96,10 @@ def nsdi_variable_link(link, link_def, link_state):
     cmds, parent_2 = link.intf1.bwCmds(bw=bw)
     cmd = cmds[1].replace("add", "change")
     link.intf2.tc(cmd)
-    cmds, parent = link.intf1.delayCmds(parent_1, delay=dl, loss=lr)
+    cmds, parent = link.intf1.delayCmds(parent_1, delay="%fms" % dl, loss=lr)
     cmd = cmds[0].replace("add", "change")
     link.intf1.tc(cmd)
-    cmds, parent = link.intf2.delayCmds(parent_2, delay=dl, loss=lr)
+    cmds, parent = link.intf2.delayCmds(parent_2, delay="%fms" % dl, loss=lr)
     cmd = cmds[0].replace("add", "change")
     link.intf2.tc(cmd)
 
@@ -187,7 +187,9 @@ class MyTopo(Topo):
         self.topo_dict = topo_dict
         self.link_types = link_types
         self.link_managers = []
-        switch_defs = topo_dict["Switches"]
+        switch_defs = []
+        if "Switches" in topo_dict.keys():
+            switch_defs = topo_dict["Switches"]
         host_defs = topo_dict["Hosts"]
         link_defs = topo_dict["Links"]
 
