@@ -1,11 +1,6 @@
 import json
 import os
-
-class FlowTrace():
-    def __init__(self, filename):
-        self.data = {}
-        with open(filename) as f:
-            self.data = json.load(f)
+from graphing.analysis.flow_trace import FlowTrace
 
 class TestResult():
     def __init__(self, test_name, dir_name):

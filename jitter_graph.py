@@ -35,19 +35,16 @@ for j in jitters:
         if (scheme not in this_data.keys()):
             this_data[scheme] = {"flows":[]}
         scheme_data = this_data[scheme]
-        
-        test_events = this_test.flows["flow_1"].data["Events"]
-        thpts = [float(event["Throughput"]) / 1000.0 for event in test_events]
-        lats = [float(event["Avg Rtt"]) for event in test_events]
-        scheme_data["flows"].append(thpts)
+        avg_throughput = this_test.flows["flow_1"].get_statistic("Throughput", "Mean") / 1000.0
+        scheme_data["flows"].append(avg_throughput)
     all_data[j] = this_data
     for scheme in this_data.keys():
         if scheme not in summary_data.keys():
             summary_data[scheme] = []
 
         thpts = []
-        for run_data in this_data[scheme]["flows"]:
-            thpts.append(np.mean(run_data))
+        for run_throughput in this_data[scheme]["flows"]:
+            thpts.append(run_throughput)
         print("Jitter %d scheme %s thpts %s" % (j, scheme, str(thpts)))
         summary_data[scheme].append(np.mean(thpts))
 
