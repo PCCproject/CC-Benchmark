@@ -59,14 +59,17 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
     if bytes_should_have_been_acked < bytes_acked:
         print("Warning: Conversion of Pantheon log failed align ACKs and expected ACKs")
     latency_inflation = 0
+    five_percent_rtt = -1.0
     if len(rtt_samples) >= 2:
         latency_inflation = (rtt_samples[-1] - rtt_samples[0]) / dur
-    
+        five_percent_rtt = np.percentile(np.array(rtt_samples), 5)
+ 
     event = {
         "Name":"Sample",
         "Time":str(start_time),
         "Throughput":str(throughput / 1e3),
         "Target Rate":str(send_rate / 1e3),
+        "Five Percent Rtt":str(five_percent_rtt),
         "Avg Rtt":str(avg_rtt),
         "Min Rtt":str(min_rtt),
         "Max Rtt":str(max_rtt),
@@ -81,7 +84,7 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
 def get_base_rtt(lines):
     start_time = float(lines[0][0])
     event, lines_used = convert_interval_to_event(lines, 0, start_time, 10000.0)
-    return float(event["Min Rtt"])
+    return float(event["Five Percent Rtt"])
 
 def convert_file_to_data_dict(filename):
     lines = []
