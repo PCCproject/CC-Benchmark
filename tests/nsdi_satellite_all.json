@@ -1,0 +1,9 @@
+{
+    "Tests": [
+        "nsdi_satellite_2pkt",
+        "nsdi_satellite_8pkt",
+        "nsdi_satellite_80pkt",
+        "nsdi_satellite_600pkt",
+        "nsdi_satellite_1000pkt"
+    ]
+}
