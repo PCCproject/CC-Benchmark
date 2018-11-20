@@ -18,6 +18,7 @@ demonstrates:
 
 import sys
 import time
+import random
 
 from mininet.topo import Topo
 from mininet.link import TCLink
