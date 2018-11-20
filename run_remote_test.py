@@ -78,7 +78,8 @@ class RemoteVmManager:
 
     def run_first_test_setup(self):
         self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
-        self.run_on_vm("%s/pull_this_repo.py" % vm_config.testing_dir)
+        if "--pull-repo" in sys.argv:
+            self.run_on_vm("%s/pull_this_repo.py" % vm_config.testing_dir)
         self.run_on_vm("sudo sysctl -w net.ipv4.ip_forward=1")
 
     def run_next_test(self, test_name, test_scheme):
