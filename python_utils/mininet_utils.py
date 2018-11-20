@@ -85,8 +85,27 @@ def oscillate_half_bw(link, link_def, link_state):
     link.intf2.tc(cmd)
     return link_state
 
+def nsdi_variable_link(link, link_def, link_state):
+    bw = random.randint(10, 100)
+    dl = random.uniform(0.01, 0.1)
+    lr = random.uniform(0.0, 0.01)
+    cmds, parent = link.intf1.bwCmds(bw=bw)
+    cmd = cmds[1].replace("add", "change")
+    link.intf1.tc(cmd)
+    cmds, parent = link.intf1.bwCmds(bw=bw)
+    cmd = cmds[1].replace("add", "change")
+    link.intf2.tc(cmd)
+    cmds, parent = link.intf1.delayCmds(delay=dl, loss=lr)
+    cmd = cmds[0].replace("add", "change")
+    link.intf1.tc(cmd)
+    cmds, parent = link.intf2.delayCmds(delay=dl, loss=lr)
+    cmd = cmds[0].replace("add", "change")
+    link.intf2.tc(cmd)
+
+
 LINK_VARIATION_FUNCS = {
-    "oscillate_half_bw":oscillate_half_bw
+    "oscillate_half_bw":oscillate_half_bw,
+    "nsdi_variable_link":nsdi_variable_link
 }
 
 def get_initial_link_state(link_def):

@@ -1,0 +1,26 @@
+{
+    "Name":"nsdi_variable_link",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":30.0
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":20,
+            "dl":"30ms",
+            "queue":30,
+            "variation":{
+                "period":5,
+                "func":"nsdi_variable_link"
+            }
+        }
+    }
+
+}
