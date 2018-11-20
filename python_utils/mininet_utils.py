@@ -88,8 +88,8 @@ def oscillate_half_bw(link, link_def, link_state):
 
 def nsdi_variable_link(link, link_def, link_state):
     bw = random.randint(10, 100)
-    dl = random.uniform(0.01, 0.1)
-    lr = random.uniform(0.0, 0.01)
+    dl = random.uniform(10, 100)
+    lr = 100.0 * random.uniform(0.0, 0.01)
     cmds, parent_1 = link.intf1.bwCmds(bw=bw)
     cmd = cmds[1].replace("add", "change")
     link.intf1.tc(cmd)
