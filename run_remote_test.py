@@ -77,6 +77,7 @@ class RemoteVmManager:
         return (self.busy.value == 1) or (not self.vm_test_queue.empty())
 
     def run_first_test_setup(self):
+        self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
         self.run_on_vm("%s/pull_this_repo.py" % vm_config.testing_dir)
         self.run_on_vm("sudo sysctl -w net.ipv4.ip_forward=1")
 
@@ -86,8 +87,7 @@ class RemoteVmManager:
             self.has_run_test = True
         self.run_on_vm("sudo %s %s %s --is-remote" % (vm_config.run_test_cmd, test_scheme,
             test_name))
-        self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
-        self.run_on_vm_host("scp pcc@%s:%s/* %s" % (self.vm_ip, vm_config.vm_results_dir,
+        self.run_on_vm_host("scp -r pcc@%s:%s/* %s" % (self.vm_ip, vm_config.vm_results_dir,
             vm_config.host_results_dir))
         self.run_on_vm("sudo rm -rf %s" % (vm_config.vm_results_dir))
         self.run_on_vm("sudo killall python")
