@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import psutil
+from python_utils import vm_config
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
 from python_utils.ssh_utils import get_idle_percent
@@ -31,7 +32,7 @@ if (len(sys.argv) > 3):
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
         print("Creating VM manager for %s:%s" % (hostname, vm_ip))
-        self.test_in_progress = False
+        self.has_run_test = False
         self.hostname = hostname
         self.remote_testing_dir = remote_testing_dir
         self.vm_ip = vm_ip
@@ -45,9 +46,16 @@ class RemoteVmManager:
         self.cur_test = None
         self.child_pid = self.proc.pid
 
+    def run_on_vm_host(self, cmd):
+        remote_call(self.hostname, cmd)
+
+    def run_on_vm(self, cmd):
+        remote_cmd = "ssh pcc@%s \"%s\"" % (self.vm_ip, cmd)
+        remote_call(self.hostname, remote_cmd)
+    
     def is_up(self):
         return (self.proc.exitcode is None) and psutil.pid_exists(self.child_pid)
-        #return self.proc.is_alive()
+        #return self.proc.is_alive() # Why doesn't this work?
 
     def restart_proc(self):
         self.proc = multiprocessing.Process(target=self.run_manager, args=(self.vm_test_queue,
@@ -68,11 +76,21 @@ class RemoteVmManager:
     def busy_or_test_queued(self):
         return (self.busy.value == 1) or (not self.vm_test_queue.empty())
 
+    def run_first_test_setup(self):
+        self.run_on_vm("%s/pull_this_repo.py" % vm_config.testing_dir)
+        self.run_on_vm("sudo sysctl -w net.ipv4.ip_forward=1")
+
     def run_next_test(self, test_name, test_scheme):
-        cmd = "%s %s %s %s" % (os.path.join(self.remote_testing_dir, "run_vm_test.py"),
-            self.vm_ip, test_scheme, test_name)
-        remote_call(self.hostname, cmd)
-        self.test_in_progress = False
+        if not self.has_run_test:
+            self.run_first_test_setup()
+            self.has_run_test = True
+        self.run_on_vm("sudo %s %s %s --is-remote" % (vm_config.run_test_cmd, test_scheme,
+            test_name))
+        self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
+        self.run_on_vm_host("scp pcc@%s:%s/* %s" % (self.vm_ip, vm_config.vm_results_dir,
+            vm_config.host_results_dir))
+        self.run_on_vm("sudo rm -rf %s" % (vm_config.vm_results_dir))
+        self.run_on_vm("sudo killall python")
 
     def run_manager(self, test_queue, done_queue, error_queue):
         done = False
