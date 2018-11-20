@@ -74,6 +74,23 @@ def sort_by_start_time(flows):
 def get_free_run_id():
     return random.randint(0, 2e9)
 
+def wait_for_all_logs_or_timeout(log_names, timeout):
+    next_log_to_check = 0
+    start_wait_time = time.time()
+    time_waited = 0.0
+    while time_waited < timeout and next_log_to_check < len(log_names):
+        waiting_for_file = False
+        while next_log_to_check < len(log_names) and not waiting_for_file:
+            if os.path.exists(log_names[next_log_to_check]):
+                next_log_to_check += 1
+            else:
+                waiting_for_file = True
+        time.sleep(1.0)
+        time_waited = time.time() - start_wait_time
+    if next_log_to_check < len(log_names):
+        return False
+    return True
+
 def run_test(test_dict):
     date_string = datetime.date.today().strftime("%B_%d_%Y") + "_%d" % (int(round(time.time() * 1000)))
     results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
@@ -107,9 +124,16 @@ def run_test(test_dict):
         test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir, 
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
         os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
-    time.sleep(30.0 + max_end + time_offset - time.time())
+
+    timeout = 120.0 + max_end + time_offset - time.time()
+    all_log_names = ["%s/%s_datalink_run%d.log" % (data_dir, flows[i]["protocol"], run_ids[i]) for i in range(0, len(flows))]
+    all_logs_finished = wait_for_all_logs_or_timeout(all_log_names, timeout)
+    
     topo.stop_all_link_managers()
     net.stop()
+
+    if not all_logs_finished:
+        sys.stderr.write("(PCC Tester) ERROR: test run did not create all expected log files.")
 
     for i in range(0, len(flows)):
         flow = flows[i]
