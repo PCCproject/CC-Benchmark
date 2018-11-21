@@ -21,7 +21,7 @@
         {
             "src":"h2",
             "dst":"s1",
-            "type":"L1"
+            "type":"passthrough"
         }
     ]
 }

@@ -31,6 +31,11 @@ from mininet.util import waitListening
 
 import multiprocessing
 
+_default_passthrough_link_type = {
+    "bw":200,
+    "queue":1000
+}
+
 def TreeNet( depth=1, fanout=2, **kwargs ):
     "Convenience function for creating tree networks."
     topo = TreeTopo( depth, fanout )
@@ -179,6 +184,9 @@ class MyTopo(Topo):
         jitter = None
         if "jitter" in this_link_type.keys():
             jitter = this_link_type["jitter"]
+        delay = None
+        if "dl" in this_link_type.keys():
+            delay = this_link_type["dl"]
         new_link = self.addLink(src, dst, bw=int(this_link_type["bw"]),
             delay=this_link_type["dl"], max_queue_size=int(this_link_type["queue"]),
             loss=loss, jitter=jitter)
@@ -186,6 +194,8 @@ class MyTopo(Topo):
     def build(self, topo_dict, link_types):
         self.topo_dict = topo_dict
         self.link_types = link_types
+        if "passthrough" not in link_types.keys():
+            link_types["passthrough"] = _default_passthrough_link_type
         self.link_managers = []
         switch_defs = []
         if "Switches" in topo_dict.keys():

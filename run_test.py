@@ -152,6 +152,10 @@ def run_test(test_dict):
         metadata["Repo"] = git_repo
         metadata["Branch"] = git_branch
         metadata["Checksum"] = git_checksum
+    if extra_args is not None:
+        metadata["PCC Args"] = []
+        for extra_arg in extra_args:
+            metadata["PCC Args"].append(extra_arg)
     with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
         json.dump(metadata, f)
     os.system("rm -rf %s/*" % data_dir)
