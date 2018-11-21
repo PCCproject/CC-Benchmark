@@ -83,7 +83,8 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
 
 def get_base_rtt(lines):
     start_time = float(lines[0][0])
-    event, lines_used = convert_interval_to_event(lines, 0, start_time, 10000.0)
+    end_time = float(lines[-1][0])
+    event, lines_used = convert_interval_to_event(lines, 0, start_time, end_time)
     return float(event["Five Percent Rtt"])
 
 def convert_file_to_data_dict(filename):
