@@ -9,44 +9,16 @@ results = ResultsLibrary(results_dir)
 jitters = [0, 1, 2, 3, 4, 5, 6, 8, 10]
 format_string = "jitter_30ms_%dms"
 
-def matching_func(test_result):
-    if ("Scheme" not in test_result.metadata):
-        print("No metadata for test %s" % test_result.name)
-        return False
-    if (test_result.metadata["Scheme"] == "default_tcp"):
-        return False
-    print("Got complete test %s:%s" % (test_result.metadata["Scheme"], test_result.name))
-    return True
-
-def get_scheme(test):
-    if "Repo" in test.metadata:
-        return "%s:%s:%s" % (test.metadata["Repo"], test.metadata["Branch"], test.metadata["Checksum"][-5:])
-    return test.metadata["Scheme"]
-
-all_data = {}
+full_schemes = results.get_all_schemes_with_tests([format_string % j for j in jitters])
 summary_data = {}
-for j in jitters:
-    test_results = results.get_all_results_matching(format_string % j, matching_func)
-    this_data = {}
-    for test_result in test_results:
-        this_test = test_result
-        this_test.load()
-        scheme = get_scheme(this_test)
-        if (scheme not in this_data.keys()):
-            this_data[scheme] = {"flows":[]}
-        scheme_data = this_data[scheme]
-        avg_throughput = this_test.flows["flow_1"].get_statistic("Throughput", "Mean") / 1000.0
-        scheme_data["flows"].append(avg_throughput)
-    all_data[j] = this_data
-    for scheme in this_data.keys():
-        if scheme not in summary_data.keys():
-            summary_data[scheme] = []
-
-        thpts = []
-        for run_throughput in this_data[scheme]["flows"]:
-            thpts.append(run_throughput)
-        print("Jitter %d scheme %s thpts %s" % (j, scheme, str(thpts)))
-        summary_data[scheme].append(np.mean(thpts))
+for scheme in full_schemes:
+    summary_data[scheme] = []
+    for j in jitters:
+        filter_func = lambda test_result : test_result.get_scheme_name() == scheme
+        scheme_results = results.get_all_results_matching(format_string % j, filter_func=filter_func)
+        [scheme_result.load() for scheme_result in scheme_results]
+        avg_thpt = np.mean([sr.flows["flow_1"].get_statistic("Throughput", "Mean") / 1000.0 for sr in scheme_results])
+        summary_data[scheme].append(avg_thpt)
 
 for scheme in summary_data.keys():
     print("Plotting %s, data %s" % (scheme, str(summary_data[scheme])))
