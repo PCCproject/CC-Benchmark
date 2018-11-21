@@ -1,0 +1,20 @@
+{
+    "Tests": [
+        "latency_test_1ms",
+        "latency_test_2ms",
+        "latency_test_3ms",
+        "latency_test_4ms",
+        "latency_test_5ms",
+        "latency_test_8ms",
+        "latency_test_16ms",
+        "latency_test_32ms",
+        "latency_test_48ms",
+        "latency_test_64ms",
+        "latency_test_96ms",
+        "latency_test_128ms",
+        "latency_test_192ms",
+        "latency_test_256ms",
+        "latency_test_384ms",
+        "latency_test_512ms"
+    ]
+}
