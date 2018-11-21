@@ -1,0 +1,12 @@
+{
+    "Tests": [
+        "bandwidth_sweep",
+        "queue_sweep",
+        "latency_sweep",
+        "jitter_sweep",
+        "loss_rate_sweep",
+        "tcp_fairness",
+        "nsdi_variable_link",
+        "nsdi_satellite_all"
+    ]
+}
