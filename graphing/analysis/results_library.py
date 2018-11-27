@@ -39,6 +39,10 @@ class TestResult():
     def has_metadata(self):
         return self.metadata is not None
 
+    def delete_from_disk(self):
+        print("Deleting test from %s" % self.dir_name)
+        os.system("rm -rf %s" % self.dir_name)
+
 class ResultsLibrary():
     def __init__(self, dir_name):
         self.dir_name = dir_name
@@ -89,3 +93,9 @@ class ResultsLibrary():
             schemes = list(schemes_with_both)
 
         return schemes
+
+    def delete_no_metadata_tests(self):
+        for result_list in self.test_results.values():
+            for test_result in result_list:
+                if not test_result.has_metadata():
+                    test_result.delete_from_disk()
