@@ -180,7 +180,7 @@ class MyTopo(Topo):
         this_link_type = link_types[link_def["type"]]
         loss = 0.0
         if "loss" in this_link_type.keys():
-            loss = float(this_link_type["loss"])
+            loss = 100.0 * float(this_link_type["loss"])
         jitter = None
         if "jitter" in this_link_type.keys():
             jitter = this_link_type["jitter"]
