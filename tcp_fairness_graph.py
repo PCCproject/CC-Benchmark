@@ -1,30 +1,39 @@
 #!/usr/bin/python3
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import savgol_filter
 from graphing.analysis.results_library import ResultsLibrary, TestResult
 from python_utils.file_locations import results_dir
 
 results = ResultsLibrary(results_dir)
 
-def matching_func(test_result):
-    print("Checking test result %s" % test_result.name)
-    return test_result.metadata["Scheme"] == sys.argv[1]
+param_name = "Competing TCP Flows"
+param_unit = "N flows"
+params = [1, 2, 4, 8]#, 12, 16, 20, 24, 28, 32]
+format_string = "tcp_fairness_%d_flow"
+flow_name = "test_flow"
 
-test_result = results.get_all_results_matching("tcp_fairness", matching_func)[0]
-test_result.load()
+full_schemes = results.get_all_schemes_with_tests([format_string % p for p in params])
+thpt_data = {}
+fig, axes = plt.subplots(2)
+thpt_axis = axes[0]
+lat_axis = axes[1]
+for scheme in full_schemes:
+    filter_func = lambda test_result : test_result.get_scheme_name() == scheme
+    thpt_data = []
+    lat_data = []
+    for p in params:
+        scheme_results = results.get_all_results_matching(format_string % p, filter_func=filter_func)
+        [scheme_result.load() for scheme_result in scheme_results]
+        avg_thpt = np.mean([sr.flows[flow_name].get_statistic("Throughput", "Mean") / 1000.0 for sr in scheme_results])
+        avg_lat = np.mean([sr.flows[flow_name].get_statistic("Avg Rtt", "Mean") for sr in scheme_results])
+        thpt_data.append(avg_thpt)
+        lat_data.append(avg_lat)
+    thpt_axis.plot(params, thpt_data, label=scheme)
+    lat_axis.plot(params, lat_data)
 
-tcp_flow_times = [float(event["Time"]) / 1000.0 for event in test_result.flows["tcp_flow"].data["Events"]]
-tcp_flow_thpts = [float(event["Avg Rtt"]) / 1000.0 for event in test_result.flows["tcp_flow"].data["Events"]]
-plt.plot(tcp_flow_times, savgol_filter(tcp_flow_thpts, 13, 1), label="TCP Flow", linestyle=':')
-
-other_flow_times = [float(event["Time"]) / 1000.0 for event in test_result.flows["flow_1"].data["Events"]]
-other_flow_thpts = [float(event["Avg Rtt"]) / 1000.0 for event in test_result.flows["flow_1"].data["Events"]]
-plt.plot(other_flow_times, savgol_filter(other_flow_thpts, 13, 1), label= test_result.metadata["Scheme"])
-
-plt.legend()
-plt.title("Competing with TCP")
-plt.xlabel("Time (s)")
-plt.ylabel("Throughput (out of 30 Mbps)")
+fig.legend()
+thpt_axis.set_title("%s Test Performance" % param_name)
+lat_axis.set_xlabel("%s (%s)" % (param_name, param_unit))
+thpt_axis.set_ylabel("Average Throughput (mbps)")
+lat_axis.set_ylabel("Average Latency (ms)")
 plt.show()

@@ -180,7 +180,7 @@ class MyTopo(Topo):
         this_link_type = link_types[link_def["type"]]
         loss = 0.0
         if "loss" in this_link_type.keys():
-            loss = float(this_link_type["loss"])
+            loss = 100.0 * float(this_link_type["loss"])
         jitter = None
         if "jitter" in this_link_type.keys():
             jitter = this_link_type["jitter"]
@@ -188,7 +188,7 @@ class MyTopo(Topo):
         if "dl" in this_link_type.keys():
             delay = this_link_type["dl"]
         new_link = self.addLink(src, dst, bw=int(this_link_type["bw"]),
-            delay=this_link_type["dl"], max_queue_size=int(this_link_type["queue"]),
+            delay=delay, max_queue_size=int(this_link_type["queue"]),
             loss=loss, jitter=jitter)
 
     def build(self, topo_dict, link_types):

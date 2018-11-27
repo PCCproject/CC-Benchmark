@@ -2,61 +2,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from graphing.analysis.results_library import ResultsLibrary, TestResult
+from graphing.utils import data_utils
 from python_utils.file_locations import results_dir
 
 results = ResultsLibrary(results_dir)
 
-jitters = [0, 1, 2, 3, 4, 5, 6, 8, 10]
+param_name = "Jitter"
+param_unit = "ms from 30ms"
+params = [0, 1, 2, 3, 4, 5, 6, 8, 10]
 format_string = "jitter_30ms_%dms"
+flow_name = "flow_1"
 
-def matching_func(test_result):
-    if ("Scheme" not in test_result.metadata):
-        print("No metadata for test %s" % test_result.name)
-        return False
-    if (test_result.metadata["Scheme"] == "default_tcp"):
-        return False
-    print("Got complete test %s:%s" % (test_result.metadata["Scheme"], test_result.name))
-    return True
+full_schemes = results.get_all_schemes_with_tests([format_string % p for p in params])
+thpt_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
+        format_string, "Throughput")
+lat_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
+        format_string, "Avg Rtt")
 
-def get_scheme(test):
-    if "Repo" in test.metadata:
-        return "%s:%s:%s" % (test.metadata["Repo"], test.metadata["Branch"], test.metadata["Checksum"][-5:])
-    return test.metadata["Scheme"]
+fig, axes = plt.subplots(2)
+thpt_axis = axes[0]
+lat_axis = axes[1]
+for scheme in full_schemes:
+    thpt_axis.plot(params, thpt_data[scheme], label=scheme)
+    lat_axis.plot(params, lat_data[scheme])
 
-all_data = {}
-summary_data = {}
-for j in jitters:
-    test_results = results.get_all_results_matching(format_string % j, matching_func)
-    this_data = {}
-    for test_result in test_results:
-        this_test = test_result
-        this_test.load()
-        scheme = get_scheme(this_test)
-        if (scheme not in this_data.keys()):
-            this_data[scheme] = {"flows":[]}
-        scheme_data = this_data[scheme]
-        
-        test_events = this_test.flows["flow_1"].data["Events"]
-        thpts = [float(event["Throughput"]) / 1000.0 for event in test_events]
-        lats = [float(event["Avg Rtt"]) for event in test_events]
-        scheme_data["flows"].append(thpts)
-    all_data[j] = this_data
-    for scheme in this_data.keys():
-        if scheme not in summary_data.keys():
-            summary_data[scheme] = []
-
-        thpts = []
-        for run_data in this_data[scheme]["flows"]:
-            thpts.append(np.mean(run_data))
-        print("Jitter %d scheme %s thpts %s" % (j, scheme, str(thpts)))
-        summary_data[scheme].append(np.mean(thpts))
-
-for scheme in summary_data.keys():
-    print("Plotting %s, data %s" % (scheme, str(summary_data[scheme])))
-    plt.plot(jitters, summary_data[scheme], label=scheme)
-
-plt.legend()
-plt.title("Average Throughput by Jitter")
-plt.xlabel("Jitter (ms, from 30ms mean)")
-plt.ylabel("Average Throughput (out of 30 mbps)")
+fig.legend()
+thpt_axis.set_title("%s Test Performance" % param_name)
+lat_axis.set_xlabel("%s (%s)" % (param_name, param_unit))
+thpt_axis.set_ylabel("Average Throughput (mbps)")
+lat_axis.set_ylabel("Average Latency (ms)")
 plt.show()
