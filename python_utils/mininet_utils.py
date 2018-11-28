@@ -178,11 +178,11 @@ class MyTopo(Topo):
         dst = self.get_entity_by_name(link_def["dst"], switches, hosts)
 
         lt = link_types[link_def["type"]]
-        loss = [100.0 * lt["loss"] if "loss" in lt.keys() else 0.0]
-        jitter = [lt["jitter"] if "jitter" in lt.keys() else None]
-        delay = [lt["dl"] if "dl" in lt.keys() else None]
-        bw = [lt["bw"] if "bw" in lt.keys() else None]
-        queue = [lt["queue"] if "queue" in lt.keys() else None]
+        loss = 100.0 * lt["loss"] if "loss" in lt.keys() else 0.0
+        jitter = lt["jitter"] if "jitter" in lt.keys() else None
+        delay = lt["dl"] if "dl" in lt.keys() else None
+        bw = lt["bw"] if "bw" in lt.keys() else None
+        queue = lt["queue"] if "queue" in lt.keys() else None
         
         bdp_queue_size = None
         if delay is not None:
