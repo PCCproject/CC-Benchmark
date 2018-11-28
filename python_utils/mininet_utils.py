@@ -187,7 +187,7 @@ class MyTopo(Topo):
         bdp_queue_size = None
         if delay is not None:
             delay_int = int(delay[:-2])
-            bdp_queue_size = int((bw * 1e6) / (1000.0 * delay_int * 1500 * 8))
+            bdp_queue_size = int((float(bw * 1e9)) / float(delay_int * 1500 * 8))
         final_queue_size = None
         if queue is not None:
             final_queue_size = queue
