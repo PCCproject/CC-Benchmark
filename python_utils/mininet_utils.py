@@ -191,8 +191,8 @@ class MyTopo(Topo):
         final_queue_size = None
         if queue is not None:
             final_queue_size = queue
-            if bdp_queue is not None:
-                final_queue_size += bdp_queue
+            if bdp_queue_size is not None:
+                final_queue_size += bdp_queue_size
 
         new_link = self.addLink(src, dst, bw=bw, delay=delay, max_queue_size=final_queue_size,
                 loss=loss, jitter=jitter)
