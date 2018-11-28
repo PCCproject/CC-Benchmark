@@ -16,12 +16,12 @@
         {
             "src":"h1",
             "dst":"s1",
-            "type":"L1"
+            "type":"L1:bw-queue"
         },
         {
             "src":"h2",
             "dst":"s1",
-            "type":"passthrough"
+            "type":"L1:delay"
         }
     ]
 }

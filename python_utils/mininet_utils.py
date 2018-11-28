@@ -31,11 +31,6 @@ from mininet.util import waitListening
 
 import multiprocessing
 
-_default_passthrough_link_type = {
-    "bw":200,
-    "queue":1000
-}
-
 def TreeNet( depth=1, fanout=2, **kwargs ):
     "Convenience function for creating tree networks."
     topo = TreeTopo( depth, fanout )
@@ -173,36 +168,49 @@ class MyTopo(Topo):
         print("ERROR: Could not find switch or host named %s" % name)
         return None
 
-    def add_link_by_def(self, link_def, link_types, switches, hosts):
-        src = self.get_entity_by_name(link_def["src"], switches, hosts)
-        dst = self.get_entity_by_name(link_def["dst"], switches, hosts)
-
-        lt = link_types[link_def["type"]]
+    def add_bw_queue_link(self, link_type, src, dst):
+        lt = link_type
         loss = 100.0 * lt["loss"] if "loss" in lt.keys() else 0.0
+        bw = lt["bw"] if "bw" in lt.keys() else None
+        queue = lt["queue"] if "queue" in lt.keys() else None
+
+        new_link = self.addLink(src, dst, bw=bw, max_queue_size=queue, loss=loss)
+
+    def add_dl_link(self, link_type, src, dst):
+        lt = link_type
+        
         jitter = lt["jitter"] if "jitter" in lt.keys() else None
         delay = lt["dl"] if "dl" in lt.keys() else None
         bw = lt["bw"] if "bw" in lt.keys() else None
-        queue = lt["queue"] if "queue" in lt.keys() else None
+        passthrough_bw = None if bw is None else 2 * bw
         
         bdp_queue_size = None
         if delay is not None:
             delay_sec = int(delay[:-2]) / 1000.0
-            bw_bps = bw * 1e6
+            bw_bps = 2 * passthrough_bw * 1e6
             bdp_queue_size = bw_bps * delay_sec / (1500.0 * 8.0)
-        final_queue_size = None
-        if queue is not None:
-            final_queue_size = queue
-            if bdp_queue_size is not None:
-                final_queue_size += bdp_queue_size
 
-        new_link = self.addLink(src, dst, bw=bw, delay=delay, max_queue_size=final_queue_size,
-                loss=loss, jitter=jitter)
+        new_link = self.addLink(src, dst, bw=passthrough_bw, delay=delay,
+                max_queue_size=bdp_queue_size, jitter=jitter)
+
+    def add_link_by_def(self, link_def, link_types, switches, hosts):
+        src = self.get_entity_by_name(link_def["src"], switches, hosts)
+        dst = self.get_entity_by_name(link_def["dst"], switches, hosts)
+
+        link_parts = link_def["type"].split(":")
+        link_type = link_types[link_parts[0]]
+        link_role = link_parts[1]
+
+        if link_role == "bw-queue":
+            self.add_bw_queue_link(link_type, src, dst)
+        elif link_role == "delay":
+            self.add_dl_link(link_type, src, dst)
+        else:
+            print("(PCC Tester) ERROR: Could not determine link role %s" % link_role)
 
     def build(self, topo_dict, link_types):
         self.topo_dict = topo_dict
         self.link_types = link_types
-        if "passthrough" not in link_types.keys():
-            link_types["passthrough"] = _default_passthrough_link_type
         self.link_managers = []
         switch_defs = []
         if "Switches" in topo_dict.keys():
@@ -213,14 +221,10 @@ class MyTopo(Topo):
         switches = {}
         for switch_def in switch_defs:
             switches[switch_def["Name"]] = self.addSwitch(switch_def["Name"])
-            print("Added switch %s" % (switch_def["Name"]))
 
-        print("Checking for hosts, expect to make %d" % len(host_defs))
-        print("Topology: %s" % str(topo_dict))
         hosts = {}
         for host_def in host_defs:
             hosts[host_def["Name"]] = self.addHost(host_def["Name"])
-            print("Added host %s" % host_def["Name"])
 
         for link_def in link_defs:
             self.add_link_by_def(link_def, link_types, switches, hosts)
@@ -238,7 +242,7 @@ class MyTopo(Topo):
                 continue
             link_type = self.get_net_link_type(link)
             print("Found net link type %s" % link_type)
-            self.link_managers.append(LinkManager(link, self.link_types[link_type]))
+            self.link_managers.append(LinkManager(link, self.link_types[link_type.split(':')[0]]))
 
     def stop_all_link_managers(self):
         for link_manager in self.link_managers:
