@@ -177,19 +177,25 @@ class MyTopo(Topo):
         src = self.get_entity_by_name(link_def["src"], switches, hosts)
         dst = self.get_entity_by_name(link_def["dst"], switches, hosts)
 
-        this_link_type = link_types[link_def["type"]]
-        loss = 0.0
-        if "loss" in this_link_type.keys():
-            loss = 100.0 * float(this_link_type["loss"])
-        jitter = None
-        if "jitter" in this_link_type.keys():
-            jitter = this_link_type["jitter"]
-        delay = None
-        if "dl" in this_link_type.keys():
-            delay = this_link_type["dl"]
-        new_link = self.addLink(src, dst, bw=int(this_link_type["bw"]),
-            delay=delay, max_queue_size=int(this_link_type["queue"]),
-            loss=loss, jitter=jitter)
+        lt = link_types[link_def["type"]]
+        loss = [100.0 * lt["loss"] if "loss" in lt.keys() else 0.0]
+        jitter = [lt["jitter"] if "jitter" in lt.keys() else None]
+        delay = [lt["dl"] if "dl" in lt.keys() else None]
+        bw = [lt["bw"] if "bw" in lt.keys() else None]
+        queue = [lt["queue"] if "queue" in lt.keys() else None]
+        
+        bdp_queue_size = None
+        if delay is not None:
+            delay_int = int(delay[:-2])
+            bdp_queue_size = int((bw * 1e6) / (1000.0 * delay_int * 1500 * 8))
+        final_queue_size = None
+        if queue is not None:
+            final_queue_size = queue
+            if bdp_queue is not None:
+                final_queue_size += bdp_queue
+
+        new_link = self.addLink(src, dst, bw=bw, delay=delay, max_queue_size=final_queue_size,
+                loss=loss, jitter=jitter)
 
     def build(self, topo_dict, link_types):
         self.topo_dict = topo_dict
