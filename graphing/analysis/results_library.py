@@ -50,16 +50,21 @@ class ResultsLibrary():
         # Test results are entered in the dictionary by name, then a list of all results for the
         # test of that name.
         self.test_results = {}
-        self.load_all_metadata()
 
     def get_all_results_matching(self, test_name, filter_func=None):
+        self.load_all_metadata_for_test(test_name)
         returned_results = []
         for test_result in self.test_results[test_name]:
             if test_result.has_metadata() and (filter_func is None or filter_func(test_result)):
                 returned_results.append(test_result)
         return returned_results
 
+    def is_test_loaded(self, test_name):
+        return test_name in self.test_results.keys()
+
     def load_all_metadata_for_test(self, test_name):
+        if self.is_test_loaded(test_name):
+            return
         this_test_dir = os.path.join(self.dir_name, test_name)
         tests = []
         for test_time_dir in os.listdir(this_test_dir):
@@ -87,14 +92,13 @@ class ResultsLibrary():
 
         for test_name in list_of_tests[1:]:
             new_schemes = self.get_all_schemes_with_test(test_name, num_replicas)
-            print(schemes)
-            print(new_schemes)
             schemes_with_both = set(schemes) & set(new_schemes)
             schemes = list(schemes_with_both)
 
         return schemes
 
     def delete_no_metadata_tests(self):
+        self.load_all_metadata()
         for result_list in self.test_results.values():
             for test_result in result_list:
                 if not test_result.has_metadata():
