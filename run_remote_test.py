@@ -138,7 +138,6 @@ class RemoteHostManager:
         while (not done):
             time.sleep(2)
             vms_busy = 0
-            free_cpu = get_idle_percent(self.hostname)
             for vm_manager in self.remote_vm_managers:
                 if not vm_manager.is_up():
                     print("***********************************************")
@@ -150,9 +149,13 @@ class RemoteHostManager:
                 elif vm_manager.busy_or_test_queued():
                     vms_busy += 1
                 elif (not test_queue.empty()):
-                    print("Tests remaining: %d" % test_queue.qsize())
-                    vm_manager.assign_test(test_queue.get())
-                    vms_busy += 1
+                    if (get_idle_percent(self.hostname) > 50):
+                        print("Tests remaining: %d" % test_queue.qsize())
+                        vm_manager.assign_test(test_queue.get())
+                        time.sleep(1)
+                        vms_busy += 1
+                    else:
+                        print("Host %s is too busy.")
             done = test_queue.empty() and (vms_busy == 0)
 
         print("Manager for %s done" % self.hostname)
