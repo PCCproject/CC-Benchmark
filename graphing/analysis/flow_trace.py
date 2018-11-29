@@ -9,6 +9,8 @@ def _stat_mean(data):
 
 _supported_statistics["Mean"] = _stat_mean
 
+_invalid_values = {"Avg Rtt":"-1.0"}
+
 class FlowTrace():
     def __init__(self, filename):
         self.filename = filename
@@ -40,7 +42,10 @@ class FlowTrace():
         return self.data["Events"][self.setup_end:]
 
     def get_event_data(self, field_name, include_setup=False):
-        return [float(event[field_name]) for event in self.get_events(include_setup)]
+        events = self.get_events(include_setup)
+        if field_name in _invalid_values.keys():
+            events = [event for event in events if not event[field_name] == _invalid_values[field_name]]
+        return [float(event[field_name]) for event in events]
 
     def get_statistic(self, field_name, statistic, include_setup=False):
         if (statistic in _supported_statistics.keys()):
