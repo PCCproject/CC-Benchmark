@@ -4,12 +4,34 @@ import numpy as np
 
 _supported_statistics = {}
 
-def _stat_mean(data):
+_invalid_values = {"Avg Rtt":-1.0}
+
+def _stat_mean(trace, field):
+    data = np.array(trace.get_event_data(field))
+    if field in _invalid_values.keys():
+        bad_indexes = np.where(data == _invalid_values[field])
+        data = np.delete(data, bad_indexes)
     return np.mean(data)
 
-_supported_statistics["Mean"] = _stat_mean
+def _stat_weighted_mean(trace, field, weight_field=None):
+    if weight_field is None:
+        return _stat_mean(trace, field)
 
-_invalid_values = {"Avg Rtt":"-1.0"}
+    weights = np.array(trace.get_event_data(weight_field))
+    data = np.array(trace.get_event_data(field))
+
+    if field in _invalid_values.keys():
+        bad_indexes = np.where(data == _invalid_values[field])
+        weights = np.delete(weights, bad_indexes)
+        data = np.delete(data, bad_indexes)
+
+    return np.sum((weights * np.array(data))) / float(np.sum(weights))
+
+_supported_statistics["Mean"] = _stat_mean
+_supported_statistics["Ack-weighted Mean"] = lambda trace, data: _stat_weighted_mean(trace, data,
+        weight_field="Acks Received")
+_supported_statistics["Send-weighted Mean"] = lambda trace, data: _stat_weighted_mean(trace,
+        data, weight_field="Packets Should Have Been Acked")
 
 class FlowTrace():
     def __init__(self, filename):
@@ -43,13 +65,11 @@ class FlowTrace():
 
     def get_event_data(self, field_name, include_setup=False):
         events = self.get_events(include_setup)
-        if field_name in _invalid_values.keys():
-            events = [event for event in events if not event[field_name] == _invalid_values[field_name]]
         return [float(event[field_name]) for event in events]
 
-    def get_statistic(self, field_name, statistic, include_setup=False):
+    def get_statistic(self, field_name, statistic):
         if (statistic in _supported_statistics.keys()):
-            return _supported_statistics[statistic](self.get_event_data(field_name, include_setup))
+            return _supported_statistics[statistic](self, field_name)
         
         print("ERROR: Statistic \"%s\" is not yet implemented." % statistic)
         print("Supported statistics are %s" % str(_supported_statistics.keys()))

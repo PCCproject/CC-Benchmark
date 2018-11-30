@@ -60,7 +60,7 @@ for p in params:
         scheme_results = results.get_all_results_matching(format_string % p, filter_func=filter_func)
         [scheme_result.load() for scheme_result in scheme_results]
         thpt_data = [sr.flows["flow_1"].get_statistic("Throughput", "Mean") / 1000.0 for sr in scheme_results]
-        lat_data = [sr.flows["flow_1"].get_statistic("Avg Rtt", "Mean") for sr in scheme_results]
+        lat_data = [sr.flows["flow_1"].get_statistic("Avg Rtt", "Ack-weighted Mean") for sr in scheme_results]
         plt.scatter(lat_data, thpt_data, label=scheme, marker=markers[scheme])#, edgecolor='black', linewidths=1)
     plt.legend()
     plt.title("%s Throughput-Latency Tradeoff" % (format_string % p))

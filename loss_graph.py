@@ -18,9 +18,9 @@ full_schemes = results.get_all_schemes_with_tests([format_string % p for p in pa
 thpt_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
         format_string, "Throughput")
 lat_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
-        format_string, "Avg Rtt")
+        format_string, "Avg Rtt", statistic="Ack-weighted Mean")
 loss_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
-        format_string, "Loss Rate")
+        format_string, "Loss Rate", statistic="Send-weighted Mean")
 
 fig, axes = plt.subplots(3)
 thpt_axis = axes[0]
