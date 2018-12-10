@@ -33,24 +33,26 @@ git_checksum = None
 if (":" in scheme_to_test):
     is_git_repo = True
     parts = scheme_to_test.split(":")
-    repo = parts[0]
+    repo_name = parts[0]
     branch = parts[1]
 
     # Check if a repo exists in the usual build location
     if (os.path.isdir(os.path.join(default_build_dir, ".git"))):
-
+        
         # We have a build dir, but we may not have the correct repo or branch.
-        if (not github_utils.dir_has_repo(repo, branch, default_build_dir)):
-            git_checksum = github_utils.build_repo_in_dir(repo, branch, default_build_dir)
+        if (not github_utils.dir_has_repo(repo_name, branch, default_build_dir)):
+            git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
         else:
             git_checksum = github_utils.get_repo_checksum(default_build_dir)
     else:
         # No dir? Make it and clone there
         os.system("mkdir -p %s" % default_build_dir)
-        git_checksum = github_utils.build_repo_in_dir(repo, branch, default_build_dir)
-    scheme_to_test = os.path.join(default_build_dir, "src")
+        git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
+    
+    repo = github_utils.BuildableRepo.get_by_short_name(repo_name)
+    scheme_to_test = os.path.join(default_build_dir, repo.src_dir)
 
-    git_repo = repo
+    git_repo = repo_name
     git_branch = branch
 
 tests_to_run = sys.argv[2]
