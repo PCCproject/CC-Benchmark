@@ -23,7 +23,7 @@ def add_scheme_to_pantheon(src_dir, extra_args=None):
     create_scheme_running_script(scheme_config)
     add_scheme_to_config(scheme_config)
     add_scheme_to_travis(scheme_config)
-    return "pcc_test_scheme"
+    return scheme_config.simple_name
 
 ##
 #   Setup for the script that is used to run the pcc senders/receivers.
