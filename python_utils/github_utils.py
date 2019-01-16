@@ -4,7 +4,11 @@ import subprocess
 
 github_username = "pccproject-bot"
 github_password_filename = "/home/pcc/github_password.txt"
-github_password = subprocess.check_output(["cat", github_password_filename]).decode("utf-8").replace("\n", "")
+github_password = None
+
+def load_github_password():
+    global github_password
+    github_password = subprocess.check_output(["cat", github_password_filename]).decode("utf-8").replace("\n", "")
 
 class BuildableRepo:
 
@@ -30,6 +34,8 @@ _tmp_repo = BuildableRepo("PCC-Uspace", "PCCProject/PCC-Uspace", src_dir="src")
 _tmp_repo = BuildableRepo("PCC-Tester", "PCCProject/PCC-Tester")
 
 def github_url(repo):
+    if github_password is None:
+        load_github_password()
     return "https://%s:%s@github.com/%s.git" % (github_username, github_password,
         BuildableRepo.get_by_short_name(repo).full_name)
 
