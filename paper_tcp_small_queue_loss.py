@@ -96,7 +96,7 @@ for scheme_name in scheme_names:
     # axes[1].plot(time_data, lat_data, label=nice_names[scheme_name])
     # axes[1].set_xlabel("Time (s)")
     # axes[1].set_ylabel("Packet Loss Rate")
-fig.suptitle("Network Trace for Aurora vs TCP CUBIC")
+fig.suptitle("Aurora vs TCP CUBIC")
 fig.legend(loc='upper right', bbox_to_anchor=(-0.2,0.38, 0.5, 0.5))
 # plt.xlabel("Time (s)")
 # plt.ylabel("Throughput (mbps)")
