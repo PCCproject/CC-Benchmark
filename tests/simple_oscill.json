@@ -1,5 +1,5 @@
 {
-    "Name":"simple_10_to_20mbps_oscillation",
+    "Name":"simple_oscil_buf_20_bw_40",
     "Topology":"dumbell-1",
     "Flows":[
         {
@@ -15,7 +15,7 @@
         "L1":{
             "bw":40,
             "dl":"30ms",
-            "queue":1000,
+            "queue":20,
             "variation":{
                 "period":5,
                 "func":"oscillate_half_bw"
