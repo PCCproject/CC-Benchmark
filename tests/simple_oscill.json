@@ -1,0 +1,26 @@
+{
+    "Name":"simple_10_to_20mbps_oscillation",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":30.0
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":40,
+            "dl":"30ms",
+            "queue":1000,
+            "variation":{
+                "period":5,
+                "func":"oscillate_half_bw"
+            }
+        }
+    }
+
+}
