@@ -54,13 +54,16 @@ def get_plottable_scheme_data(results_lib, scheme_name):
     time_data = [(t - time_data[0]) / 1000.0 for t in time_data]
 
     thpt_data = flow_result.get_event_data("Throughput")
-
+    #print("setup_index is %d, time %f" % (flow_result.setup_end, time_data[flow_result.setup_end - 1]))
+    setup_end = time_data[flow_result.setup_end - 1]
+    print(setup_end)
+    # Add include_setup=True to get full info
     # Throughput data is in kbps, but mbps is more understandable, so I just divide each sample by 1000.0
     thpt_data = [t / 1000.0 for t in thpt_data]
 
     lat_data = flow_result.get_event_data("Loss Rate")
 
-    return time_data, thpt_data, lat_data
+    return time_data, thpt_data, lat_data, setup_end
 
 
 def truncate_data_to_time(time, time_data, other_data):
@@ -92,10 +95,12 @@ plt.ylabel("Throughput (mbps)")
 
 # plt.rcParams["figure.figsize"] = (10,3)
 plt = plt.figure(figsize=(8, 5))
+setup_ends = {}
+truncate_end = 25.0
 for scheme_name in scheme_names:
-    time_data, thpt_data, lat_data = get_plottable_scheme_data(results, scheme_name)
-    time_data, thpt_data = truncate_data_to_time(25.0, time_data, thpt_data)
-    time_data, lat_data = truncate_data_to_time(25.0, time_data, lat_data)
+    time_data, thpt_data, lat_data, setup_ends[scheme_name] = get_plottable_scheme_data(results, scheme_name)
+    time_data, thpt_data = truncate_data_to_time(truncate_end, time_data, thpt_data)
+    #time_data, lat_data = truncate_data_to_time(25.0, time_data, lat_data)
     ax.plot(time_data, thpt_data, label=nice_names[scheme_name])
     # axes[0].set_ylabel("Throughput (mbps)")
     # axes[0].legend()
@@ -104,11 +109,18 @@ for scheme_name in scheme_names:
     # axes[1].set_xlabel("Time (s)")
     # axes[1].set_ylabel("Packet Loss Rate")
 #fig.suptitle("Aurora vs TCP CUBIC")
-line_x = [0,5,5.0000000000001,10,10.0000000000001,15, 15.0000000000001,20, 20.0000000000001,25]
-line_y = [20,20,40,40,20,20,40,40,20,20]
+#line_x = [0,5,5.0000000000001,10,10.0000000000001,15, 15.0000000000001,20, 20.0000000000001,25]
+setup_end = min(setup_ends.values())
+print(5 - setup_end)
+if 5 - setup_end < 0:
+     line_x = [0, (10 - setup_end), (10 - setup_end)+ 0.0000000000001,(15 - setup_end), (15 - setup_end) + 0.0000000000001,(20 - setup_end), (20-setup_end) + 0.0000000000001, 25 - setup_end, (25 - setup_end) + 0.0000000000001,truncate_end]
+else:
+      line_x = [0, setup_end, setup_end, 5 + setup_end, 5 + setup_end ,10 + setup_end, 10 + setup_end, 15 + setup_end, 15 + setup_end,20 + setup_end, 20 + setup_end, truncate_end]
+
+line_y = [20,20,40,40,20,20,40,40,20,20,40,40]
 #ax.axhline(y = 40, color='black', linestyle='--', label="Optimum")
 ax.plot(line_x, line_y, color='black', linestyle='--', label="Optimum") 
 fig.legend(loc='center', bbox_to_anchor=(0.55,-0.065, 0.5, 0.5))
 # plt.xlabel("Time (s)")
-# plt.ylabel("Throughput (mbps)")
+# plt.ylabel("Sending rate (mbps)")
 fig.savefig("my_graph.png")
