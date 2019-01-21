@@ -47,34 +47,38 @@ def get_plottable_scheme_data(results_lib, scheme_name):
     #   names you can use by looking in the .json files in your results directories. We want
     #   "Time" for the x-axis and "Throughput" for the y-axis.
     ##
-    time_data = flow_result.get_event_data("Time")
+    time_data = flow_result.get_event_data("Time",include_setup=True)
 
     # Here, I'm just re-scaling time. It was in ms and had an offset. By subtracting the first point
     # and dividing by 1000.0, I've made it into seconds since test start.
     time_data = [(t - time_data[0]) / 1000.0 for t in time_data]
 
-    thpt_data = flow_result.get_event_data("Throughput")
+    thpt_data = flow_result.get_event_data("Throughput",include_setup=True)
     #print("setup_index is %d, time %f" % (flow_result.setup_end, time_data[flow_result.setup_end - 1]))
     setup_end = time_data[flow_result.setup_end - 1]
-    print(setup_end)
+    print("setup end? ",  setup_end)
     # Add include_setup=True to get full info
     # Throughput data is in kbps, but mbps is more understandable, so I just divide each sample by 1000.0
     thpt_data = [t / 1000.0 for t in thpt_data]
 
-    lat_data = flow_result.get_event_data("Loss Rate")
+    lat_data = flow_result.get_event_data("Loss Rate",include_setup=True)
 
     return time_data, thpt_data, lat_data, setup_end
 
 
-def truncate_data_to_time(time, time_data, other_data):
+def truncate_data_to_time(truncate_start, truncate_end, time_data, other_data):
     trunc_index = len(time_data)
-    if time_data[-1] > time:
+    trunc_start_index = next(i for i, v in enumerate(time_data) if v > truncate_start)
+    print("entering? ", time_data[-1])
+    if time_data[-1] > truncate_end:
         print("Getting trunc index")
         # trunc_indexfilter(lambda x: x>.7, seq)[0]
-        trunc_index = next(i for i, v in enumerate(time_data) if v > time)
+
+        trunc_index = next(i for i, v in enumerate(time_data) if v > truncate_end)
+        print("trunc_start_index is %d, time %f" % (trunc_start_index, time_data[trunc_start_index - 1]))
         print("trunc_index is %d, time %f" % (trunc_index, time_data[trunc_index - 1]))
         print("prev time %f" % (time_data[trunc_index - 2]))
-    return time_data[:trunc_index], other_data[:trunc_index]
+    return time_data[:trunc_index - trunc_start_index], other_data[trunc_start_index:trunc_index]
 
 
 # Below is just some standard matplotlib code. You won't be able to "show" the graph with what I did on
@@ -96,26 +100,26 @@ plt.ylabel("Throughput (mbps)")
 # plt.rcParams["figure.figsize"] = (10,3)
 plt = plt.figure(figsize=(8, 5))
 setup_ends = {}
-truncate_end = 25.0
+truncate_end = 30.0
+
 for scheme_name in scheme_names:
+    print(scheme_name)
     time_data, thpt_data, lat_data, setup_ends[scheme_name] = get_plottable_scheme_data(results, scheme_name)
-    time_data, thpt_data = truncate_data_to_time(truncate_end, time_data, thpt_data)
-    #time_data, lat_data = truncate_data_to_time(25.0, time_data, lat_data)
+
+truncate_start = max(setup_ends.values())
+print("truncate start? %d" % truncate_start)
+for scheme_name in scheme_names:
+    print(scheme_name)
+    time_data, thpt_data, lat_data, setup_ends[scheme_name] = get_plottable_scheme_data(results, scheme_name)
+    time_data, thpt_data = truncate_data_to_time(truncate_start, truncate_end, time_data, thpt_data)
     ax.plot(time_data, thpt_data, label=nice_names[scheme_name])
-    # axes[0].set_ylabel("Throughput (mbps)")
-    # axes[0].legend()
-    # axes[0].set_xlabel("Time (s)")
-    # axes[1].plot(time_data, lat_data, label=nice_names[scheme_name])
-    # axes[1].set_xlabel("Time (s)")
-    # axes[1].set_ylabel("Packet Loss Rate")
-#fig.suptitle("Aurora vs TCP CUBIC")
 #line_x = [0,5,5.0000000000001,10,10.0000000000001,15, 15.0000000000001,20, 20.0000000000001,25]
 setup_end = min(setup_ends.values())
-print(5 - setup_end)
+# print(5 - setup_end)
 if 5 - setup_end < 0:
      line_x = [0, (10 - setup_end), (10 - setup_end)+ 0.0000000000001,(15 - setup_end), (15 - setup_end) + 0.0000000000001,(20 - setup_end), (20-setup_end) + 0.0000000000001, 25 - setup_end, (25 - setup_end) + 0.0000000000001,truncate_end]
 else:
-      line_x = [0, setup_end, setup_end, 5 + setup_end, 5 + setup_end ,10 + setup_end, 10 + setup_end, 15 + setup_end, 15 + setup_end,20 + setup_end, 20 + setup_end, truncate_end]
+      line_x = [0, setup_end, setup_end, 5 + setup_end, 5 + setup_end ,10 + setup_end, 10 + setup_end, 15 + setup_end, 15 + setup_end,20 + setup_end, 20 + setup_end, truncate_end - truncate_start]
 
 line_y = [20,20,40,40,20,20,40,40,20,20,40,40]
 #ax.axhline(y = 40, color='black', linestyle='--', label="Optimum")
