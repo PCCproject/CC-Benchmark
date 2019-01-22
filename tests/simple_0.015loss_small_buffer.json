@@ -1,5 +1,5 @@
 {
-    "Name":"simple_0.0001loss",
+    "Name":"simple_0.015loss_small_buffer",
     "Topology":"dumbell-1",
     "Flows":[
         {
@@ -8,7 +8,7 @@
             "src":"10.0.0.1",
             "dst":"10.0.0.2",
             "start":0.0,
-            "dur":30.0
+            "dur":120.0
         }
     ],
     "Link Types":{

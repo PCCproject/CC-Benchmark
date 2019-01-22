@@ -1,5 +1,5 @@
 {
-    "Name":"latency_test_2ms",
+    "Name":"small_queue_0.01loss",
     "Topology":"dumbell-1",
     "Flows":[
         {
@@ -14,8 +14,9 @@
     "Link Types":{
         "L1":{
             "bw":30,
-            "dl":"2ms",
-            "queue":1000
+            "dl":"30ms",
+            "queue":10,
+            "loss":0.01
         }
     }
 

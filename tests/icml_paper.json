@@ -1,0 +1,6 @@
+{
+    "Tests": [
+        "latency_sweep",
+        "loss_rate_sweep"
+    ]
+}
