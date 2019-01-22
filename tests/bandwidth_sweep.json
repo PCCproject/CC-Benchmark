@@ -7,8 +7,6 @@
         "simple_16mbps",
         "simple_32mbps",
         "simple_64mbps",
-        "simple_128mbps",
-        "simple_256mbps",
-        "simple_512mbps"
+        "simple_128mbps"
     ]
 }
