@@ -1,0 +1,9 @@
+{
+    "Tests": [
+        "bandwidth_sweep",
+        "queue_sweep",
+        "latency_sweep",
+        "loss_rate_sweep",
+        "custard_variable_link"
+    ]
+}
