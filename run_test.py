@@ -9,6 +9,7 @@ from python_utils.test_utils import read_topology_to_dict
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
 from python_utils.pantheon_log_conversion import convert_pantheon_log
+import traceback
 import subprocess
 import sys
 import time
@@ -18,6 +19,7 @@ import random
 mininet_dir = "/home/pcc/mininet/"
 sys.path.append(mininet_dir)
 from python_utils import mininet_utils
+from python_utils import arg_helpers
 from mininet.link import TCLink
 from mininet.net import Mininet
 
@@ -29,34 +31,38 @@ git_repo = None
 git_branch = None
 git_checksum = None
 
+scheme_nickname = arg_helpers.arg_or_default("--nickname", None)
+
 # This means we are testing a branch from a repository -- we probably have to build it first
 if (":" in scheme_to_test):
     is_git_repo = True
     parts = scheme_to_test.split(":")
-    repo = parts[0]
+    repo_name = parts[0]
     branch = parts[1]
 
     # Check if a repo exists in the usual build location
     if (os.path.isdir(os.path.join(default_build_dir, ".git"))):
-
+        
         # We have a build dir, but we may not have the correct repo or branch.
-        if (not github_utils.dir_has_repo(repo, branch, default_build_dir)):
-            git_checksum = github_utils.build_repo_in_dir(repo, branch, default_build_dir)
+        if (not github_utils.dir_has_repo(repo_name, branch, default_build_dir)):
+            git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
         else:
             git_checksum = github_utils.get_repo_checksum(default_build_dir)
     else:
         # No dir? Make it and clone there
         os.system("mkdir -p %s" % default_build_dir)
-        git_checksum = github_utils.build_repo_in_dir(repo, branch, default_build_dir)
-    scheme_to_test = os.path.join(default_build_dir, "src")
+        git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
+    
+    repo = github_utils.BuildableRepo.get_by_short_name(repo_name)
+    scheme_to_test = os.path.join(default_build_dir, repo.src_dir)
 
-    git_repo = repo
+    git_repo = repo_name
     git_branch = branch
 
 tests_to_run = sys.argv[2]
-extra_args = None
-if (len(sys.argv) > 3):
-    extra_args = sys.argv[3].split(' ')
+extra_args = arg_helpers.arg_or_default("--extra-args", None)
+if extra_args is not None:
+    extra_args = extra_args.split(' ')
 
 if (scheme_to_test not in test_utils.SUPPORTED_PANTHEON_SCHEMES):
     scheme_to_test = pantheon_setup.add_scheme_to_pantheon(scheme_to_test, extra_args)
@@ -142,10 +148,26 @@ def run_test(test_dict):
         saved_name = "%s/%s_datalink.%s.log" % (results_dir, flow["protocol"], flow["name"]) 
         converted_name = "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"])
         os.system("cp %s %s" % (log_name, saved_name))
-        convert_pantheon_log(log_name, converted_name) 
+        worked = False
+        n_tries = 0
+        while (not worked) and (n_tries < 2):
+            n_tries += 1
+            try:
+                convert_pantheon_log(log_name, converted_name) 
+                worked = True
+            except Exception as e:
+                print(e, file=sys.stderr)
+                traceback.print_exc()
 
+        if not worked:
+            print("ERROR: Could not convert pantheon log", file=sys.stderr)
+            exit(-1)
+
+    scheme_name = scheme_to_test
+    if scheme_nickname is not None:
+        scheme_name = scheme_nickname
     metadata = {
-        "Scheme":scheme_to_test,
+        "Scheme":scheme_name,
         "Finish Time":int(round(time.time() * 1000))
     }
     if is_git_repo:
@@ -178,6 +200,7 @@ try:
         run_test(test)
 except Exception as e:
     print(e)
+    traceback.print_exc()
 
 if "--is-remote" in sys.argv:
     ssh_utils.cleanup_ssh_connections()

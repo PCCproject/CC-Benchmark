@@ -1,0 +1,27 @@
+{
+    "Name":"simple_oscil_buf_20_bw_40_no_loss",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":30.0
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":40,
+            "dl":"30ms",
+            "loss":0,
+            "queue":20,
+            "variation":{
+                "period":5,
+                "func":"oscillate_half_bw"
+            }
+        }
+    }
+
+}

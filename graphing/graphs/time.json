@@ -1,0 +1,11 @@
+{
+	"title":"PCC Performance Metrics",
+	"legend param":"Model",
+	"type":"event",
+	"event":"Training Epoch",
+	"x-axis":"Time",
+	"smooth":10,
+	"y-axis":[
+		"Episode Reward"
+	]
+}
