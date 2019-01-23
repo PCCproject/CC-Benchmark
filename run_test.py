@@ -147,13 +147,19 @@ def run_test(test_dict):
         log_name = "%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id)
         saved_name = "%s/%s_datalink.%s.log" % (results_dir, flow["protocol"], flow["name"]) 
         converted_name = "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"])
+        print("Copying pantheon log.")
+	time.sleep(2)
         os.system("cp %s %s" % (log_name, saved_name))
+	time.sleep(2)
+	print("Pantheon log copied...")
         worked = False
         n_tries = 0
         while (not worked) and (n_tries < 2):
             n_tries += 1
             try:
+                print("Beginning log conversion...")
                 convert_pantheon_log(log_name, converted_name) 
+                print("Finished log conversion...")
                 worked = True
             except Exception as e:
                 print(e, file=sys.stderr)

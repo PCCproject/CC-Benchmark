@@ -105,6 +105,12 @@ def convert_file_to_data_dict(filename):
     cur_line_number = 0
     cur_start_time = 0.0
     dur = base_rtt
+    print("Converting log with base RTT: %f" % base_rtt)
+    start_time = float(lines[0][0])
+    end_time = float(lines[-1][0])
+    print("Log has %d lines" % len(lines))
+    print("Log spans time %d to %d" % (start_time, end_time))
+    print("Expecting to convert log into %d intervals" % ((end_time - start_time) / base_rtt))
     while cur_line_number < len(lines):
         new_event, lines_used = convert_interval_to_event(lines, cur_line_number,
             cur_start_time, cur_start_time + dur)
