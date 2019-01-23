@@ -148,10 +148,10 @@ def run_test(test_dict):
         saved_name = "%s/%s_datalink.%s.log" % (results_dir, flow["protocol"], flow["name"]) 
         converted_name = "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"])
         print("Copying pantheon log.")
-	time.sleep(2)
+        time.sleep(2)
         os.system("cp %s %s" % (log_name, saved_name))
-	time.sleep(2)
-	print("Pantheon log copied...")
+        time.sleep(2)
+        print("Pantheon log copied...")
         worked = False
         n_tries = 0
         while (not worked) and (n_tries < 2):
