@@ -131,7 +131,7 @@ def run_test(test_dict):
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
         os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
 
-    timeout = 120.0 + max_end + time_offset - time.time()
+    timeout = 400.0 + max_end + time_offset - time.time()
     all_log_names = ["%s/%s_datalink_run%d.log" % (data_dir, flows[i]["protocol"], run_ids[i]) for i in range(0, len(flows))]
     all_logs_finished = wait_for_all_logs_or_timeout(all_log_names, timeout)
     
