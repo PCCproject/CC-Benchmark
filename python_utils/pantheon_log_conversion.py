@@ -114,21 +114,30 @@ def mark_acked_packets(packet_events):
     print("First egress event: %d" % egress_ptr)
 
     while (ingress_ptr < end_ptr) and (egress_ptr < end_ptr):
+        #print("Processing packet pair:")
+        #print("\tEgress time: %f" % packet_events[egress_ptr].time)
+        #print("\tEgress Rtt: %f" % packet_events[egress_ptr].rtt)
+        #print("\tEstimated Ingress: %f" % (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt))
+        #print("\tCandidate ingress time: %f" % packet_events[ingress_ptr].time)
+        #print("\tDifference: %f" % (packet_events[ingress_ptr].time - (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt)))
         if packet_events[ingress_ptr].matches_egress(packet_events[egress_ptr]):
+            #print("\tMatch!")
             packet_events[ingress_ptr].was_acked = True
             ingress_ptr = advance_ingress_ptr(ingress_ptr, packet_events)
             egress_ptr = advance_egress_ptr(egress_ptr, packet_events)
         elif packet_events[ingress_ptr].was_sent_too_early_for_egress(packet_events[egress_ptr]):
+            #print("\tMiss. Ingress was not acked.")
             packet_events[ingress_ptr].was_acked = False
             ingress_ptr = advance_ingress_ptr(ingress_ptr, packet_events)
         else:
-            print("ERROR: Could not match egress event to packet ingress:")
+            print("Warning: Could not match egress event to packet ingress:")
             print("\tEgress time: %f" % packet_events[egress_ptr].time)
             print("\tEgress Rtt: %f" % packet_events[egress_ptr].rtt)
             print("\tEstimated Ingress: %f" % (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt))
             print("\tBest candidate ingress time: %f" % packet_events[ingress_ptr].time)
             print("\tDifference: %f" % (packet_events[ingress_ptr].time - (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt)))
-            exit(-1)
+            egress_ptr = advance_egress_ptr(egress_ptr, packet_events)
+            #exit(-1)
     return 
 
 def convert_file_to_data_dict(filename):
