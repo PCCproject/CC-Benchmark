@@ -488,7 +488,7 @@ class Test(object):
         for i in xrange(self.flows):
             tun_id = i + 1
 
-            if self.mode == 'remote':
+            if self.mode == 'remote' and False:
                 # download logs from remote side
                 cmd = 'scp -C %s:' % self.r['host_addr']
                 cmd += '%(log)s %(log)s'
