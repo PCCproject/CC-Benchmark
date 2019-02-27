@@ -1,48 +1,31 @@
+import math
 import json
 import numpy as np
 
-def convert_interval_to_event(lines, start_line_number, start_time, end_time):
+def convert_interval_to_event(packet_events, start_event_number, start_time, end_time):
     bytes_sent = 0
     bytes_acked = 0
     packets_sent = 0
-    acks_received = 0
     rtt_samples = []
     global _printed_info
 
     cur_time = start_time
-    cur_line_number = start_line_number
+    cur_event_number = start_event_number
     first_packet_sent_time = start_time
     last_packet_sent_time = 0
-    while cur_time < end_time and cur_line_number < len(lines):
-        line = lines[cur_line_number]
-        cur_time = float(line[0])
-        sent_time = cur_time
-        if "+" in line:
-            bytes_sent += int(line[2])
+    while cur_time < end_time and cur_event_number < len(packet_events):
+        event = packet_events[cur_event_number]
+        cur_time = event.time
+        if event.type == INGRESS:
+            bytes_sent += event.bytes
             packets_sent += 1
+            if (event.was_acked == True) or (event.was_acked is None):
+                bytes_acked += event.bytes
+        elif event.type == EGRESS:
+            rtt_samples.append(event.rtt)
         else:
-            bytes_acked += int(line[2])
-            acks_received += 1
-            rtt_samples.append(float(line[3]))
-            sent_time = round(cur_time - float(line[3]), 3)
-            if (sent_time < first_packet_sent_time):
-                first_packet_sent_time = sent_time
-            if (sent_time > last_packet_sent_time):
-                last_packet_sent_time = sent_time
-        cur_line_number += 1
-
-    bytes_should_have_been_acked = 0
-    packets_should_have_been_acked = 0
-    if (len(rtt_samples) > 0):
-        backtrack_line_number = cur_line_number - 1
-        while (cur_time >= first_packet_sent_time and backtrack_line_number >= 0):
-            line = lines[backtrack_line_number]
-            cur_time = round(float(line[0]), 3)
-
-            if cur_time >= first_packet_sent_time and cur_time <= last_packet_sent_time and "+" in line:
-                bytes_should_have_been_acked += int(line[2])
-                packets_should_have_been_acked += 1
-            backtrack_line_number -= 1
+            print("ERROR: Unknown event type!")
+        cur_event_number += 1
 
     dur = (end_time - start_time)
     throughput = 1000 * 8.0 * bytes_acked / dur
@@ -54,10 +37,8 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
         min_rtt = np.min(rtt_samples)
         max_rtt = np.max(rtt_samples)
     loss_rate = 0.0
-    if bytes_should_have_been_acked > 0:
-        loss_rate = (bytes_should_have_been_acked - bytes_acked) / float(bytes_should_have_been_acked)
-    if bytes_should_have_been_acked < bytes_acked:
-        print("Warning: Conversion of Pantheon log failed align ACKs and expected ACKs")
+    if bytes_sent > 0:
+        loss_rate = 1.0 - (bytes_acked / bytes_sent)
     latency_inflation = 0
     five_percent_rtt = -1.0
     if len(rtt_samples) >= 2:
@@ -76,16 +57,79 @@ def convert_interval_to_event(lines, start_line_number, start_time, end_time):
         "Loss Rate":str(loss_rate),
         "Rtt Inflation":str(latency_inflation),
         "Packets Sent":packets_sent,
-        "Acks Received":acks_received,
-        "Packets Should Have Been Acked":packets_should_have_been_acked
+        "Acks Received":len(rtt_samples)
     }
-    return event, cur_line_number
+    return event, cur_event_number
 
-def get_base_rtt(lines):
-    start_time = float(lines[0][0])
-    end_time = float(lines[-1][0])
-    event, lines_used = convert_interval_to_event(lines, 0, start_time, end_time)
+def get_base_rtt(packet_events):
+    start_time = packet_events[0].time
+    end_time = packet_events[-1].time
+    event, events_used = convert_interval_to_event(packet_events, 0, start_time, end_time)
     return float(event["Five Percent Rtt"])
+
+INGRESS = 'I'
+EGRESS = 'E'
+
+class PacketEvent():
+
+    def __init__(self, line):
+        self.time = round(float(line[0]), 3)
+        self.bytes = int(line[2])
+        self.type = INGRESS
+        self.was_acked = None
+        if "-" in line:
+            self.type = EGRESS
+            self.rtt = round(float(line[3]), 3)
+
+    def matches_egress(self, egress_event):
+        return abs(self.time - (egress_event.time - egress_event.rtt)) < 0.0001
+
+    def was_sent_too_early_for_egress(self, egress_event):
+        return (self.time < egress_event.time - egress_event.rtt)
+
+def create_packet_events(lines):
+    packet_events = []
+    for line in lines:
+        packet_events.append(PacketEvent(line))
+    return packet_events
+
+def advance_egress_ptr(egress_ptr, packet_events):
+    egress_ptr += 1
+    while (egress_ptr < len(packet_events)) and (packet_events[egress_ptr].type == INGRESS):
+        egress_ptr += 1
+    return egress_ptr
+
+def advance_ingress_ptr(ingress_ptr, packet_events):
+    ingress_ptr += 1
+    while (ingress_ptr < len(packet_events)) and (packet_events[ingress_ptr].type == EGRESS):
+        ingress_ptr += 1
+    return ingress_ptr
+
+def mark_acked_packets(packet_events):
+    end_ptr = len(packet_events)
+    ingress_ptr = advance_ingress_ptr(-1, packet_events)
+    egress_ptr = advance_egress_ptr(-1, packet_events)
+
+    print("First ingress event: %d" % ingress_ptr)
+    print("First egress event: %d" % egress_ptr)
+
+    while (ingress_ptr < end_ptr) and (egress_ptr < end_ptr):
+        if packet_events[ingress_ptr].matches_egress(packet_events[egress_ptr]):
+            packet_events[ingress_ptr].was_acked = True
+            ingress_ptr = advance_ingress_ptr(ingress_ptr, packet_events)
+            egress_ptr = advance_egress_ptr(egress_ptr, packet_events)
+        elif packet_events[ingress_ptr].was_sent_too_early_for_egress(packet_events[egress_ptr]):
+            packet_events[ingress_ptr].was_acked = False
+            ingress_ptr = advance_ingress_ptr(ingress_ptr, packet_events)
+        else:
+            print("ERROR: Could not match egress event to packet ingress:")
+            print("\tEgress time: %f" % packet_events[egress_ptr].time)
+            print("\tEgress Rtt: %f" % packet_events[egress_ptr].rtt)
+            print("\tEstimated Ingress: %f" % (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt))
+            print("\tBest candidate ingress time: %f" % packet_events[ingress_ptr].time)
+            print("\tDifference: %f" % (packet_events[ingress_ptr].time - (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt)))
+            exit(-1)
+    return 
 
 def convert_file_to_data_dict(filename):
     lines = []
@@ -99,23 +143,31 @@ def convert_file_to_data_dict(filename):
             good_lines.append(line.split(" "))
 
     lines = good_lines
-    base_rtt = get_base_rtt(lines)
+    packet_events = create_packet_events(lines)
+    mark_acked_packets(packet_events)
+    total_packets = sum([1 if e.type == INGRESS else 0 for e in packet_events]) 
+    lost_packets = sum([1 if e.type == INGRESS and (e.was_acked == False) else 0 for e in packet_events]) 
+    unknown_packets = sum([1 if e.type == INGRESS and (e.was_acked is None) else 0 for e in packet_events]) 
+    print("Lost %d/%d packets" % (lost_packets, total_packets))
+    print("Unknown %d/%d packets" % (unknown_packets, total_packets))
+    base_rtt = get_base_rtt(packet_events)
 
     events = []
-    cur_line_number = 0
+    cur_event_number = 0
     cur_start_time = 0.0
     dur = base_rtt
     print("Converting log with base RTT: %f" % base_rtt)
-    start_time = float(lines[0][0])
-    end_time = float(lines[-1][0])
-    print("Log has %d lines" % len(lines))
+    start_time = packet_events[0].time
+    end_time = packet_events[-1].time
+    print("Log has %d events" % len(packet_events))
     print("Log spans time %d to %d" % (start_time, end_time))
     print("Expecting to convert log into %d intervals" % ((end_time - start_time) / base_rtt))
-    while cur_line_number < len(lines):
-        new_event, lines_used = convert_interval_to_event(lines, cur_line_number,
+    #exit(-1)
+    while cur_event_number < len(packet_events):
+        new_event, events_used = convert_interval_to_event(packet_events, cur_event_number,
             cur_start_time, cur_start_time + dur)
         new_event["Time"] = str(float(new_event["Time"]) + start_timestamp)
-        cur_line_number = lines_used
+        cur_event_number = events_used
         cur_start_time += dur
         events.append(new_event)
 
