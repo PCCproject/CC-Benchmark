@@ -73,6 +73,11 @@ EGRESS = 'E'
 class PacketEvent():
 
     def __init__(self, line):
+        if len(line) < 3:
+            print("Warning: Could not convert line of Pantheon log:")
+            print("\t%s" % str(line))
+            self.time = None
+            return
         self.time = round(float(line[0]), 3)
         self.bytes = int(line[2])
         self.type = INGRESS
@@ -90,14 +95,13 @@ class PacketEvent():
 def create_packet_events(lines):
     packet_events = []
     for line in lines:
-        packet_events.append(PacketEvent(line))
+        try:
+            event = PacketEvent(line)
+            if event.time is not None:
+                packet_events.append(event)
+        except Exception as e:
+            print("Warning: Could not convert Pantheon log line %s" % str(line))
     return packet_events
-
-def advance_egress_ptr(egress_ptr, packet_events):
-    egress_ptr += 1
-    while (egress_ptr < len(packet_events)) and (packet_events[egress_ptr].type == INGRESS):
-        egress_ptr += 1
-    return egress_ptr
 
 def advance_ingress_ptr(ingress_ptr, packet_events):
     ingress_ptr += 1
@@ -108,35 +112,31 @@ def advance_ingress_ptr(ingress_ptr, packet_events):
 def mark_acked_packets(packet_events):
     end_ptr = len(packet_events)
     ingress_ptr = advance_ingress_ptr(-1, packet_events)
-    egress_ptr = advance_egress_ptr(-1, packet_events)
+    egress_events = []
+    for e in packet_events:
+        if e.type == EGRESS:
+            egress_events.append(e)
+    sorted_egress_events = sorted(egress_events, key=lambda x: x.time - x.rtt)
+    egress_ptr = 0
 
-    print("First ingress event: %d" % ingress_ptr)
-    print("First egress event: %d" % egress_ptr)
-
-    while (ingress_ptr < end_ptr) and (egress_ptr < end_ptr):
-        #print("Processing packet pair:")
-        #print("\tEgress time: %f" % packet_events[egress_ptr].time)
-        #print("\tEgress Rtt: %f" % packet_events[egress_ptr].rtt)
-        #print("\tEstimated Ingress: %f" % (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt))
-        #print("\tCandidate ingress time: %f" % packet_events[ingress_ptr].time)
-        #print("\tDifference: %f" % (packet_events[ingress_ptr].time - (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt)))
-        if packet_events[ingress_ptr].matches_egress(packet_events[egress_ptr]):
+    while (ingress_ptr < end_ptr) and (egress_ptr < len(sorted_egress_events)):
+        if packet_events[ingress_ptr].matches_egress(sorted_egress_events[egress_ptr]):
             #print("\tMatch!")
             packet_events[ingress_ptr].was_acked = True
             ingress_ptr = advance_ingress_ptr(ingress_ptr, packet_events)
-            egress_ptr = advance_egress_ptr(egress_ptr, packet_events)
-        elif packet_events[ingress_ptr].was_sent_too_early_for_egress(packet_events[egress_ptr]):
+            egress_ptr += 1
+        elif packet_events[ingress_ptr].was_sent_too_early_for_egress(sorted_egress_events[egress_ptr]):
             #print("\tMiss. Ingress was not acked.")
             packet_events[ingress_ptr].was_acked = False
             ingress_ptr = advance_ingress_ptr(ingress_ptr, packet_events)
         else:
             print("Warning: Could not match egress event to packet ingress:")
-            print("\tEgress time: %f" % packet_events[egress_ptr].time)
-            print("\tEgress Rtt: %f" % packet_events[egress_ptr].rtt)
-            print("\tEstimated Ingress: %f" % (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt))
+            print("\tEgress time: %f" % sorted_egress_events[egress_ptr].time)
+            print("\tEgress Rtt: %f" % sorted_egress_events[egress_ptr].rtt)
+            print("\tEstimated Ingress: %f" % (sorted_egress_events[egress_ptr].time - sorted_egress_events[egress_ptr].rtt))
             print("\tBest candidate ingress time: %f" % packet_events[ingress_ptr].time)
-            print("\tDifference: %f" % (packet_events[ingress_ptr].time - (packet_events[egress_ptr].time - packet_events[egress_ptr].rtt)))
-            egress_ptr = advance_egress_ptr(egress_ptr, packet_events)
+            print("\tDifference: %f" % (packet_events[ingress_ptr].time - (sorted_egress_events[egress_ptr].time - sorted_egress_events[egress_ptr].rtt)))
+            egress_ptr += 1
             #exit(-1)
     return 
 
