@@ -30,6 +30,10 @@ from mininet.topolib import TreeTopo
 from mininet.util import waitListening
 
 import multiprocessing
+import hashlib
+
+SWITCH_SIDE = "SW"
+HOST_SIDE = "H"
 
 def TreeNet( depth=1, fanout=2, **kwargs ):
     "Convenience function for creating tree networks."
@@ -59,7 +63,12 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
        routes: Mininet host networks to route to (10.0/24)
        switch: Mininet switch to connect to root namespace (s1)"""
     if not switch:
-        switch = network[ 's1' ]  # switch to use
+        names = network.keys()
+        switch = None
+        for name in names:
+            if (switch is None) and (name[0] == "L"):
+                switch = network[name]
+        print("Switch is %s" % switch)
     if not routes:
         routes = [ '10.0.0.0/24' ]
     connectToRootNS( network, switch, ip, routes )
@@ -71,47 +80,55 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
     for host in network.hosts:
         info( host.name, host.IP(), '\n' )
 
-def oscillate_half_bw(link, link_def, link_state):
+def oscillate_half_bw(link, link_def, link_state, intf_side):
     bw = link_state["bw"]
     if bw == link_def["bw"]:
         new_bw = link_def["bw"] * 0.5
     else:
         new_bw = link_def["bw"]
     link_state["bw"] = new_bw
-    cmds, parent = link.intf1.bwCmds(bw=new_bw)
-    cmd = cmds[1].replace("add", "change")
-    link.intf1.tc(cmd)
-    cmds, parent = link.intf2.bwCmds(bw=new_bw)
-    cmd = cmds[1].replace("add", "change")
-    link.intf2.tc(cmd)
+    if intf_side == HOST_SIDE:
+        cmds, parent = link.intf1.bwCmds(bw=new_bw)
+        cmd = cmds[1].replace("add", "change")
+        link.intf1.tc(cmd)
+    else:
+        cmds, parent = link.intf2.bwCmds(bw=new_bw)
+        cmd = cmds[1].replace("add", "change")
+        link.intf2.tc(cmd)
     return link_state
 
-def custard_variable_link(link, link_def, link_state):
+def custard_variable_link(link, link_def, link_state, intf_side):
+    print("Running variable link for %s" % str(link))
     bw = random.randint(16, 32)
-    cmds, parent_1 = link.intf1.bwCmds(bw=bw)
-    cmd = cmds[1].replace("add", "change")
-    link.intf1.tc(cmd)
-    cmds, parent_2 = link.intf1.bwCmds(bw=bw)
-    cmd = cmds[1].replace("add", "change")
-    link.intf2.tc(cmd)
+    if intf_side == HOST_SIDE:
+        cmds, parent_1 = link.intf1.bwCmds(bw=bw)
+        cmd = cmds[1].replace("add", "change")
+        link.intf1.tc(cmd)
+    else:
+        cmds, parent_2 = link.intf1.bwCmds(bw=bw)
+        cmd = cmds[1].replace("add", "change")
+        link.intf2.tc(cmd)
 
-def nsdi_variable_link(link, link_def, link_state):
+def nsdi_variable_link(link, link_def, link_state, intf_side):
     bw = random.randint(10, 100)
     dl = random.uniform(10, 100)
     lr = 100.0 * random.uniform(0.0, 0.01)
-    cmds, parent_1 = link.intf1.bwCmds(bw=bw)
-    cmd = cmds[1].replace("add", "change")
-    link.intf1.tc(cmd)
-    cmds, parent_2 = link.intf1.bwCmds(bw=bw)
-    cmd = cmds[1].replace("add", "change")
-    link.intf2.tc(cmd)
-    cmds, parent = link.intf1.delayCmds(parent_1, delay="%fms" % dl, loss=lr)
-    cmd = cmds[0].replace("add", "change")
-    link.intf1.tc(cmd)
-    cmds, parent = link.intf2.delayCmds(parent_2, delay="%fms" % dl, loss=lr)
-    cmd = cmds[0].replace("add", "change")
-    link.intf2.tc(cmd)
-
+    if intf_side == HOST_SIDE:
+        cmds, parent_1 = link.intf1.bwCmds(bw=bw)
+        cmd = cmds[1].replace("add", "change")
+        link.intf1.tc(cmd)
+        cmds, parent_2 = link.intf2.bwCmds(bw=bw)
+        cmds, parent = link.intf2.delayCmds(parent_2, delay="%fms" % dl, loss=lr)
+        cmd = cmds[0].replace("add", "change")
+        link.intf2.tc(cmd)
+    else:
+        cmds, parent_2 = link.intf2.bwCmds(bw=bw)
+        cmd = cmds[1].replace("add", "change")
+        link.intf2.tc(cmd)
+        cmds, parent_1 = link.intf1.bwCmds(bw=bw)
+        cmds, parent = link.intf1.delayCmds(parent_1, delay="%fms" % dl, loss=lr)
+        cmd = cmds[0].replace("add", "change")
+        link.intf1.tc(cmd)
 
 LINK_VARIATION_FUNCS = {
     "oscillate_half_bw":oscillate_half_bw,
@@ -126,9 +143,10 @@ def get_initial_link_state(link_def):
 
 class LinkManager():
     
-    def __init__(self, link, link_def):
+    def __init__(self, link, link_def, intf_side):
         self.link = link
         self.link_def = link_def
+        self.intf_side = intf_side
         self.variation_func = None
         self.variation_period = None
         if "variation" in link_def.keys():
@@ -153,7 +171,7 @@ class LinkManager():
             if sleep_time > 0:
                 time.sleep(sleep_time)
             print("Running variation %d" % next_variation)
-            self.link_state = self.variation_func(self.link, self.link_def, self.link_state)
+            self.link_state = self.variation_func(self.link, self.link_def, self.link_state, self.intf_side)
             next_variation += 1
 
     def stop(self):
@@ -161,10 +179,6 @@ class LinkManager():
             self.done.value = 1
             self.proc.terminate()
             self.proc.join()
-
-def link_matches_def(link, link_def):
-    link_str = str(link)
-    return ("%s-" % link_def["src"] in link_str) and ("<->%s" % link_def["dst"] in link_str)
 
 class MyTopo(Topo):
 
@@ -192,7 +206,7 @@ class MyTopo(Topo):
         jitter = lt["jitter"] if "jitter" in lt.keys() else None
         delay = lt["dl"] if "dl" in lt.keys() else None
         bw = lt["bw"] if "bw" in lt.keys() else None
-        passthrough_bw = None if bw is None else 2 * bw
+        passthrough_bw = None if bw is None else 4 * bw
         
         bdp_queue_size = None
         if delay is not None:
@@ -203,20 +217,22 @@ class MyTopo(Topo):
         new_link = self.addLink(src, dst, bw=passthrough_bw, delay=delay,
                 max_queue_size=bdp_queue_size, jitter=jitter)
 
+    def get_switch_name(self, link_def):
+        src_dst_str = ("%s-%s" % (link_def["src"], link_def["dst"])).encode('utf-8')
+        name = hashlib.md5(src_dst_str).hexdigest()[-4:]
+        return "%s-%s" % (link_def["type"], name)
+
     def add_link_by_def(self, link_def, link_types, switches, hosts):
         src = self.get_entity_by_name(link_def["src"], switches, hosts)
         dst = self.get_entity_by_name(link_def["dst"], switches, hosts)
 
-        link_parts = link_def["type"].split(":")
-        link_type = link_types[link_parts[0]]
-        link_role = link_parts[1]
+        switch_name = self.get_switch_name(link_def)
+        link_switch = self.addSwitch(switch_name)
 
-        if link_role == "bw-queue":
-            self.add_bw_queue_link(link_type, src, dst)
-        elif link_role == "delay":
-            self.add_dl_link(link_type, src, dst)
-        else:
-            print("(PCC Tester) ERROR: Could not determine link role %s" % link_role)
+        link_type = link_types[link_def["type"]]
+
+        self.add_bw_queue_link(link_type, src, link_switch)
+        self.add_dl_link(link_type, link_switch, dst)
 
     def build(self, topo_dict, link_types):
         self.topo_dict = topo_dict
@@ -240,19 +256,22 @@ class MyTopo(Topo):
             self.add_link_by_def(link_def, link_types, switches, hosts)
 
     def get_net_link_type(self, link):
-        for link_def in self.topo_dict["Links"]:
-            if link_matches_def(link, link_def):
-                return link_def["type"]
-        print("ERROR: PCC-Tester could not find a type for link %s" % str(link))
-        return None
+        link_str = str(link)
+        if link_str[0] == "L":
+            return SWITCH_SIDE, link_str.split("-")[0]
+        else:
+            return HOST_SIDE, link_str.split("<->")[1].split("-")[0]
 
     def start_all_link_managers(self, net):
         for link in net.links:
             if "root" in ("%s" % link):
                 continue
-            link_type = self.get_net_link_type(link)
+            print(link)
+            intf_side, link_type = self.get_net_link_type(link)
+            #if not link_type[0] == "L":
+            #    continue
             print("Found net link type %s" % link_type)
-            self.link_managers.append(LinkManager(link, self.link_types[link_type.split(':')[0]]))
+            self.link_managers.append(LinkManager(link, self.link_types[link_type], intf_side))
 
     def stop_all_link_managers(self):
         for link_manager in self.link_managers:
