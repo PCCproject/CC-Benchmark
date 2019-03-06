@@ -62,7 +62,9 @@ def build_repo_in_dir(repo_name, branch, dir_path):
 
 def dir_repo_name_matches(dir_path, repo_name):
     expected_name = BuildableRepo.get_by_short_name(repo_name).full_name
-    url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"]).decode("utf-8")
+    url = subprocess.check_output(
+	["git", "config", "--get", "remote.origin.url"],
+        cwd=dir_path).decode("utf-8")
     name_start = url.find("github.com/") + len("github.com/")
     name_end = -4
     name = url[name_start:name_end]
