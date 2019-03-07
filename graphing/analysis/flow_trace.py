@@ -31,7 +31,7 @@ _supported_statistics["Mean"] = _stat_mean
 _supported_statistics["Ack-weighted Mean"] = lambda trace, data: _stat_weighted_mean(trace, data,
         weight_field="Acks Received")
 _supported_statistics["Send-weighted Mean"] = lambda trace, data: _stat_weighted_mean(trace,
-        data, weight_field="Packets Should Have Been Acked")
+        data, weight_field="Packets Sent")
 
 class FlowTrace():
     def __init__(self, filename):

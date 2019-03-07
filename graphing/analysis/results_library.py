@@ -1,6 +1,7 @@
 import json
 import os
 from graphing.analysis.flow_trace import FlowTrace
+from python_utils.pantheon_log_conversion import convert_pantheon_log
 
 class TestResult():
     def __init__(self, test_name, dir_name):
@@ -43,6 +44,18 @@ class TestResult():
         print("Deleting test from %s" % self.dir_name)
         os.system("rm -rf %s" % self.dir_name)
 
+    def reconvert_pantheon_logs(self):
+        filenames = os.listdir(self.dir_name)
+        for filename in filenames:
+            if filename == "test_metadata.json":
+                continue
+            elif ".json" in filename:
+                fields = filename.split('.')
+                flow_scheme = fields[0]
+                flow_name = fields[1]
+                convert_pantheon_log("%s/%s_datalink.%s.log" % (self.dir_name, flow_scheme, flow_name), 
+                    "%s/%s.%s.json" % (self.dir_name, flow_scheme, flow_name))
+
 class ResultsLibrary():
     def __init__(self, dir_name):
         self.dir_name = dir_name
@@ -67,8 +80,9 @@ class ResultsLibrary():
             return
         this_test_dir = os.path.join(self.dir_name, test_name)
         tests = []
-        for test_time_dir in os.listdir(this_test_dir):
-            tests.append(TestResult(test_name, os.path.join(this_test_dir, test_time_dir)))
+        if os.path.isdir(this_test_dir):
+            for test_time_dir in os.listdir(this_test_dir):
+                tests.append(TestResult(test_name, os.path.join(this_test_dir, test_time_dir)))
         self.test_results[test_name] = tests
 
     def load_all_metadata(self):
@@ -97,9 +111,28 @@ class ResultsLibrary():
 
         return schemes
 
+    def get_num_tests_done(self, test_name, scheme):
+        self.load_all_metadata_for_test(test_name)
+        num_tests_done = 0
+        for test_result in self.test_results[test_name]:
+            if test_result.has_metadata() and test_result.metadata["Scheme"] == scheme:
+                num_tests_done += 1
+        return num_tests_done
+
     def delete_no_metadata_tests(self):
         self.load_all_metadata()
         for result_list in self.test_results.values():
             for test_result in result_list:
                 if not test_result.has_metadata():
                     test_result.delete_from_disk()
+
+    def reconvert_all_pantheon_logs(self):
+        self.load_all_metadata()
+        i = 1
+        for result_list in self.test_results.values():
+            j = 1
+            for test_result in result_list:
+                print("Converting logs for test %d/%d run %d/%d" % (i, len(self.test_results.values()), j, len(result_list)))
+                test_result.reconvert_pantheon_logs()
+                j += 1
+            i += 1
