@@ -7,21 +7,11 @@
             "Name":"h2"
         }
     ],
-    "Switches": [
-        {
-            "Name":"s1"
-        }
-    ],
     "Links":[
         {
             "src":"h1",
-            "dst":"s1",
-            "type":"L1:bw-queue"
-        },
-        {
-            "src":"h2",
-            "dst":"s1",
-            "type":"L1:delay"
+            "dst":"h2",
+            "type":"L1"
         }
     ]
 }

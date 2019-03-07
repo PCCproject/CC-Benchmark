@@ -13,7 +13,7 @@ from mininet.net import Mininet
 
 default_build_dir = "/home/pcc/pcc_test_scheme/"
 
-tests_to_run = sys.argv[2]
+tests_to_run = sys.argv[1]
 
 username = "pcc"
 
