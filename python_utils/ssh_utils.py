@@ -26,7 +26,7 @@ def get_address_from_arp_line(line):
 def get_remote_vm_ips(hostname):
     return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
     lines = return_str.split("\n")
-    virtual_lines = [line for line in lines if "vir" in line]
+    virtual_lines = [l for l in lines if ("vir" in l and "incomplete" not in l)]
     addresses = [get_address_from_arp_line(line) for line in virtual_lines]
     return addresses 
 
