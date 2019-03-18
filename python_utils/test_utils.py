@@ -10,7 +10,8 @@ SUPPORTED_PANTHEON_SCHEMES = [
     "bbr",
     "taova",
     "vegas",
-    "sprout"
+    "sprout",
+    "ledbat"
 ]
 
 ##
