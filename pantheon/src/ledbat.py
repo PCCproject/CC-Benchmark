@@ -33,7 +33,7 @@ def main():
         proc = Popen(cmd, stdin=PIPE)
 
         # send at full speed
-        timeout = curr_time_sec() + 75
+        timeout = curr_time_sec() + 3600
         while True:
             proc.stdin.write(os.urandom(1024))
             proc.stdin.flush()
