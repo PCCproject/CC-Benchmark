@@ -75,6 +75,7 @@ def dir_repo_name_matches(dir_path, repo_name):
 def dir_has_repo(repo, branch, dir_path):
     if (not dir_repo_name_matches(dir_path, repo)):
         return False
+    subprocess.check_output(["git", "pull"], cwd=dir_path)
     checksum = get_repo_checksum(dir_path)
     subprocess.check_output(["git", "checkout", branch], cwd=dir_path)
     new_checksum = get_repo_checksum(dir_path)
