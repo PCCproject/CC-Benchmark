@@ -62,7 +62,7 @@ if (":" in scheme_to_test):
 tests_to_run = sys.argv[2]
 extra_args = arg_helpers.arg_or_default("--extra-args", None)
 if extra_args is not None:
-    extra_args = extra_args.split(' ')
+    extra_args = extra_args.split(',')
 
 if (scheme_to_test not in test_utils.SUPPORTED_PANTHEON_SCHEMES):
     scheme_to_test = pantheon_setup.add_scheme_to_pantheon(scheme_to_test, extra_args)
