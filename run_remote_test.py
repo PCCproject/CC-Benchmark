@@ -15,6 +15,13 @@ from python_utils.ssh_utils import remote_call
 from python_utils.ssh_utils import remote_copy
 from python_utils.ssh_utils import remote_copyback
 from python_utils.ssh_utils import get_remote_vm_ips
+from python_utils.arg_helpers import arg_or_default
+
+from graphing.analysis.results_library import ResultsLibrary
+from graphing.utils import data_utils
+from python_utils.file_locations import results_dir
+
+results_lib = ResultsLibrary(results_dir)
 
 local_testing_dir = "/home/njay2/PCC/testing/"
 local_results_dir = local_testing_dir + "results/"
@@ -28,6 +35,8 @@ schemes_to_test = sys.argv[1].split(" ")
 replicas = 1
 if (len(sys.argv) > 3):
     replicas = int(sys.argv[3])
+
+EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
@@ -50,7 +59,7 @@ class RemoteVmManager:
         remote_call(self.hostname, cmd)
 
     def run_on_vm(self, cmd):
-        remote_cmd = "ssh pcc@%s \"%s\"" % (self.vm_ip, cmd)
+        remote_cmd = "ssh pcc@%s '%s'" % (self.vm_ip, cmd)
         remote_call(self.hostname, remote_cmd)
     
     def is_up(self):
@@ -58,10 +67,13 @@ class RemoteVmManager:
         #return self.proc.is_alive() # Why doesn't this work?
 
     def restart_proc(self):
+        if self.proc is not None:
+            self.proc.terminate()
         self.proc = multiprocessing.Process(target=self.run_manager, args=(self.vm_test_queue,
             self.done_queue, self.error_queue))
         self.proc.start()
         self.child_pid = self.proc.pid
+        self.set_busy(False)
 
     def assign_test(self, test):
         self.cur_test = test
@@ -86,8 +98,8 @@ class RemoteVmManager:
         if not self.has_run_test:
             self.run_first_test_setup()
             self.has_run_test = True
-        self.run_on_vm("sudo %s %s %s --is-remote" % (vm_config.run_test_cmd, test_scheme,
-            test_name))
+        self.run_on_vm('sudo %s %s %s --is-remote --extra-args=%s' % (vm_config.run_test_cmd, test_scheme,
+            test_name, EXTRA_ARGS))
         self.run_on_vm_host("scp -r pcc@%s:%s/* %s" % (self.vm_ip, vm_config.vm_results_dir,
             vm_config.host_results_dir))
         self.run_on_vm("sudo rm -rf %s" % (vm_config.vm_results_dir))
@@ -122,6 +134,8 @@ class RemoteHostManager:
         self.proc.start()
 
     def init_remote_vm_managers(self):
+        #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
+        #vm_ips = ["192.168.122.35"]
         vm_ips = get_remote_vm_ips(self.hostname)
         for vm_ip in vm_ips:
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
@@ -133,6 +147,7 @@ class RemoteHostManager:
 
     def run_manager(self, test_queue, done_queue, kill_queue):
         done = False
+        busy_start = {}
 
         print("Running manager for host %s" % self.hostname)
         while (not done):
@@ -148,14 +163,23 @@ class RemoteHostManager:
                     vms_busy += 1
                 elif vm_manager.busy_or_test_queued():
                     vms_busy += 1
+                    busy_time = time.time() - busy_start[vm_manager.get_id_string()]
+                    print("VM manager %s busy for %.2fs" % (vm_manager.get_id_string(), busy_time))
+                    if busy_time > 500.0:
+                        print("***********************************************")
+                        print("Restarting stalled VM at %s" % vm_manager.get_id_string())
+                        print("***********************************************")
+                        test_queue.put(vm_manager.cur_test)
+                        vm_manager.restart_proc()
                 elif (not test_queue.empty()):
-                    if (get_idle_percent(self.hostname) > 50):
+                    if (get_idle_percent(self.hostname) > 25):
                         print("Tests remaining: %d" % test_queue.qsize())
                         vm_manager.assign_test(test_queue.get())
+                        busy_start[vm_manager.get_id_string()] = time.time()
                         time.sleep(1)
                         vms_busy += 1
                     else:
-                        print("Host %s is too busy.")
+                        print("Host %s is too busy." % self.hostname)
             done = test_queue.empty() and (vms_busy == 0)
 
         print("Manager for %s done" % self.hostname)
@@ -171,8 +195,13 @@ class RemoteHostManager:
 test_queue = multiprocessing.Queue()
 for scheme_to_test in schemes_to_test:
     for test_name in read_test_list_to_list(tests_to_run):
-        for i in range(0, replicas):
+        n_tests_done = results_lib.get_num_tests_done(test_name, scheme_to_test)
+        print("Have %d tests for %s:%s, need %d more" % (n_tests_done, test_name, scheme_to_test, replicas - n_tests_done))
+        for i in range(0, replicas - n_tests_done):
             test_queue.put((test_name, scheme_to_test))
+
+print("Preparing to run %d tests" % test_queue.qsize())
+time.sleep(2.0)
 
 ##
 #   Start the test-running managers for remote machines and VMs.
