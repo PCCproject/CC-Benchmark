@@ -1,0 +1,20 @@
+{
+    "Tests": [
+        "latency_sweep/1ms",
+        "latency_sweep/2ms",
+        "latency_sweep/3ms",
+        "latency_sweep/4ms",
+        "latency_sweep/5ms",
+        "latency_sweep/8ms",
+        "latency_sweep/16ms",
+        "latency_sweep/32ms",
+        "latency_sweep/48ms",
+        "latency_sweep/64ms",
+        "latency_sweep/96ms",
+        "latency_sweep/128ms",
+        "latency_sweep/192ms",
+        "latency_sweep/256ms",
+        "latency_sweep/384ms",
+        "latency_sweep/512ms"
+    ]
+}

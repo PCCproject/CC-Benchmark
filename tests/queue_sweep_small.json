@@ -1,9 +1,0 @@
-{
-    "Tests": [
-        "simple_1pkt_queue",
-        "simple_5pkt_queue",
-        "simple_10pkt_queue",
-        "simple_100pkt_queue",
-        "simple_1000pkt_queue"
-    ]
-}

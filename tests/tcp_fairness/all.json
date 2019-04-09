@@ -1,0 +1,14 @@
+{
+    "Tests": [
+        "tcp_fairness/1_flow",
+        "tcp_fairness/2_flow",
+        "tcp_fairness/4_flow",
+        "tcp_fairness/8_flow",
+        "tcp_fairness/12_flow",
+        "tcp_fairness/16_flow",
+        "tcp_fairness/20_flow",
+        "tcp_fairness/24_flow",
+        "tcp_fairness/28_flow",
+        "tcp_fairness/32_flow"
+    ]
+}

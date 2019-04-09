@@ -1,0 +1,11 @@
+{
+    "Tests": [
+        "loss_sweep_small_buffer/0.0001loss",
+        "loss_sweep_small_buffer/0.001loss",
+        "loss_sweep_small_buffer/0.01loss",
+        "loss_sweep_small_buffer/0.02loss",
+        "loss_sweep_small_buffer/0.03loss",
+        "loss_sweep_small_buffer/0.04loss",
+        "loss_sweep_small_buffer/0.05loss"
+    ]
+}

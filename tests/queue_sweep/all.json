@@ -1,0 +1,15 @@
+{
+    "Tests": [
+        "queue_sweep/1pkt",
+        "queue_sweep/2pkt",
+        "queue_sweep/3pkt",
+        "queue_sweep/4pkt",
+        "queue_sweep/5pkt",
+        "queue_sweep/10pkt",
+        "queue_sweep/20pkt",
+        "queue_sweep/50pkt",
+        "queue_sweep/100pkt",
+        "queue_sweep/1000pkt",
+        "queue_sweep/10000pkt"
+    ]
+}

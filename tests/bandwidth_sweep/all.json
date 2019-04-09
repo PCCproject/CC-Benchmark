@@ -1,0 +1,12 @@
+{
+    "Tests": [
+        "bandwidth_sweep/1mbps",
+        "bandwidth_sweep/2mbps",
+        "bandwidth_sweep/4mbps",
+        "bandwidth_sweep/8mbps",
+        "bandwidth_sweep/16mbps",
+        "bandwidth_sweep/32mbps",
+        "bandwidth_sweep/64mbps",
+        "bandwidth_sweep/128mbps"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "Tests": [
+        "loss_sweep/0.0001loss",
+        "loss_sweep/0.001loss",
+        "loss_sweep/0.005loss",
+        "loss_sweep/0.01loss",
+        "loss_sweep/0.015loss",
+        "loss_sweep/0.02loss",
+        "loss_sweep/0.025loss",
+        "loss_sweep/0.03loss",
+        "loss_sweep/0.04loss",
+        "loss_sweep/0.05loss",
+        "loss_sweep/0.06loss",
+        "loss_sweep/0.08loss",
+        "loss_sweep/0.1loss",
+        "loss_sweep/0.15loss",
+        "loss_sweep/0.20loss"
+    ]
+}
