@@ -112,11 +112,14 @@ class ResultsLibrary():
         return schemes
 
     def get_num_tests_done(self, test_name, scheme):
+        test_name = test_name.replace("/", ".")
         self.load_all_metadata_for_test(test_name)
         num_tests_done = 0
         for test_result in self.test_results[test_name]:
-            if test_result.has_metadata() and test_result.metadata["Scheme"] == scheme:
-                num_tests_done += 1
+            if test_result.has_metadata():
+                md = test_result.metadata
+                if md["Scheme"] == scheme or ("Repo" in md and ("%s:%s" % (md["Repo"], md["Branch"])) == scheme):
+                    num_tests_done += 1
         return num_tests_done
 
     def delete_no_metadata_tests(self):
