@@ -7,7 +7,7 @@ mpl.use("Agg")
 import matplotlib.pyplot as plt
 from graphing.analysis.results_library import ResultsLibrary, TestResult
 from python_utils.file_locations import results_dir
-import nice_names
+from graphing.utils import nice_names
 
 results = ResultsLibrary(results_dir)
 avail_markers = mpl.markers.MarkerStyle.markers.copy()
@@ -66,7 +66,7 @@ for scheme in full_schemes:
     print("Scheme %s has %d runs" % (scheme, len(thpt_data)))
     print("\tThroughput: %f" % np.mean(thpt_data))
     print("\tLatency: %f" % np.mean(lat_data))
-    ax.scatter(lat_data, thpt_data, label=nice_names.nice_names[scheme], marker=markers[scheme])#, edgecolor='black', linewidths=1)
+    ax.scatter(lat_data, thpt_data, label=nice_names.get_nice_name(scheme), marker=markers[scheme])#, edgecolor='black', linewidths=1)
 
 ax.scatter([30.0], [24.0], label="Optimal", marker='*', color='black', edgecolor='black', linewidths=1, s=120)
 
