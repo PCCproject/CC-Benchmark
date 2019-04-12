@@ -91,7 +91,7 @@ def make_sweep_graph(format_string, params, flow_name, schemes=None,
             if axis["transform"] is not None:
                 mean_data = axis["transform"](mean_data)
             if axis["func"] == "plot":
-                graph_axis.plot(params, mean, label=label, linewidth=3.0)
+                graph_axis.plot(params, mean_data, label=label, linewidth=3.0)
             elif axis["func"] == "semilogx":
                 graph_axis.semilogx(params, mean_data, label=label,
                                     linewidth=3.0)
