@@ -1,5 +1,5 @@
 {
-    "Name":"jitter_sweep.0ms_5ms",
+    "Name":"jitter_sweep.30ms_5ms",
     "Topology":"dumbell-1",
     "Flows":[
         {
