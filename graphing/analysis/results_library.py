@@ -23,6 +23,8 @@ class TestResult():
         return self.loaded
 
     def load(self):
+        if self.loaded:
+            return
         self.loaded = True
         filenames = os.listdir(self.dir_name)
         for filename in filenames:
