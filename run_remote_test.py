@@ -23,9 +23,11 @@ from python_utils.file_locations import results_dir
 
 results_lib = ResultsLibrary(results_dir)
 
-local_testing_dir = "/home/njay2/PCC/testing/"
+#local_testing_dir = "/home/njay2/PCC/testing/"
+local_testing_dir = "/home/jaelee/PCC-Tester/"
 local_results_dir = local_testing_dir + "results/"
-remote_testing_dir = "/home/njay2/PCC/testing/"
+#remote_testing_dir = "/home/njay2/PCC/testing/"
+remote_testing_dir = "/home/jaelee/PCC-Tester/"
 remote_hosts = {
     "ocean0":remote_testing_dir
 }
@@ -61,7 +63,7 @@ class RemoteVmManager:
     def run_on_vm(self, cmd):
         remote_cmd = "ssh pcc@%s '%s'" % (self.vm_ip, cmd)
         remote_call(self.hostname, remote_cmd)
-    
+
     def is_up(self):
         return (self.proc.exitcode is None) and psutil.pid_exists(self.child_pid)
         #return self.proc.is_alive() # Why doesn't this work?
@@ -89,7 +91,11 @@ class RemoteVmManager:
         return (self.busy.value == 1) or (not self.vm_test_queue.empty())
 
     def run_first_test_setup(self):
-        self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
+        try:
+            self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
+        except Exception as e:
+            print(e)
+            os._exit(1)
         if "--pull-repo" in sys.argv:
             self.run_on_vm("%s/pull_this_repo.py" % vm_config.testing_dir)
         self.run_on_vm("sudo sysctl -w net.ipv4.ip_forward=1")
@@ -184,8 +190,8 @@ class RemoteHostManager:
 
         print("Manager for %s done" % self.hostname)
         self.cleanup_remote_vm_managers()
-        remote_copyback(self.hostname, "/tmp/pcc_automated_testing/results/*", local_results_dir)
-        remote_call(self.hostname, "rm -rf /tmp/pcc_automated_testing/results/")
+        remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
+        remote_call(self.hostname, "rm -rf " + vm_config.host_results_dir)
 
 
 ##
