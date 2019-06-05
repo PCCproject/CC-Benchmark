@@ -123,7 +123,7 @@ else:
 
 line_y = [20,20,40,40,20,20,40,40,20,20,40,40]
 #ax.axhline(y = 40, color='black', linestyle='--', label="Optimum")
-ax.plot(line_x, line_y, color='black', linestyle='--', label="Optimum") 
+ax.plot(line_x, line_y, color='black', linestyle='--', label="Optimum")
 fig.legend(loc='center', bbox_to_anchor=(0.55,-0.065, 0.5, 0.5))
 # plt.xlabel("Time (s)")
 # plt.ylabel("Sending rate (mbps)")

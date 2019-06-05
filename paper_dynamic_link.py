@@ -75,4 +75,3 @@ ax.set_xlabel("Average Latency (ms)")
 ax.set_ylabel("Average Throughput (mbps)")
 #plt.title("%s Throughput-Latency Tradeoff" % (test_name))
 fig.savefig("dynamic_link.pdf")
-

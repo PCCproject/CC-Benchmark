@@ -42,7 +42,7 @@ if (":" in scheme_to_test):
 
     # Check if a repo exists in the usual build location
     if (os.path.isdir(os.path.join(default_build_dir, ".git"))):
-        
+
         # We have a build dir, but we may not have the correct repo or branch.
         if (not github_utils.dir_has_repo(repo_name, branch, default_build_dir)):
             git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
@@ -52,7 +52,7 @@ if (":" in scheme_to_test):
         # No dir? Make it and clone there
         os.system("mkdir -p %s" % default_build_dir)
         git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
-    
+
     repo = github_utils.BuildableRepo.get_by_short_name(repo_name)
     scheme_to_test = os.path.join(default_build_dir, repo.src_dir)
 
@@ -127,14 +127,14 @@ def run_test(test_dict):
         sleep_dur = flow["start"] + time_offset - time.time()
         if (sleep_dur > 0.0):
             time.sleep(sleep_dur)
-        test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir, 
+        test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir,
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
         os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
 
     timeout = 400.0 + max_end + time_offset - time.time()
     all_log_names = ["%s/%s_datalink_run%d.log" % (data_dir, flows[i]["protocol"], run_ids[i]) for i in range(0, len(flows))]
     all_logs_finished = wait_for_all_logs_or_timeout(all_log_names, timeout)
-    
+
     topo.stop_all_link_managers()
     net.stop()
 
@@ -145,7 +145,7 @@ def run_test(test_dict):
         flow = flows[i]
         run_id = run_ids[i]
         log_name = "%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id)
-        saved_name = "%s/%s_datalink.%s.log" % (results_dir, flow["protocol"], flow["name"]) 
+        saved_name = "%s/%s_datalink.%s.log" % (results_dir, flow["protocol"], flow["name"])
         converted_name = "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"])
         print("Copying pantheon log.")
         time.sleep(2)
@@ -158,7 +158,7 @@ def run_test(test_dict):
             n_tries += 1
             try:
                 print("Beginning log conversion...")
-                convert_pantheon_log(log_name, converted_name) 
+                convert_pantheon_log(log_name, converted_name)
                 print("Finished log conversion...")
                 worked = True
             except Exception as e:
