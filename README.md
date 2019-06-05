@@ -49,4 +49,3 @@ To see a graph of various performance characteristics from this run (and all run
 
 If there is a per-RTT statistic you see in the .json log files that you would like to see in the graph, you can edit
 sample.json and add it to the group of variables already graphed.
-

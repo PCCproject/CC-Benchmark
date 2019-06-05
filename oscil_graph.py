@@ -43,7 +43,7 @@ for scheme in full_schemes:
     thpt_data[scheme] = thpt
     print(thpt_data[scheme])
 
-for scheme in full_schemes:    
+for scheme in full_schemes:
     thpt_axis.plot(list(range(len(thpt_data[scheme]))), thpt_data[scheme], label=scheme)
     lat_axis.plot(list(range(len(lat_data[scheme]))), lat_data[scheme])
 

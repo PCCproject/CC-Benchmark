@@ -19,7 +19,7 @@ thpt_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flo
         format_string, "Throughput")
 lat_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
         format_string, "Avg Rtt", statistic="Ack-weighted Mean")
-rate_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params, format_string, "Target Rate") 
+rate_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params, format_string, "Target Rate")
 loss_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
         format_string, "Loss Rate", statistic="Send-weighted Mean")
 

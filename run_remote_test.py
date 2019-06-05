@@ -61,7 +61,7 @@ class RemoteVmManager:
     def run_on_vm(self, cmd):
         remote_cmd = "ssh pcc@%s '%s'" % (self.vm_ip, cmd)
         remote_call(self.hostname, remote_cmd)
-    
+
     def is_up(self):
         return (self.proc.exitcode is None) and psutil.pid_exists(self.child_pid)
         #return self.proc.is_alive() # Why doesn't this work?

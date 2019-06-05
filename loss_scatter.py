@@ -65,4 +65,3 @@ for p in params:
     plt.legend()
     plt.title("%s Throughput-Latency Tradeoff" % (format_string % p))
     plt.show()
-
