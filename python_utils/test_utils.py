@@ -43,7 +43,7 @@ def read_test_list_to_list(test_list):
     # The filename passed in is for a test list, so return the list of tests
     for test_name in test_json["Tests"]:
         tests += read_test_list_to_list(test_name)
-    
+
     return tests
 
 ##

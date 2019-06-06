@@ -44,7 +44,7 @@ def convert_interval_to_event(packet_events, start_event_number, start_time, end
     if len(rtt_samples) >= 2:
         latency_inflation = (rtt_samples[-1] - rtt_samples[0]) / dur
         five_percent_rtt = np.percentile(np.array(rtt_samples), 5)
- 
+
     event = {
         "Name":"Sample",
         "Time":str(start_time),
@@ -138,7 +138,7 @@ def mark_acked_packets(packet_events):
             print("\tDifference: %f" % (packet_events[ingress_ptr].time - (sorted_egress_events[egress_ptr].time - sorted_egress_events[egress_ptr].rtt)))
             egress_ptr += 1
             #exit(-1)
-    return 
+    return
 
 def convert_file_to_data_dict(filename):
     lines = []
@@ -154,9 +154,9 @@ def convert_file_to_data_dict(filename):
     lines = good_lines
     packet_events = create_packet_events(lines)
     mark_acked_packets(packet_events)
-    total_packets = sum([1 if e.type == INGRESS else 0 for e in packet_events]) 
-    lost_packets = sum([1 if e.type == INGRESS and (e.was_acked == False) else 0 for e in packet_events]) 
-    unknown_packets = sum([1 if e.type == INGRESS and (e.was_acked is None) else 0 for e in packet_events]) 
+    total_packets = sum([1 if e.type == INGRESS else 0 for e in packet_events])
+    lost_packets = sum([1 if e.type == INGRESS and (e.was_acked == False) else 0 for e in packet_events])
+    unknown_packets = sum([1 if e.type == INGRESS and (e.was_acked is None) else 0 for e in packet_events])
     print("Lost %d/%d packets" % (lost_packets, total_packets))
     print("Unknown %d/%d packets" % (unknown_packets, total_packets))
     base_rtt = get_base_rtt(packet_events)
