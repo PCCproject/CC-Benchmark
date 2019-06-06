@@ -142,7 +142,7 @@ def get_initial_link_state(link_def):
     return state
 
 class LinkManager():
-    
+
     def __init__(self, link, link_def, intf_side):
         self.link = link
         self.link_def = link_def
@@ -202,12 +202,12 @@ class MyTopo(Topo):
 
     def add_dl_link(self, link_type, src, dst):
         lt = link_type
-        
+
         jitter = lt["jitter"] if "jitter" in lt.keys() else None
         delay = lt["dl"] if "dl" in lt.keys() else None
         bw = lt["bw"] if "bw" in lt.keys() else None
         passthrough_bw = None if bw is None else 4 * bw
-        
+
         bdp_queue_size = None
         if delay is not None:
             delay_sec = int(delay[:-2]) / 1000.0
@@ -235,6 +235,8 @@ class MyTopo(Topo):
         self.add_dl_link(link_type, link_switch, dst)
 
     def build(self, topo_dict, link_types):
+        print(topo_dict)
+        print(link_types)
         self.topo_dict = topo_dict
         self.link_types = link_types
         self.link_managers = []

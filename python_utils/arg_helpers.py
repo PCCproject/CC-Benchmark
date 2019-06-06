@@ -18,4 +18,3 @@ def arg_or_default(arg, default=None):
         return result
     else:
         return default
-

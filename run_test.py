@@ -129,7 +129,9 @@ def run_test(test_dict):
             time.sleep(sleep_dur)
         test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir,
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
-        os.system("sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command))
+        cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
+        print("\t\tCMD IS", cmd)
+        os.system(cmd)
 
     timeout = 400.0 + max_end + time_offset - time.time()
     all_log_names = ["%s/%s_datalink_run%d.log" % (data_dir, flows[i]["protocol"], run_ids[i]) for i in range(0, len(flows))]

@@ -67,7 +67,7 @@ def create_scheme_running_script(scheme_config):
 
     if (scheme_config.ld_library_path is not None):
         add_ld_library_path_to_running_script(scheme_config)
-    
+
     if (scheme_config.extra_args is not None):
         add_extra_args_to_running_script(scheme_config)
 

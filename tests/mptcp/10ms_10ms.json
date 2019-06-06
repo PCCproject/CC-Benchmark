@@ -1,38 +1,43 @@
 {
-    "Name":"rtt_fairness.16ms_to_32ms",
-    "Topology":"3_point_star",
+    "Name":"mptcp.10ms_10ms",
+    "Topology":"simple_mptcp",
     "Flows":[
         {
             "name":"flow_1",
-            "protocol":"TEST",
+            "protocol":"default_tcp",
             "src":"10.0.0.1",
-            "dst":"10.0.0.3",
+            "dst":"10.0.0.2",
             "start":0.0,
-            "dur":120.0
+            "dur":30.0
         },
         {
             "name":"flow_2",
-            "protocol":"TEST",
-            "src":"10.0.0.2",
-            "dst":"10.0.0.3",
+            "protocol":"default_tcp",
+            "src":"11.0.0.1",
+            "dst":"11.0.0.2",
             "start":0.0,
-            "dur":120.0
+            "dur":30.0
         }
     ],
     "Link Types":{
         "L1":{
             "bw":30,
-            "dl":"4ms",
+            "dl":"5ms",
             "queue":1000
         },
         "L2":{
             "bw":30,
-            "dl":"12ms",
+            "dl":"5ms",
             "queue":1000
         },
         "L3":{
             "bw":30,
-            "dl":"4ms",
+            "dl":"5ms",
+            "queue":1000
+        },
+        "L4":{
+            "bw":30,
+            "dl":"5ms",
             "queue":1000
         }
     }
