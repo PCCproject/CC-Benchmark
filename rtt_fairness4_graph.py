@@ -17,7 +17,7 @@ def smooth_with_polyfit(x, y):
     z = np.polyfit(x, y, 10)
     f = np.poly1d(z)
 
-    x_new = np.linspace(x[0], x[-1], orig_len*1000)
+    x_new = np.linspace(x[0], x[-1], orig_len*100)
     y_new = f(x_new)
 
     return (x_new, y_new)
