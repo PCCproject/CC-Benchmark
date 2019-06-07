@@ -88,7 +88,6 @@ fig.set_size_inches(10.0, 13.0)
 new_t, new_thpt, new_lat = smooth_time_thpt_lat_with_pfit(time, thpt, lat)
 
 thpt_axes.set_title("Time vs. Throughput")
-thpt_axes.
 thpt_axes.plot(new_t[0], new_thpt[0], label="{}ms flow".format(params[0]))
 thpt_axes.plot(new_t[1], new_thpt[1], label="{}ms flow".format(params[1]))
 
