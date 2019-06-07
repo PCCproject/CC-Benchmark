@@ -4,6 +4,38 @@ import matplotlib.pyplot as plt
 from graphing.analysis.results_library import ResultsLibrary, TestResult
 from python_utils.file_locations import results_dir
 import sys
+def smooth_with_linspace(arr, param=100):
+    new_arr = []
+    for i in range(0, len(arr)-1):
+        l = list(np.linspace(arr[i], arr[i+1], param))
+        new_arr += l
+    return new_arr
+
+def smooth_with_polyfit(x, y):
+    orig_len = len(x)
+
+    z = np.polyfit(x, y, 10)
+    f = np.poly1d(z)
+
+    x_new = np.linspace(x[0], x[-1], orig_len*1000)
+    y_new = f(x_new)
+
+    return (x_new, y_new)
+
+def smooth_time_thpt_lat_with_pfit(time, thpt, lat):
+    new_time = []
+    new_thpt = []
+    new_lat = []
+
+    for i in range(0, len(time)):
+        x, y = smooth_with_polyfit(time[i], thpt[i])
+        new_time.append(x)
+        new_thpt.append(y)
+        _, y = smooth_with_polyfit(time[i], lat[i])
+        new_lat.append(y)
+
+    return (new_time, new_thpt, new_lat)
+
 if len(sys.argv) != 4:
     print("Usage ./rtt_fairness_graph.py [rtt_1] [rtt2] [rtt3]")
     import os
@@ -45,15 +77,27 @@ for scheme in full_schemes:
 
 fig.set_size_inches(10.0, 13.0)
 
+# thpt_axes.set_title("Time vs. Throughput")
+# thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
+# thpt_axes.plot(time[1], thpt[1], label="{}ms flow".format(params[1]))
+# thpt_axes.plot(time[2], thpt[2], label="{}ms flow".format(params[2]))
+#
+# lat_axes.set_title("Time vs. Latency")
+# lat_axes.plot(time[0], lat[0])
+# lat_axes.plot(time[1], lat[1])
+# lat_axes.plot(time[2], lat[2])
+
+new_t, new_thpt, new_lat = smooth_time_thpt_lat_with_pfit(time, thpt, lat)
+
 thpt_axes.set_title("Time vs. Throughput")
-thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
-thpt_axes.plot(time[1], thpt[1], label="{}ms flow".format(params[1]))
-thpt_axes.plot(time[2], thpt[2], label="{}ms flow".format(params[2]))
+thpt_axes.plot(new_t[0], new_thpt[0], label="{}ms flow".format(params[0]))
+thpt_axes.plot(new_t[1], new_thpt[1], label="{}ms flow".format(params[1]))
+thpt_axes.plot(new_t[2], new_thpt[2], label="{}ms flow".format(params[2]))
 
 lat_axes.set_title("Time vs. Latency")
-lat_axes.plot(time[0], lat[0])
-lat_axes.plot(time[1], lat[1])
-lat_axes.plot(time[2], lat[2])
+lat_axes.plot(new_t[0], new_lat[0])
+lat_axes.plot(new_t[1], new_lat[1])
+lat_axes.plot(new_t[2], new_lat[2])
 
 fig.legend()
 
