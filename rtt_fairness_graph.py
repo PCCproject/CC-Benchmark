@@ -28,8 +28,10 @@ time = []
 def smooth_with_linspace(arr, param=10):
     new_arr = []
     for i in range(0, len(arr)-1):
-        new_arr.append([x for x in list(np.linspace(arr[i], arr[i+1], param))])
+        l = list(np.linspace(arr[i], arr[i+1], param))
+        new_arr += l
     return new_arr
+    
 for scheme in full_schemes:
     filter_func = lambda test_result : test_result.get_scheme_name() == scheme
 
