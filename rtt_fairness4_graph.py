@@ -49,9 +49,12 @@ full_schemes = results.get_all_schemes_with_tests([format_string])
 
 flow_names = ["flow_1", "flow_2", "flow_3"]
 
-fig, axes = plt.subplots(2)
-thpt_axes = axes[0]
-lat_axes = axes[1]
+# fig, axes = plt.subplots(2)
+# thpt_axes = axes[0]
+# lat_axes = axes[1]
+
+thpt_axes = plt.axes([0.05, 0.5, 0.9, 0.3])
+lat_axes = plt.axes([0.05, 0.1, 0.9, 0.3])
 
 thpt = []
 lat = []
@@ -75,7 +78,7 @@ for scheme in full_schemes:
         thpt.append([scheme_result.flows[flow_name].get_event_data("Throughput") for scheme_result in scheme_results][0])
         time.append(time_tmp)
 
-fig.set_size_inches(10.0, 13.0)
+# fig.set_size_inches(10.0, 13.0)
 
 # thpt_axes.set_title("Time vs. Throughput")
 # thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
@@ -99,6 +102,8 @@ lat_axes.plot(new_t[0], new_lat[0])
 lat_axes.plot(new_t[1], new_lat[1])
 lat_axes.plot(new_t[2], new_lat[2])
 
+fig = plt.gcf()
+fig.set_size_inches(30, 15)
 fig.legend()
 
 plt.savefig("{}ms_to_{}ms_to_{}ms_rtt.png".format(params[0], params[1], params[2]))
