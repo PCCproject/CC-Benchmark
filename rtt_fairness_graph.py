@@ -75,7 +75,9 @@ for scheme in full_schemes:
         thpt.append([scheme_result.flows[flow_name].get_event_data("Throughput") for scheme_result in scheme_results][0])
         time.append(time_tmp)
 
-plt.set_size_inches(10.0, 13.0)
+fig = matplotlib.pyplot.gcf()
+
+fig.set_size_inches(10.0, 13.0)
 
 # thpt_axes.set_title("Time vs. Throughput")
 # thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
@@ -95,5 +97,5 @@ lat_axes.set_title("Time vs. Latency")
 lat_axes.plot(new_t[0], new_lat[0])
 lat_axes.plot(new_t[1], new_lat[1])
 
-plt.legend()
+fig.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
