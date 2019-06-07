@@ -45,7 +45,7 @@ for scheme in full_schemes:
 
 # fig.set_size_inches(10.0, 20.0)
 
-fig.legend()
+
 
 thpt_axes.set_title("Time vs. Throughput")
 thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
@@ -55,4 +55,5 @@ lat_axes.set_title("Time vs. Latency")
 lat_axes.plot(time[0], lat[0], label="{}ms flow".format(params[0]))
 lat_axes.plot(time[1], lat[1], label="{}ms flow".format(params[1]))
 
+fig.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
