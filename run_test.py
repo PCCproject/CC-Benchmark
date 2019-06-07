@@ -33,6 +33,10 @@ git_checksum = None
 
 scheme_nickname = arg_helpers.arg_or_default("--nickname", None)
 
+mptcp = False
+if len(sys.argv) > 3:
+    if "mptcp" in sys.argv[3]:
+        mptcp = True
 # This means we are testing a branch from a repository -- we probably have to build it first
 if (":" in scheme_to_test):
     is_git_repo = True
@@ -107,6 +111,16 @@ def run_test(test_dict):
     test_link_types = test_dict["Link Types"]
     topo = mininet_utils.MyTopo(test_topo_dict, test_link_types)
     net = Mininet(topo=topo, link=TCLink)
+    h1 = net.getNodeByName("h1")
+    h1 = net.getNodeByName("h2")
+    if mptcp:
+        h1.cmd('ifconfig h1-eth{0} 10.0.{0}.1'.format(i))
+        h2.cmd('ifconfig h2-eth{0} 10.0.{0}.2'.format(i))
+
+
+    h1.cmd('ifconfig')
+    h2.cmd('ifconfig')
+
     mininet_utils.sshd(net)
     topo.start_all_link_managers(net)
     flows = sort_by_start_time(test_dict["Flows"])
@@ -129,7 +143,15 @@ def run_test(test_dict):
             time.sleep(sleep_dur)
         test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir,
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
-        cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
+
+        cmd = None
+        if mptcp:
+            # tunneling
+            "sudo -u {0} ssh -i ~/.ssh/id_mininet_rsa -t ssh {0}@{1} \"%s\" &".format(username, flow["src"], test_command)
+        else:
+            cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
+
+        # cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
         print("\t\tCMD IS", cmd)
         os.system(cmd)
 
