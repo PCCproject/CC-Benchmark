@@ -25,6 +25,11 @@ thpt = []
 lat = []
 time = []
 
+def smooth_with_linspace(arr, param=10):
+    new_arr = []
+    for i in range(0, len(arr)-1):
+        new_arr.append(list(np.linspace(arr[i], arr[i+1], param)))
+    return new_arr
 for scheme in full_schemes:
     filter_func = lambda test_result : test_result.get_scheme_name() == scheme
 
@@ -45,15 +50,13 @@ for scheme in full_schemes:
 
 fig.set_size_inches(10.0, 13.0)
 
-
-
 thpt_axes.set_title("Time vs. Throughput")
-thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
-thpt_axes.plot(time[1], thpt[1], label="{}ms flow".format(params[1]))
+thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
+thpt_axes.plot(smoosmooth_with_linspaceth_with(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
 
 lat_axes.set_title("Time vs. Latency")
-lat_axes.plot(time[0], lat[0])
-lat_axes.plot(time[1], lat[1])
+lat_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(lat[0]))
+lat_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(lat[1]))
 
 fig.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
