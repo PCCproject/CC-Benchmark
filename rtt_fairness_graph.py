@@ -4,6 +4,38 @@ import matplotlib.pyplot as plt
 from graphing.analysis.results_library import ResultsLibrary, TestResult
 from python_utils.file_locations import results_dir
 import sys
+def smooth_with_linspace(arr, param=100):
+    new_arr = []
+    for i in range(0, len(arr)-1):
+        l = list(np.linspace(arr[i], arr[i+1], param))
+        new_arr += l
+    return new_arr
+
+def smooth_with_polyfit(x, y):
+    orig_len = len(x)
+
+    z = np.polyfit(x, y, 4)
+    f = np.poly1d(z)
+
+    x_new = np.linspace(x[0], x[-1], orig_len*100)
+    y_new = f(x_new)
+
+    return (x_new, y_new)
+
+def smooth_time_thpt_lat_with_pfit(time, thpt, lat):
+    new_time = []
+    new_thpt = []
+    new_lat = []
+
+    for i in range(0, len(time)):
+        x, y = smooth_with_polyfit(time[i], thpt[i])
+        new_time.append(x)
+        new_thpt.append(y)
+        _, y = smooth_with_polyfit(time[i], lat[i])
+        new_lat.append(y)
+
+    return (new_time, new_thpt, new_lat)
+
 if len(sys.argv) != 3:
     print("Usage ./rtt_fairness_graph.py [rtt_1] [rtt2]")
     import os
@@ -25,13 +57,6 @@ thpt = []
 lat = []
 time = []
 
-def smooth_with_linspace(arr, param=100):
-    new_arr = []
-    for i in range(0, len(arr)-1):
-        l = list(np.linspace(arr[i], arr[i+1], param))
-        new_arr += l
-    return new_arr
-
 for scheme in full_schemes:
     filter_func = lambda test_result : test_result.get_scheme_name() == scheme
 
@@ -52,13 +77,21 @@ for scheme in full_schemes:
 
 fig.set_size_inches(10.0, 13.0)
 
+# thpt_axes.set_title("Time vs. Throughput")
+# thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
+# thpt_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
+#
+# lat_axes.set_title("Time vs. Latency")
+# lat_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(lat[0]))
+# lat_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(lat[1]))
+
+new_t, new_thpt, new_lat = smooth_time_thpt_lat_with_pfit(time, thpt, lat)
+
 thpt_axes.set_title("Time vs. Throughput")
-thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
-thpt_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
+thpt_axes.plot(new_t, new_thpt, label="{}ms flow".format(x[0] for x in params))
 
 lat_axes.set_title("Time vs. Latency")
-lat_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(lat[0]))
-lat_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(lat[1]))
+lat_axes.plot(new_t, new_lat, label="{}ms flow".format(x[0] for x in params))
 
 fig.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
