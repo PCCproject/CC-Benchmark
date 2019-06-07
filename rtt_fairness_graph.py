@@ -52,7 +52,7 @@ fig.set_size_inches(10.0, 13.0)
 
 thpt_axes.set_title("Time vs. Throughput")
 thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
-thpt_axes.plot(smoosmooth_with_linspaceth_with(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
+thpt_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
 
 lat_axes.set_title("Time vs. Latency")
 lat_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(lat[0]))
