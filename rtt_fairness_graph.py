@@ -95,5 +95,5 @@ lat_axes.set_title("Time vs. Latency")
 lat_axes.plot(new_t[0], new_lat[0])
 lat_axes.plot(new_t[1], new_lat[1])
 
-fig.legend()
+plt.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
