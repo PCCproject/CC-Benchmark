@@ -14,7 +14,7 @@ def smooth_with_linspace(arr, param=100):
 def smooth_with_polyfit(x, y):
     orig_len = len(x)
 
-    z = np.polyfit(x, y, 4)
+    z = np.polyfit(x, y, 10)
     f = np.poly1d(z)
 
     x_new = np.linspace(x[0], x[-1], orig_len*100)
