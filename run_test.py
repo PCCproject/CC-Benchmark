@@ -114,6 +114,10 @@ def run_test(test_dict):
     h1 = net.getNodeByName("h1")
     h1 = net.getNodeByName("h2")
     if mptcp:
+        os.system('sysctl -w net.mptcp.mptcp_path_manager=fullmesh')
+        os.system('sysctl -w net.mptcp.mptcp_scheduler=default')
+        os.system('sysctl -w net.mptcp.mptcp_enabled=1')
+        
         h1.cmd('ifconfig h1-eth{0} 10.0.{0}.1'.format(i))
         h2.cmd('ifconfig h2-eth{0} 10.0.{0}.2'.format(i))
 
