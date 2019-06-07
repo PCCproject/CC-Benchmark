@@ -88,10 +88,12 @@ fig.set_size_inches(10.0, 13.0)
 new_t, new_thpt, new_lat = smooth_time_thpt_lat_with_pfit(time, thpt, lat)
 
 thpt_axes.set_title("Time vs. Throughput")
-thpt_axes.plot(new_t, new_thpt, label="{}ms flow".format(x[0] for x in params))
+thpt_axes.plot(new_t[0], new_thpt[0], label="{}ms flow".format(params[0]))
+thpt_axes.plot(new_t[1], new_thpt[1], label="{}ms flow".format(params[1]))
 
 lat_axes.set_title("Time vs. Latency")
-lat_axes.plot(new_t, new_lat, label="{}ms flow".format(x[0] for x in params))
+lat_axes.plot(new_t[0], new_lat[0])
+lat_axes.plot(new_t[1], new_lat[1])
 
 fig.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
