@@ -17,13 +17,9 @@ full_schemes = results.get_all_schemes_with_tests([format_string])
 
 flow_names = ["flow_1", "flow_2", "flow_3"]
 
-fig, axes = plt.subplots(6)
-flow_1_thpt = axes[0]
-flow_2_thpt = axes[1]
-flow_3_thpt = axes[2]
-flow_1_lat = axes[3]
-flow_2_lat = axes[4]
-flow_3_lat = axes[5]
+fig, axes = plt.subplots(2)
+thpt_axes = axes[0]
+lat_axes = axes[1]
 
 thpt = []
 lat = []
@@ -49,34 +45,16 @@ for scheme in full_schemes:
 
 fig.set_size_inches(10.0, 30.0)
 
-flow_1_thpt.set_title("{}ms flow".format(params[0]))
-flow_1_thpt.set_xlabel("Time")
-flow_1_thpt.set_ylabel("Throughput")
-flow_1_thpt.plot(time[0], thpt[0])
+thpt_axes.set_title("Time vs. Throughput")
+thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
+thpt_axes.plot(time[1], thpt[1], label="{}ms flow".format(params[1]))
+thpt_axes.plot(time[2], thpt[2], label="{}ms flow".format(params[2]))
 
-flow_2_thpt.set_title("{}ms flow".format(params[1]))
-flow_2_thpt.set_xlabel("Time")
-flow_2_thpt.set_ylabel("Throughput")
-flow_2_thpt.plot(time[1], thpt[1])
+lat_axes.set_title("Time vs. Latency")
+lat_axes.plot(time[0], lat[0])
+lat_axes.plot(time[1], lat[1])
+lat_axes.plot(time[2], lat[2])
 
-flow_3_thpt.set_title("{}ms flow".format(params[2]))
-flow_3_thpt.set_xlabel("Time")
-flow_3_thpt.set_ylabel("Throughput")
-flow_3_thpt.plot(time[2], thpt[2])
-
-flow_1_lat.set_title("{}ms flow".format(params[0]))
-flow_1_lat.set_xlabel("Time")
-flow_1_lat.set_ylabel("Latency")
-flow_1_lat.plot(time[0], lat[0])
-
-flow_2_lat.set_title("{}ms flow".format(params[1]))
-flow_2_lat.set_xlabel("Time")
-flow_2_lat.set_ylabel("Latency")
-flow_2_lat.plot(time[1], lat[1])
-
-flow_3_lat.set_title("{}ms flow".format(params[2]))
-flow_3_lat.set_xlabel("Time")
-flow_3_lat.set_ylabel("Latency")
-flow_3_lat.plot(time[2], lat[2])
+fig.legend()
 
 plt.savefig("{}ms_to_{}ms_to_{}ms_rtt.png".format(params[0], params[1], params[2]))
