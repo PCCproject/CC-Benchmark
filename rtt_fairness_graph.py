@@ -50,8 +50,8 @@ full_schemes = results.get_all_schemes_with_tests([format_string])
 flow_names = ["flow_1", "flow_2"]
 
 #fig, axes = plt.subplots(2)
-thpt_axes = plt.axes([0, 0, 2, 1])
-lat_axes = plt.axes([0, 1.3, 2, 1])
+thpt_axes = plt.axes([0.05, 0.5, 0.9, 0.3])
+lat_axes = plt.axes([0.05, 0.1, 0.9, 0.3])
 
 thpt = []
 lat = []
@@ -75,27 +75,29 @@ for scheme in full_schemes:
         thpt.append([scheme_result.flows[flow_name].get_event_data("Throughput") for scheme_result in scheme_results][0])
         time.append(time_tmp)
 
-fig = plt.gcf()
-
-fig.set_size_inches(10.0, 13.0)
-
-# thpt_axes.set_title("Time vs. Throughput")
-# thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
-# thpt_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
+# fig = plt.gcf()
 #
-# lat_axes.set_title("Time vs. Latency")
-# lat_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(lat[0]))
-# lat_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(lat[1]))
-
-new_t, new_thpt, new_lat = smooth_time_thpt_lat_with_pfit(time, thpt, lat)
+# fig.set_size_inches(10.0, 13.0)
 
 thpt_axes.set_title("Time vs. Throughput")
-thpt_axes.plot(new_t[0], new_thpt[0], label="{}ms flow".format(params[0]))
-thpt_axes.plot(new_t[1], new_thpt[1], label="{}ms flow".format(params[1]))
+thpt_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(thpt[0]), label="{}ms flow".format(params[0]))
+thpt_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(thpt[1]), label="{}ms flow".format(params[1]))
 
 lat_axes.set_title("Time vs. Latency")
-lat_axes.plot(new_t[0], new_lat[0])
-lat_axes.plot(new_t[1], new_lat[1])
+lat_axes.plot(smooth_with_linspace(time[0]), smooth_with_linspace(lat[0]))
+lat_axes.plot(smooth_with_linspace(time[1]), smooth_with_linspace(lat[1]))
 
+# new_t, new_thpt, new_lat = smooth_time_thpt_lat_with_pfit(time, thpt, lat)
+#
+# thpt_axes.set_title("Time vs. Throughput")
+# thpt_axes.plot(new_t[0], new_thpt[0], label="{}ms flow".format(params[0]))
+# thpt_axes.plot(new_t[1], new_thpt[1], label="{}ms flow".format(params[1]))
+#
+# lat_axes.set_title("Time vs. Latency")
+# lat_axes.plot(new_t[0], new_lat[0])
+# lat_axes.plot(new_t[1], new_lat[1])
+
+fig = plt.gcf()
+fig.set_size_inches(30, 15)
 fig.legend()
 plt.savefig("{}ms_to_{}ms_rtt.png".format(params[0], params[1]))
