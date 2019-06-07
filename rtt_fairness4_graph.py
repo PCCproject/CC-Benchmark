@@ -43,7 +43,7 @@ for scheme in full_schemes:
         thpt.append([scheme_result.flows[flow_name].get_event_data("Throughput") for scheme_result in scheme_results][0])
         time.append(time_tmp)
 
-fig.set_size_inches(10.0, 30.0)
+fig.set_size_inches(10.0, 13.0)
 
 thpt_axes.set_title("Time vs. Throughput")
 thpt_axes.plot(time[0], thpt[0], label="{}ms flow".format(params[0]))
