@@ -31,7 +31,10 @@ remote_hosts = {
 }
 
 tests_to_run = sys.argv[2]
-schemes_to_test = sys.argv[1].split(" ")
+list_of_tests_to_run = read_test_list_to_list(tests_to_run)
+total_time_to_test = get_total_test_time(list_of_tests_to_run)
+
+schemes_to_test = sys.argv[1].split(",")
 replicas = 1
 if (len(sys.argv) > 3):
     replicas = int(sys.argv[3])
@@ -198,7 +201,7 @@ class RemoteHostManager:
 
 test_queue = multiprocessing.Queue()
 for scheme_to_test in schemes_to_test:
-    for test_name in read_test_list_to_list(tests_to_run):
+    for test_name in list_of_tests_to_run:
         n_tests_done = results_lib.get_num_tests_done(test_name, scheme_to_test)
         print("Have %d tests for %s:%s, need %d more" % (n_tests_done, test_name, scheme_to_test, replicas - n_tests_done))
         for i in range(0, replicas - n_tests_done):

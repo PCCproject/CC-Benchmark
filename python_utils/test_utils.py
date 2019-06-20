@@ -14,6 +14,68 @@ SUPPORTED_PANTHEON_SCHEMES = [
     "ledbat"
 ]
 
+MANNUALLY_MAMANGED_VM_IPS = [
+    "192.168.122.22"
+]
+
+def get_total_test_time(tests, distributed, number_of_vms):
+    distributed_time = np.zeors(number_of_vms)
+    min_idx = 0
+
+
+def get_host_name():
+    import socket
+    return socket.gethostname()
+
+def occupy_remote_vm(tests):
+    pass
+
+def occupy_local_vm(tests):
+    pass
+
+def free_remote_vm():
+    with open(file_locations.remote_test_running_dir, 'w') as f:
+        f.write("false")
+
+def free_local_vm():
+    with open(file_locations.local_test_running_dir, 'w') as f:
+        f.write("false")
+
+def get_remaining_test_time():
+    with open(file_locations.remote_test_running_dir, 'r') as f:
+        remote = f.read().rstrip()
+        if 'true' in remote:
+            info = remote.split(' ')
+            start_time = float(info[1])
+            total_time = float(info[2])
+            elapsed_time = time.time() - start_time
+            return total_time - elapsed_time + 30
+
+    with open(file_locations.local_test_running_dir, 'r') as f:
+        local = f.read().rstrip()
+        if 'true' in remote:
+            info = local.split(' ')
+            start_time = float(info[1])
+            total_time = float(info[2])
+            elapsed_time = time.time() - start_time
+            return total_time - elapsed_time + 30
+
+    # tests are done
+    return -1
+
+def check_idle():
+    with open(file_locations.local_test_running_dir, 'r') as f:
+        local = f.read().rstrip()
+        if 'false' not in local:
+            return False
+
+    with open(file_locations.remote_test_running_dir, 'r') as f:
+        remote = f.read().rstrip()
+        if 'false' not in remote:
+            return False
+
+    return True
+
 ##
 #  Takes a topology name and reads the corresponding topology json into a dict.
 ##
