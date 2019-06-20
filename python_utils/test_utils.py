@@ -1,6 +1,8 @@
 from python_utils import file_locations
 import json
 import os
+import numpy as np
+import json
 
 SUPPORTED_PANTHEON_SCHEMES = [
     "copa",
@@ -18,10 +20,33 @@ MANNUALLY_MAMANGED_VM_IPS = [
     "192.168.122.22"
 ]
 
-def get_total_test_time(tests, distributed, number_of_vms):
-    distributed_time = np.zeors(number_of_vms)
-    min_idx = 0
+def get_test_dur(test):
+    test_file = file_locations.tests_dir + "/" + test + ".json"
+    max_dur = 0
+    try:
+        with open(test_file, 'r') as f:
+            meta = json.loads(f.read())
+            for flow in meta['Flows']:
+                curr_flow = flow['dur']
+                if curr_flow > max_dur:
+                    max_dur = curr_flow
+    except Exception as e:
+        print("filenotfound")
+        print e
 
+    return max_dur
+
+
+    return min_idx
+
+def get_total_test_time(tests, number_of_vms):
+    distributed_time = np.zeros(number_of_vms)
+    for test in tests:
+        min_idx = np.argmin(distributed_time)
+        test_dur = get_test_dur(test)
+        distributed_time[min_idx] += (test_dur + 30) # add 30 second for timeout between test and log conversion time
+
+    return np.max(distributed_time)
 
 def get_host_name():
     import socket

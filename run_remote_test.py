@@ -10,6 +10,7 @@ import psutil
 from python_utils import vm_config
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
+from python_utils.test_utils import get_total_test_time
 from python_utils.ssh_utils import get_idle_percent
 from python_utils.ssh_utils import remote_call
 from python_utils.ssh_utils import remote_copy
@@ -32,7 +33,8 @@ remote_hosts = {
 
 tests_to_run = sys.argv[2]
 list_of_tests_to_run = read_test_list_to_list(tests_to_run)
-total_time_to_test = get_total_test_time(list_of_tests_to_run)
+total_time_to_test = get_total_test_time(list_of_tests_to_run, 3)
+print(total_time_to_test)
 
 schemes_to_test = sys.argv[1].split(",")
 replicas = 1
@@ -202,6 +204,7 @@ class RemoteHostManager:
 test_queue = multiprocessing.Queue()
 for scheme_to_test in schemes_to_test:
     for test_name in list_of_tests_to_run:
+        print(test_name)
         n_tests_done = results_lib.get_num_tests_done(test_name, scheme_to_test)
         print("Have %d tests for %s:%s, need %d more" % (n_tests_done, test_name, scheme_to_test, replicas - n_tests_done))
         for i in range(0, replicas - n_tests_done):
