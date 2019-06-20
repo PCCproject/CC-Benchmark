@@ -57,18 +57,22 @@ thpt = []
 lat = []
 time = []
 
+print(full_schemes)
+print(type(full_schemes))
 for scheme in full_schemes:
     filter_func = lambda test_result : test_result.get_scheme_name() == scheme
 
     scheme_results = results.get_all_results_matching(format_string\
                     .format(params[0], params[1]), filter_func=filter_func)
-
+    print(scheme_results)
+    print(type(scheme_results))
     for scheme_result in scheme_results:
         scheme_result.load()
 
     for flow_name in flow_names:
         # Normalize time
         time_tmp = np.array([scheme_result.flows[flow_name].get_event_data("Time") for scheme_result in scheme_results][0])
+        print(time_tmp)
         time_tmp -= time_tmp[0]
 
         lat.append([scheme_result.flows[flow_name].get_event_data("Avg Rtt") for scheme_result in scheme_results][0])

@@ -1,0 +1,32 @@
+{
+    "Name":"simple_multi_switch",
+    "Topology":"multi_switch_2",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":30.0
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":30,
+            "dl":"2ms",
+            "queue":1000
+        },
+        "L2":{
+            "bw":30,
+            "dl":"2ms",
+            "queue":1000
+        },
+        "L3":{
+            "bw":30,
+            "dl":"2ms",
+            "queue":1000
+        }
+    }
+
+}

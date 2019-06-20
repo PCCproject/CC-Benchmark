@@ -182,9 +182,76 @@ def convert_file_to_data_dict(filename):
 
     return {"Events":events}
 
+def validate_attr(data_list, attr):
+    if attr is None:
+        raise ValueError("Attr cannot be None")
+        return
+    if attr not in data_list[0]:
+        raise KeyError()
+        return
+
+def get_mean_of_attr(data_list, attr=None):
+    validate_attr(data_list, attr)
+    return sum([float(x[attr]) for x in data_list])
+
+def get_sum_of_attr(data_list, attr=None):
+    validate_attr(data_list, attr)
+    return np.mean(np.array([float(x[attr]) for x in data_list]))
+
+def get_ith_time(event, i):
+    return float(event[i]["Time"])
+
+def get_batch_size(data_dict, nearest=1):
+    nearest_ms = nearest * 1000
+    time_til_now = 0
+
+    batch_size = 1
+    events = data_dict['Events']
+    i = 0
+    while time_til_now < nearest_ms:
+        time_til_now += (get_ith_time(events, i + 1) - get_ith_time(events, i))
+        i += 1
+
+    return i
+
+def merge_n_logs(data_list):
+    """
+    Given n events it merges the events into 1 event
+    'Five Percent Rtt', 'Name', 'Avg Rtt', 'Max Rtt', 'Min Rtt' are neglected
+    """
+    data_dict = {"Loss Rate": get_mean_of_attr(data_list, "Loss Rate"),
+                 "Avg Rtt": get_mean_of_attr(data_list, "Avg Rtt"),
+                 "Acks Received": get_sum_of_attr(data_list, "Acks Received"),
+                 "Target Rate": get_mean_of_attr(data_list, "Target Rate"),
+                 "Rtt Inflation": get_mean_of_attr(data_list, "Rtt Inflation"),
+                 "Throughput" : get_mean_of_attr(data_list, "Throughput"),
+                 "Packets Sent": get_sum_of_attr(data_list, "Packets Sent"),
+                 "Time": data_list[0]["Time"],
+                 }
+
+    return data_dict
+
+def merge_logs_by_batch_size(data_dict, batch_size):
+    all_data = []
+    i = 0
+    data_list = data_dict['Events']
+    while i < len(data_list):
+        all_data.append(merge_n_logs(data_list[i : i + batch_size]))
+        i += batch_size
+    if len(data_list[i:]) > 0:
+        all_data.append(merge_n_logs(data_list[i:]))
+
+    return {"Events" : all_data}
+
 def convert_pantheon_log(pantheon_filename, converted_filename, delete_old=False):
     data_dict = convert_file_to_data_dict(pantheon_filename)
-    with open(converted_filename, "w") as outf:
+    batch_size = get_batch_size(data_dict)
+    new_data = merge_logs_by_batch_size(data_dict, batch_size)
+
+    with open(converted_filename.split(".json")[0]+"_orig.json", "w") as outf:
         json.dump(data_dict, outf, indent=4)
+
+    with open(converted_filename, "w") as outf:
+        json.dump(new_data, outf, indent=4)
     if delete_old:
         os.remove(pantheon_filename)

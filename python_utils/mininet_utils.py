@@ -50,10 +50,14 @@ def connectToRootNS( network, switch, ip, routes ):
     root = Node( 'root', inNamespace=False )
     intf = network.addLink( root, switch ).intf1
     root.setIP( ip, intf=intf )
+    print("ROOT IFCONFIGGGGGG\n\n\n")
+    print(root.cmd('ifconfig'))
+    #print(network.get('root').cmd('ifconfig'))
     # Start network that now includes link to root namespace
     network.start()
     # Add routes from root ns to hosts
     for route in routes:
+        print('route add -net ' + route + ' dev ' + str( intf ))
         root.cmd( 'route add -net ' + route + ' dev ' + str( intf ) )
 
 def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
@@ -73,12 +77,18 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
         routes = [ '10.0.0.0/24' ]
     connectToRootNS( network, switch, ip, routes )
     for host in network.hosts:
+        print(host)
         host.cmd( cmd + ' ' + opts + '&' )
     for server in network.hosts:
+        #print(help(server))
+        #print(server.intfList())
         waitListening( server=server, port=22, timeout=5 )
+    #waitListening( server='10.0.1.1', port=22, timeout=5 )
+    #waitListening( server='10.0.1.2', port=22, timeout=5 )
 
     for host in network.hosts:
         info( host.name, host.IP(), '\n' )
+        print( host.name, host.IP(), '\n' )
 
 def oscillate_half_bw(link, link_def, link_state, intf_side):
     bw = link_state["bw"]
@@ -235,8 +245,8 @@ class MyTopo(Topo):
         self.add_dl_link(link_type, link_switch, dst)
 
     def build(self, topo_dict, link_types):
-        print(topo_dict)
-        print(link_types)
+        # print(topo_dict)
+        # print(link_types)
         self.topo_dict = topo_dict
         self.link_types = link_types
         self.link_managers = []

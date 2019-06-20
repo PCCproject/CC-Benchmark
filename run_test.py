@@ -34,9 +34,9 @@ git_checksum = None
 scheme_nickname = arg_helpers.arg_or_default("--nickname", None)
 
 mptcp = False
-if len(sys.argv) > 3:
-    if "mptcp" in sys.argv[3]:
-        mptcp = True
+if "mptcp" in sys.argv[2]:
+    mptcp = True
+
 # This means we are testing a branch from a repository -- we probably have to build it first
 if (":" in scheme_to_test):
     is_git_repo = True
@@ -111,21 +111,79 @@ def run_test(test_dict):
     test_link_types = test_dict["Link Types"]
     topo = mininet_utils.MyTopo(test_topo_dict, test_link_types)
     net = Mininet(topo=topo, link=TCLink)
+
     h1 = net.getNodeByName("h1")
-    h1 = net.getNodeByName("h2")
+    h2 = net.getNodeByName("h2")
     if mptcp:
+        # hard code configuration for simple mptcp topology
         os.system('sysctl -w net.mptcp.mptcp_path_manager=fullmesh')
         os.system('sysctl -w net.mptcp.mptcp_scheduler=default')
         os.system('sysctl -w net.mptcp.mptcp_enabled=1')
-        
-        h1.cmd('ifconfig h1-eth{0} 10.0.{0}.1'.format(i))
-        h2.cmd('ifconfig h2-eth{0} 10.0.{0}.2'.format(i))
 
+        # configure 2 different interfaces
+        h1_cmd1 = 'ifconfig h1-eth0 10.0.0.1'
+        h1_cmd2 = 'ifconfig h1-eth1 10.0.1.1'
+        h2_cmd1 = 'ifconfig h2-eth0 10.0.0.2'
+        h2_cmd2 = 'ifconfig h2-eth1 10.0.1.2'
 
-    h1.cmd('ifconfig')
-    h2.cmd('ifconfig')
+        print("{}\n{}\n{}\n{}".format(h1_cmd1, h1_cmd2, h2_cmd1, h2_cmd2))
+        h1.cmd(h1_cmd1)
+        h1.cmd(h1_cmd2)
+        h2.cmd(h2_cmd1)
+        h2.cmd(h2_cmd2)
 
+        # Create two different routing tables for each source address
+        h1_cmd1 = 'ip rule add from 10.0.0.1 table 1'
+        h1_cmd2 = 'ip rule add from 10.0.1.1 table 2'
+        h2_cmd1 = 'ip rule add from 10.0.0.2 table 1'
+        h2_cmd2 = 'ip rule add from 10.0.1.2 table 2'
+
+        print("{}\n{}\n{}\n{}".format(h1_cmd1, h1_cmd2, h2_cmd1, h2_cmd2))
+        h1.cmd(h1_cmd1)
+        h1.cmd(h1_cmd2)
+        h2.cmd(h2_cmd1)
+        h2.cmd(h2_cmd2)
+
+        # Configure two different routing tables
+        h1_cmd1 = 'ip route add 10.0.0.0/24 dev h1-eth0 scope link table 1'
+        h1_cmd2 = 'ip route add 10.0.1.0/24 dev h1-eth1 scope link table 2'
+        h2_cmd1 = 'ip route add 10.0.0.0/24 dev h2-eth0 scope link table 1'
+        h2_cmd2 = 'ip route add 10.0.1.0/24 dev h2-eth1 scope link table 2'
+
+        print("{}\n{}\n{}\n{}".format(h1_cmd1, h1_cmd2, h2_cmd1, h2_cmd2))
+        h1.cmd(h1_cmd1)
+        h1.cmd(h1_cmd2)
+        h2.cmd(h2_cmd1)
+        h2.cmd(h2_cmd2)
+
+        h1_cmd1 = 'ip route add default via 10.0.0.1 dev eth0 table 1'
+        h1_cmd2 = 'ip route add default via 10.0.1.1 dev eth1 table 2'
+        h2_cmd1 = 'ip route add default via 10.0.0.2 dev eth0 table 1'
+        h2_cmd2 = 'ip route add default via 10.0.1.2 dev eth1 table 2'
+
+        print("{}\n{}\n{}\n{}".format(h1_cmd1, h1_cmd2, h2_cmd1, h2_cmd2))
+        h1.cmd(h1_cmd1)
+        h1.cmd(h1_cmd2)
+        h2.cmd(h2_cmd1)
+        h2.cmd(h2_cmd2)
+
+        print(h1.cmd('ip rule show'))
+        print(h2.cmd('ip rule show'))
+
+        print(h1.cmd('ip route'))
+        print(h2.cmd('ip route'))
+
+        print(h1.cmd('ip route show table 1'))
+        print(h2.cmd('ip route show table 1'))
+        print(h1.cmd('ip route show table 2'))
+        print(h2.cmd('ip route show table 2'))
+
+        print(h1.cmd('ifconfig'))
+        print(h2.cmd('ifconfig'))
     mininet_utils.sshd(net)
+
+    # time.sleep(500)
+
     topo.start_all_link_managers(net)
     flows = sort_by_start_time(test_dict["Flows"])
     run_ids = {}
@@ -148,14 +206,15 @@ def run_test(test_dict):
         test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir,
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
 
-        cmd = None
+        cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
         if mptcp:
-            # tunneling
-            "sudo -u {0} ssh -i ~/.ssh/id_mininet_rsa -t ssh {0}@{1} \"%s\" &".format(username, flow["src"], test_command)
+            if flow['src'][-3] == '0':
+                cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, '10.0.0.1', test_command)
+            else:
+                cmd = "sudo -u pcc ssh -i ~/.ssh/id_mininet_rsa 10.0.0.1 -t ssh %s \"%s\" &" % (flow['src'], test_command)
         else:
             cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
 
-        # cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
         print("\t\tCMD IS", cmd)
         os.system(cmd)
 
