@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 import multiprocessing
 import queue
 import subprocess
@@ -23,11 +23,9 @@ from python_utils.file_locations import results_dir
 
 results_lib = ResultsLibrary(results_dir)
 
-#local_testing_dir = "/home/njay2/PCC/testing/"
-local_testing_dir = "/home/jaelee/PCC-Tester/"
+local_testing_dir = "/Users/jaewooklee/PCC-Tester/"
 local_results_dir = local_testing_dir + "results/"
-#remote_testing_dir = "/home/njay2/PCC/testing/"
-remote_testing_dir = "/home/jaelee/PCC-Tester/"
+remote_testing_dir = "/Users/jaewooklee/PCC-Tester/"
 remote_hosts = {
     "ocean0":remote_testing_dir
 }
@@ -206,8 +204,8 @@ for scheme_to_test in schemes_to_test:
         for i in range(0, replicas - n_tests_done):
             test_queue.put((test_name, scheme_to_test))
 
-print("Preparing to run %d tests" % test_queue.qsize())
-time.sleep(2.0)
+#print("Preparing to run %d tests" % test_queue.qsize())
+#time.sleep(2.0)
 
 ##
 #   Start the test-running managers for remote machines and VMs.
