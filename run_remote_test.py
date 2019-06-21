@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import multiprocessing
 import queue
 import subprocess
