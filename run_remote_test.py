@@ -25,9 +25,9 @@ from python_utils.file_locations import results_dir
 
 results_lib = ResultsLibrary(results_dir)
 
-local_testing_dir = "/home/jaewooklee/PCC-Tester/"
+local_testing_dir = "/home/jaelee/PCC-Tester/"
 local_results_dir = local_testing_dir + "results/"
-remote_testing_dir = "/home/jaewooklee/PCC-Tester/"
+remote_testing_dir = "/home/jaelee/PCC-Tester/"
 remote_hosts = {
     "ocean0":remote_testing_dir
 }
