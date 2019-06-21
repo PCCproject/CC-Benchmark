@@ -26,7 +26,7 @@ remote_test_running_dir = "/tmp/remote_test_running"
 
 def clear_test_and_exit(signal):
     return
-    
+
 def get_wait_time_from_VM():
     local = None
     remote = None
@@ -61,7 +61,7 @@ def get_test_dur(test):
                     max_dur = curr_flow
     except Exception as e:
         print("filenotfound")
-        print e
+        print(e)
 
     return max_dur
 
