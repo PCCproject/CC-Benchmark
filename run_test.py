@@ -8,6 +8,7 @@ from python_utils import ssh_utils
 from python_utils.test_utils import read_topology_to_dict
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
+from python_utils.test_utils import get_total_test_time
 from python_utils.pantheon_log_conversion import convert_pantheon_log
 import traceback
 import subprocess
@@ -25,6 +26,25 @@ from mininet.net import Mininet
 
 default_build_dir = "/home/pcc/pcc_test_scheme/"
 scheme_to_test = sys.argv[1]
+tests_to_run = sys.argv[2]
+
+if "--is-remote" not in sys.argv:
+    # run_remote_test should have checked first if the this vm is idle
+    vm_busy = test_utils.get_wait_time_from_VM()
+    if (vm_busy != 0):
+        print("VM is currently busy")
+        if vm_busy < 0: #might happen due to synchonize issue
+            print("Almost Done Testing... Try again later")
+        else:
+            print("{} seconds remaining"..format(vm_busy))
+
+        os._exit(0)
+    else:
+        test_list = read_test_list_to_list(tests_to_run)
+        test_dur = get_total_test_time(test_list, 1)
+        print(test_dur)
+
+        os._exit(0)
 
 is_git_repo = False
 git_repo = None
@@ -63,7 +83,6 @@ if (":" in scheme_to_test):
     git_repo = repo_name
     git_branch = branch
 
-tests_to_run = sys.argv[2]
 extra_args = arg_helpers.arg_or_default("--extra-args", None)
 if extra_args is not None:
     extra_args = extra_args.split(',')

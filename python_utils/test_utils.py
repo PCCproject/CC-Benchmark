@@ -3,6 +3,7 @@ import json
 import os
 import numpy as np
 import json
+import time
 
 SUPPORTED_PANTHEON_SCHEMES = [
     "copa",
@@ -19,6 +20,34 @@ SUPPORTED_PANTHEON_SCHEMES = [
 MANNUALLY_MAMANGED_VM_IPS = [
     "192.168.122.22"
 ]
+
+local_test_running_dir = "/tmp/test_running"
+remote_test_running_dir = "/tmp/remote_test_running"
+
+def clear_test_and_exit(signal):
+    return
+    
+def get_wait_time_from_VM():
+    local = None
+    remote = None
+
+    with open(file_locations.remote_test_running_dir) as f:
+        remote = f.read()
+    if remote.startswith("true"):
+        remote = remote.split("\r\n")[0].split(" ")
+        print(remote)
+        time_elasped = time.time() - remote[2]
+        time_remain = remote[1] - time_elasped
+        return time_remain
+
+    if local.startswith("true"):
+        local = local.split("\r\n")[0].split(" ")
+        print(local)
+        time_elasped = time.time() - local[2]
+        time_remain = local[1] - time_elasped
+        return time_remain
+
+    return 0
 
 def get_test_dur(test):
     test_file = file_locations.tests_dir + "/" + test + ".json"

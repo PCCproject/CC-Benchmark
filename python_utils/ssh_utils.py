@@ -1,6 +1,7 @@
 import subprocess
 import os
 import test_utils
+import file_locations
 
 def get_idle_percent(host):
     usage_str = subprocess.check_output(["ssh", host, "\"\"mpstat 1 1\"\""]).decode("utf-8")
@@ -24,17 +25,17 @@ def remote_copyback(host, src, dst):
 def get_address_from_arp_line(line):
     return (line.split('(')[1]).split(')')[0]
 
-def check_idle(hostname, ip):
-    check_idle_local = "/tmp/test_running"
-    check_idle_remote = "/tmp/remote_test_running"
-    res = subprocess.check_output(["ssh", "ocean0", "-t", "ssh", "pcc@"+str(ip),  "cat", check_idle_remote, check_idle_local])
+def check_idle_from_local(hostname, ip):
+    vm_dir = file_locations.local_test_running_dir
+    remote_dir = file_locations.remote_test_running_dir
+    res = subprocess.check_output(["ssh", "ocean0", "-t", "ssh", "pcc@"+str(ip),  "cat", remote_dir, vm_dir])
     for rsp in res.split('\r\n')[:-1]:
         if rsp == "":
             break
         if not rsp.startswith('false'):
             return False
     return True
-
+    
 def get_remote_vm_ips(hostname):
     return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
     lines = return_str.split("\n")
@@ -48,7 +49,7 @@ def get_remote_vm_ips(hostname):
 
     aval_addr = []
     for ip in addresses:
-        if check_idle(hostname, ip):
+        if check_idle_from_local(hostname, ip):
             aval_addr.append(ip)
 
     print("Available VM IP Addr are: " + str(aval_addr))
