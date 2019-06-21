@@ -25,9 +25,9 @@ from python_utils.file_locations import results_dir
 
 results_lib = ResultsLibrary(results_dir)
 
-local_testing_dir = "/Users/jaewooklee/PCC-Tester/"
+local_testing_dir = "/home/jaewooklee/PCC-Tester/"
 local_results_dir = local_testing_dir + "results/"
-remote_testing_dir = "/Users/jaewooklee/PCC-Tester/"
+remote_testing_dir = "/home/jaewooklee/PCC-Tester/"
 remote_hosts = {
     "ocean0":remote_testing_dir
 }
@@ -35,7 +35,7 @@ remote_hosts = {
 tests_to_run = sys.argv[2]
 list_of_tests_to_run = read_test_list_to_list(tests_to_run)
 total_time_to_test = get_total_test_time(list_of_tests_to_run, 3)
-print(total_time_to_test)
+# print(total_time_to_test)
 
 schemes_to_test = sys.argv[1].split(",")
 replicas = 1
@@ -143,29 +143,38 @@ class RemoteHostManager:
         self.init_remote_vm_managers()
         self.proc = multiprocessing.Process(target=self.run_manager, args=(test_queue, self.done_queue, self.kill_queue))
         self.proc.start()
+        self.vm_ips = None
 
     def init_remote_vm_managers(self):
         global AVAILABLE_VM_IPS
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
-        vm_ips, waittime = get_remote_vm_ips(self.hostname)
-        if len(vm_ips) == 0:
+        self.vm_ips, waittime = get_remote_vm_ips(self.hostname)
+        if len(self.vm_ips) == 0:
             print("All the vms are busy")
             print("Approximate finish time: {} seconds".format(waittime))
             os._exit(0)
 
-        AVAILABLE_VM_IPS = copy.deepcopy(vm_ips)
-        print("AVAILABLE VMS" + str(AVAILABLE_VM_IPS))
-        for vm_ip in vm_ips:
-            self.occupy_vms(vm_ip)
+        for vm_ip in self.vm_ips:
+            self.occupy_vm(vm_ip)
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
                 vm_ip))
 
-    def occupy_vms(self, vm_ip):
+    def occupy_vm(self, vm_ip):
         global total_time_to_test
-        print("OCCUPY VM")
-        cmd = "ssh {} -t ssh pcc@{} /tmp/occupy_vm.sh {} {}".format(hostname, str(vm_ip), total_time_to_test, time.time())
-        print(cmd)
+        # print("OCCUPY VM")
+        cmd = "ssh {} -t ssh pcc@{} /tmp/occupy_vm.sh {} {}".format(self.hostname, str(vm_ip), total_time_to_test, time.time())
+        # print(cmd)
         os.system(cmd)
+
+    def free_vm(self, vm_ip):
+        # print("FREE VM")
+        cmd = "ssh {} -t ssh pcc@{} /tmp/free_vm.sh".format(self.hostname, str(vm_ip))
+        # print(cmd)
+        os.system(cmd)
+
+    def free_all_vms(self):
+        for vm_ip in self.vm_ips:
+            self.free_vm(vm_ip)
 
     def cleanup_remote_vm_managers(self):
         for vm_manager in self.remote_vm_managers:
@@ -212,7 +221,7 @@ class RemoteHostManager:
         self.cleanup_remote_vm_managers()
         remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
         remote_call(self.hostname, "rm -rf " + vm_config.host_results_dir)
-
+        self.free_all_vms()
 
 ##
 #   Read in a list of all tests to run, and enqueue them for the VMs to run.
@@ -221,9 +230,9 @@ class RemoteHostManager:
 test_queue = multiprocessing.Queue()
 for scheme_to_test in schemes_to_test:
     for test_name in list_of_tests_to_run:
-        print(test_name)
+        # print(test_name)
         n_tests_done = results_lib.get_num_tests_done(test_name, scheme_to_test)
-        print("Have %d tests for %s:%s, need %d more" % (n_tests_done, test_name, scheme_to_test, replicas - n_tests_done))
+        # print("Have %d tests for %s:%s, need %d more" % (n_tests_done, test_name, scheme_to_test, replicas - n_tests_done))
         for i in range(0, replicas - n_tests_done):
             test_queue.put((test_name, scheme_to_test))
 
@@ -245,8 +254,3 @@ for hostname in remote_hosts.keys():
 
 for manager in host_managers:
     manager.proc.join()
-
-for hostname in remote_hosts.keys():
-    for vm_ip in AVAILABLE_VM_IPS:
-        cmd = "ssh {} -t ssh pcc@{} /tmp/free_vm.sh".format(hostname, vm_ip)
-        os.system(cmd)
