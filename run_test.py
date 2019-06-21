@@ -9,6 +9,7 @@ from python_utils.test_utils import read_topology_to_dict
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
 from python_utils.test_utils import get_total_test_time
+from python_utils.test_utils import clear_testfile_and_exit
 from python_utils.pantheon_log_conversion import convert_pantheon_log
 import traceback
 import subprocess
@@ -17,6 +18,7 @@ import time
 import json
 import datetime
 import random
+import signal
 mininet_dir = "/home/pcc/mininet/"
 sys.path.append(mininet_dir)
 from python_utils import mininet_utils
@@ -28,6 +30,9 @@ default_build_dir = "/home/pcc/pcc_test_scheme/"
 scheme_to_test = sys.argv[1]
 tests_to_run = sys.argv[2]
 
+# Catch sigint to clear run_test file
+signal.signal(signal.SIGINT, clear_testfile_and_exit)
+
 if "--is-remote" not in sys.argv:
     # run_remote_test should have checked first if the this vm is idle
     vm_busy = test_utils.get_wait_time_from_VM()
@@ -36,7 +41,7 @@ if "--is-remote" not in sys.argv:
         if vm_busy < 0: #might happen due to synchonize issue
             print("Almost Done Testing... Try again later")
         else:
-            print("{} seconds remaining".format(vm_busy))
+            print("Approximately {} seconds remaining...".format(vm_busy))
 
         os._exit(0)
     else:
@@ -44,7 +49,8 @@ if "--is-remote" not in sys.argv:
         test_dur = get_total_test_time(test_list, 1)
         print(test_dur)
 
-        os._exit(0)
+        with open(file_locations.local_test_running_dir, 'w') as f:
+            f.write("true {} {}".format(test_dur, time.time()))
 
 is_git_repo = False
 git_repo = None
@@ -317,3 +323,5 @@ except Exception as e:
 if "--is-remote" in sys.argv:
     ssh_utils.cleanup_ssh_connections()
     os.system("sudo killall ssh")
+else:
+    clear_testfile_and_exit()

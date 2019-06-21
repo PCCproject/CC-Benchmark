@@ -1,7 +1,7 @@
 import subprocess
 import os
-import test_utils
-import file_locations
+from python_utils import test_utils
+from python_utils import file_locations
 
 def get_idle_percent(host):
     usage_str = subprocess.check_output(["ssh", host, "\"\"mpstat 1 1\"\""]).decode("utf-8")
@@ -35,7 +35,7 @@ def check_idle_from_local(hostname, ip):
         if not rsp.startswith('false'):
             return False
     return True
-    
+
 def get_remote_vm_ips(hostname):
     return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
     lines = return_str.split("\n")
