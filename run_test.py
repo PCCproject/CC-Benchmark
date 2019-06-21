@@ -36,7 +36,7 @@ if "--is-remote" not in sys.argv:
         if vm_busy < 0: #might happen due to synchonize issue
             print("Almost Done Testing... Try again later")
         else:
-            print("{} seconds remaining"..format(vm_busy))
+            print("{} seconds remaining".format(vm_busy))
 
         os._exit(0)
     else:
