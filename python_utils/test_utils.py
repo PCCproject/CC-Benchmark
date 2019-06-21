@@ -24,7 +24,7 @@ MANNUALLY_MAMANGED_VM_IPS = [
 
 def clear_testfile_and_exit(sig=None, frame=None):
     with open(file_locations.local_test_running_dir, 'w') as f:
-        f.write("false")
+        f.write("false\r\n")
     if sig == signal.SIGINT:
         os._exit(0)
 

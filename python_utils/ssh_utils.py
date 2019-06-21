@@ -32,10 +32,12 @@ def check_idle_from_local(hostname, ip):
     vm_dir = file_locations.local_test_running_dir
     remote_dir = file_locations.remote_test_running_dir
     res = subprocess.check_output(["ssh", "ocean0", "-t", "ssh", "pcc@"+str(ip),  "cat", remote_dir, vm_dir])
-    for rsp in res.split('\r\n')[:-1]:
-        # print("RES " + rsp)
+    print(res)
+    for rsp in res.split('\r\n'):
+        rsp = rsp.rstrip()
+        print("RES " + rsp)
         if rsp == "":
-            return 0
+            continue
 
         rsp_list = rsp.split(" ")
         # print(rsp_list)

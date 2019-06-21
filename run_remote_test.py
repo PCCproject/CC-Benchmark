@@ -43,7 +43,6 @@ if (len(sys.argv) > 3):
     replicas = int(sys.argv[3])
 
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
-AVAILABLE_VM_IPS = None
 
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
@@ -146,7 +145,6 @@ class RemoteHostManager:
         self.vm_ips = None
 
     def init_remote_vm_managers(self):
-        global AVAILABLE_VM_IPS
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
         self.vm_ips, waittime = get_remote_vm_ips(self.hostname)
         if len(self.vm_ips) == 0:

@@ -50,7 +50,7 @@ if "--is-remote" not in sys.argv:
         print(test_dur)
 
         with open(file_locations.local_test_running_dir, 'w') as f:
-            f.write("true {} {}".format(test_dur, time.time()))
+            f.write("true {} {}\r\n".format(test_dur, time.time()))
 
 is_git_repo = False
 git_repo = None
