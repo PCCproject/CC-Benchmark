@@ -137,9 +137,10 @@ def run_test(test_dict):
     topo = mininet_utils.MyTopo(test_topo_dict, test_link_types)
     net = Mininet(topo=topo, link=TCLink)
 
-    h1 = net.getNodeByName("h1")
-    h2 = net.getNodeByName("h2")
+
     if mptcp:
+        h1 = net.getNodeByName("h1")
+        h2 = net.getNodeByName("h2")
         # hard code configuration for simple mptcp topology
         os.system('sysctl -w net.mptcp.mptcp_path_manager=fullmesh')
         os.system('sysctl -w net.mptcp.mptcp_scheduler=default')

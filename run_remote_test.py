@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import psutil
+import copy
 from python_utils import vm_config
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
@@ -42,6 +43,7 @@ if (len(sys.argv) > 3):
     replicas = int(sys.argv[3])
 
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
+AVAILABLE_VM_IPS = None
 
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
@@ -144,11 +146,22 @@ class RemoteHostManager:
 
     def init_remote_vm_managers(self):
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
-        #vm_ips = ["192.168.122.35"]
-        vm_ips = get_remote_vm_ips(self.hostname)
+        vm_ips, waittime = get_remote_vm_ips(self.hostname)
+        if len(vm_ips) == 0:
+            print("All the vms are busy")
+            print("Approximate finish time: {} seconds".format(waittime))
+            os._exit(0)
+
+        AVAILABLE_VM_IPS = copy.deepcopy(vm_ips)
         for vm_ip in vm_ips:
+            self.occupy_vms(vm_ips)
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
                 vm_ip))
+
+    def occupy_vms(self, vm_ip):
+        global total_time_to_test
+        cmd = "ssh {} -t ssh pcc@{} /tmp/occupy_vm.sh {} {}".format(hostname, vm_ip, total_time_to_test, time.time())
+        os.system(cmd)
 
     def cleanup_remote_vm_managers(self):
         for vm_manager in self.remote_vm_managers:
@@ -228,3 +241,8 @@ for hostname in remote_hosts.keys():
 
 for manager in host_managers:
     manager.proc.join()
+
+for hostname in remote_hosts.keys():
+    for vm_ip in AVAILABLE_VM_IPS:
+        cmd = "ssh ocean0 -t ssh pcc@{} /tmp/free_vm.sh".format(hostname, vm_ip)
+        os.system(cmd)

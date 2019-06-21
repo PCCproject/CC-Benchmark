@@ -31,10 +31,10 @@ def check_idle_from_local(hostname, ip):
     res = subprocess.check_output(["ssh", "ocean0", "-t", "ssh", "pcc@"+str(ip),  "cat", remote_dir, vm_dir])
     for rsp in res.split('\r\n')[:-1]:
         if rsp == "":
-            break
+            return 0
         if not rsp.startswith('false'):
-            return False
-    return True
+            return float(rsp[1]) - (time.time() - float(rsp[2]))
+    return 0
 
 def get_remote_vm_ips(hostname):
     return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
@@ -48,12 +48,18 @@ def get_remote_vm_ips(hostname):
             addresses.append(addr)
 
     aval_addr = []
+    max_waittime = 0
     for ip in addresses:
-        if check_idle_from_local(hostname, ip):
+        curr_waittime = check_idle_from_local(hostname, ip)
+        if curr_waittime == 0:
             aval_addr.append(ip)
+        else:
+            if curr_waittime > max_waittime:
+                max_waittime = curr_waittime
 
     print("Available VM IP Addr are: " + str(aval_addr))
-    return aval_addr
+
+    return aval_addr, max_waittime
 
 def cleanup_ssh_connections():
 
