@@ -8,5 +8,8 @@ results_dir = os.path.join(testing_dir, "results")
 pantheon_dir = os.path.join(testing_dir, "pantheon")
 graphing_dir = os.path.join(testing_dir, "graphing")
 
-local_test_running_dir = "/tmp/test_running"
-remote_test_running_dir = "/tmp/remote_test_running"
+vm_status_dir = "/home/pcc/vm_status/"
+local_test_running_dir = vm_status_dir + "test_running"
+remote_test_running_dir = vm_status_dir + "remote_test_running"
+free_vm_script = vm_status_dir + "free.sh"
+occupy_vm_script = vm_status_dir + "occupy_vm.sh"

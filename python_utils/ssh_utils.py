@@ -5,6 +5,16 @@ import time
 from python_utils import test_utils
 from python_utils import file_locations
 
+MANNUALLY_MAMANGED_VM_IPS = [
+    "192.168.122.22"
+]
+
+VM_NAMES = [
+    "pcc_test_vm_1",
+    "pcc_test_vm_2",
+    "pcc_test_vm_3",
+    "pcc_test_vm_4"
+]
 
 def get_idle_percent(host):
     usage_str = subprocess.check_output(["ssh", host, "\"\"mpstat 1 1\"\""]).decode("utf-8")
@@ -46,22 +56,31 @@ def check_idle_from_local(hostname, ip):
     return 0
 
 def get_remote_vm_ips(hostname):
-    return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
-    lines = return_str.split("\n")
-    virtual_lines = [l for l in lines if ("vir" in l and "incomplete" not in l)]
+    ## Getting IP using arp command
+    # return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
+    # lines = return_str.split("\n")
+    # virtual_lines = [l for l in lines if ("vir" in l and "incomplete" not in l)]
+    #
+    addresses = {}
+    # for line in virtual_lines:
+    #     addr = get_address_from_arp_line(line)
+    #     if addr not in MANNUALLY_MAMANGED_VM_IPS:
+    #         addresses.append(addr)
 
-    addresses = []
-    for line in virtual_lines:
-        addr = get_address_from_arp_line(line)
-        if addr not in test_utils.MANNUALLY_MAMANGED_VM_IPS:
-            addresses.append(addr)
+    ## Getting IP using VM_name(Used to automatically start/shutdown VMs)
+    for vm_name in VM_NAMES:
+        return_str = subprocess.check_output(["ssh", hostname, "virsh", "domifaddr", vm_name]).decode("utf-8")
+        ip_line = return_str.split("\n")[2]
+        ip_addr = ip_line.split(' ')[-1][:-3]
+        if ip_addr not in MANNUALLY_MAMANGED_VM_IPS:
+            addresses[vm_name] = ip_addr
 
-    aval_addr = []
+    aval_addr = {}
     max_waittime = 0
-    for ip in addresses:
+    for name, ip in addresses.items():
         curr_waittime = check_idle_from_local(hostname, ip)
         if curr_waittime == 0:
-            aval_addr.append(ip)
+            aval_addr[name] = ip
         else:
             if curr_waittime > max_waittime:
                 max_waittime = curr_waittime

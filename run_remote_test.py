@@ -8,7 +8,10 @@ import sys
 import json
 import psutil
 import copy
+
 from python_utils import vm_config
+from python_utils.file_locations import free_vm_script
+from python_utils.file_locations import occupy_vm_script
 from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
 from python_utils.test_utils import get_total_test_time
@@ -17,6 +20,7 @@ from python_utils.ssh_utils import remote_call
 from python_utils.ssh_utils import remote_copy
 from python_utils.ssh_utils import remote_copyback
 from python_utils.ssh_utils import get_remote_vm_ips
+from python_utils.ssh_utils import VM_NAMES
 from python_utils.arg_helpers import arg_or_default
 
 from graphing.analysis.results_library import ResultsLibrary
@@ -43,6 +47,20 @@ if (len(sys.argv) > 3):
     replicas = int(sys.argv[3])
 
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
+
+for host in remote_hosts.keys():
+    vm_booting = False
+    up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
+    for vm in VM_NAMES:
+        if vm not in up_vms:
+            vm_booting = True
+            cmd = "ssh {} virsh start {}".format(host, vm)
+            print(cmd)
+            os.system(cmd)
+            # else:
+    if vm_booting:
+        print("VM(s) are booting up. Please wait 30 seconds")
+        time.sleep(30)
 
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
@@ -152,27 +170,33 @@ class RemoteHostManager:
             print("Approximate finish time: {} seconds".format(waittime))
             os._exit(0)
 
-        for vm_ip in self.vm_ips:
+        for name, vm_ip in self.vm_ips.items():
             self.occupy_vm(vm_ip)
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
                 vm_ip))
 
     def occupy_vm(self, vm_ip):
         global total_time_to_test
-        # print("OCCUPY VM")
-        cmd = "ssh {} -t ssh pcc@{} /tmp/occupy_vm.sh {} {}".format(self.hostname, str(vm_ip), total_time_to_test, time.time())
-        # print(cmd)
+        print("OCCUPY VM")
+        cmd = "ssh {} -t ssh pcc@{} {} {} {}".format(self.hostname, str(vm_ip), occupy_vm_script, total_time_to_test, time.time())
+        print(cmd)
         os.system(cmd)
 
-    def free_vm(self, vm_ip):
+    def free_vm_and_shutdown(self, name, vm_ip, result_str):
         # print("FREE VM")
-        cmd = "ssh {} -t ssh pcc@{} /tmp/free_vm.sh".format(self.hostname, str(vm_ip))
+        cmd = "ssh {} -t ssh pcc@{} {}".format(self.hostname, str(vm_ip), free_vm_script)
         # print(cmd)
         os.system(cmd)
 
-    def free_all_vms(self):
-        for vm_ip in self.vm_ips:
-            self.free_vm(vm_ip)
+        if vm_ip not in result_str:
+            print("Shutting down {}".format(name))
+            cmd = "ssh {} virsh shutdown {}".format(self.hostname, name)
+            os.system(cmd)
+
+
+    def free_and_shutdown_all_vms(self, result_str):
+        for name, vm_ip in self.vm_ips.items():
+            self.free_vm_and_shutdown(name, vm_ip, result_str)
 
     def cleanup_remote_vm_managers(self):
         for vm_manager in self.remote_vm_managers:
@@ -219,7 +243,9 @@ class RemoteHostManager:
         self.cleanup_remote_vm_managers()
         remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
         remote_call(self.hostname, "rm -rf " + vm_config.host_results_dir)
-        self.free_all_vms()
+
+        result_str = subprocess.check_output(['ssh', self.hostname, 'w']).decode('utf-8')
+        self.free_and_shutdown_all_vms(result_str)
 
 ##
 #   Read in a list of all tests to run, and enqueue them for the VMs to run.

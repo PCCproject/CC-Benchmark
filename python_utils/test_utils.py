@@ -18,10 +18,6 @@ SUPPORTED_PANTHEON_SCHEMES = [
     "ledbat"
 ]
 
-MANNUALLY_MAMANGED_VM_IPS = [
-    "192.168.122.22"
-]
-
 def clear_testfile_and_exit(sig=None, frame=None):
     with open(file_locations.local_test_running_dir, 'w') as f:
         f.write("false\r\n")
