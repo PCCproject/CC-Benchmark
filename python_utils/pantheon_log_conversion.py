@@ -190,11 +190,11 @@ def validate_attr(data_list, attr):
         raise KeyError()
         return
 
-def get_mean_of_attr(data_list, attr=None):
+def get_sum_of_attr(data_list, attr=None):
     validate_attr(data_list, attr)
     return sum([float(x[attr]) for x in data_list])
 
-def get_sum_of_attr(data_list, attr=None):
+def get_mean_of_attr(data_list, attr=None):
     validate_attr(data_list, attr)
     return np.mean(np.array([float(x[attr]) for x in data_list]))
 
