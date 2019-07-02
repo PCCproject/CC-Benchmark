@@ -196,7 +196,14 @@ def get_sum_of_attr(data_list, attr=None):
 
 def get_mean_of_attr(data_list, attr=None):
     validate_attr(data_list, attr)
-    return np.mean(np.array([float(x[attr]) for x in data_list]))
+    arr = []
+    for x in data_list:
+        d = float(x[attr])
+        if d != -1:
+            arr.append(d)
+        else:
+            arr.append(0)
+    return np.mean(arr)
 
 def get_ith_time(event, i):
     return float(event[i]["Time"])
