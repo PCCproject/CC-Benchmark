@@ -59,9 +59,8 @@ git_checksum = None
 
 scheme_nickname = arg_helpers.arg_or_default("--nickname", None)
 
-mptcp = False
-if "mptcp" in sys.argv[2]:
-    mptcp = True
+web_result = "web-result" in sys.argv
+mptcp = "mptcp" in sys.argv
 
 # This means we are testing a branch from a repository -- we probably have to build it first
 if (":" in scheme_to_test):
@@ -233,13 +232,13 @@ def run_test(test_dict):
             flow["protocol"], flow["dst"], file_locations.pantheon_dir)
 
         cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
-        if mptcp:
-            if flow['src'][-3] == '0':
-                cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, '10.0.0.1', test_command)
-            else:
-                cmd = "sudo -u pcc ssh -i ~/.ssh/id_mininet_rsa 10.0.0.1 -t ssh %s \"%s\" &" % (flow['src'], test_command)
-        else:
-            cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
+        # if mptcp:
+        #     if flow['src'][-3] == '0':
+        #         cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, '10.0.0.1', test_command)
+        #     else:
+        #         cmd = "sudo -u pcc ssh -i ~/.ssh/id_mininet_rsa 10.0.0.1 -t ssh %s \"%s\" &" % (flow['src'], test_command)
+        # else:
+        #     cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
 
         print("\t\tCMD IS", cmd)
         os.system(cmd)
