@@ -312,10 +312,14 @@ def run_test(test_dict):
         web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
         test_split = test["Name"].split('.')
         testname = test_split[0] + '_test'
-        detail = test_split[1]
+        if len(test_split) > 1:
+            detail = test_split[1]
+        else:
+            detail = testname
+
         filename = test['Name']
 
-        test_dir = web_dir + testname + '/' + scheme_name + '/'
+        test_dir = web_dir + testname + '/data/' + scheme_name + '/'
         num_trial = get_num_trial(test_dir, detail)
 
         filename = "{}{}-trial{}.json".format(test_dir, detail, num_trial)
