@@ -1,0 +1,8 @@
+{
+    "Tests": [
+        "rtt_fairness4/4ms_to_4ms_to_4ms",
+        "rtt_fairness4/4ms_to_8ms_to_16ms",
+        "rtt_fairness4/4ms_to_16ms_to_64ms",
+        "rtt_fairness4/4ms_to_32ms_to_256ms"
+    ]
+}
