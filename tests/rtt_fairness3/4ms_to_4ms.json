@@ -1,12 +1,12 @@
 {
-    "Name":"rtt_fairness.8ms_to_16ms_to_24ms",
-    "Topology":"4_point_star",
+    "Name":"rtt_fairness3.4ms_to_4ms",
+    "Topology":"3_point_star",
     "Flows":[
         {
             "name":"flow_1",
             "protocol":"TEST",
             "src":"10.0.0.1",
-            "dst":"10.0.0.4",
+            "dst":"10.0.0.3",
             "start":0.0,
             "dur":120.0
         },
@@ -14,15 +14,7 @@
             "name":"flow_2",
             "protocol":"TEST",
             "src":"10.0.0.2",
-            "dst":"10.0.0.4",
-            "start":0.0,
-            "dur":120.0
-        },
-        {
-            "name":"flow_3",
-            "protocol":"TEST",
-            "src":"10.0.0.3",
-            "dst":"10.0.0.4",
+            "dst":"10.0.0.3",
             "start":0.0,
             "dur":120.0
         }
@@ -30,22 +22,17 @@
     "Link Types":{
         "L1":{
             "bw":30,
-            "dl":"2ms",
+            "dl":"1ms",
             "queue":1000
         },
         "L2":{
             "bw":30,
-            "dl":"6ms",
+            "dl":"1ms",
             "queue":1000
         },
         "L3":{
             "bw":30,
-            "dl":"10ms",
-            "queue":1000
-        },
-        "L4":{
-            "bw":30,
-            "dl":"2ms",
+            "dl":"1ms",
             "queue":1000
         }
     }

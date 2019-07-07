@@ -1,5 +1,5 @@
 {
-    "Name":"rtt_fairness.4ms_to_32ms_to_256ms",
+    "Name":"rtt_fairness4.4ms_to_32ms_to_256ms",
     "Topology":"4_point_star",
     "Flows":[
         {
@@ -29,22 +29,22 @@
     ],
     "Link Types":{
         "L1":{
-            "bw":30,
+            "bw":15,
             "dl":"1ms",
             "queue":1000
         },
         "L2":{
-            "bw":30,
+            "bw":15,
             "dl":"15ms",
             "queue":1000
         },
         "L3":{
-            "bw":30,
+            "bw":15,
             "dl":"127ms",
             "queue":1000
         },
         "L4":{
-            "bw":30,
+            "bw":15,
             "dl":"1ms",
             "queue":1000
         }

@@ -10,7 +10,9 @@ from python_utils.test_utils import read_test_list_to_list
 from python_utils.test_utils import read_test_to_dict
 from python_utils.test_utils import get_total_test_time
 from python_utils.test_utils import clear_testfile_and_exit
+from python_utils.test_utils import get_num_trial
 from python_utils.pantheon_log_conversion import convert_pantheon_log
+import python_utils.calculate_metrics as calculate_metrics
 import traceback
 import subprocess
 import sys
@@ -25,6 +27,8 @@ from python_utils import mininet_utils
 from python_utils import arg_helpers
 from mininet.link import TCLink
 from mininet.net import Mininet
+
+from pprint import pprint
 
 default_build_dir = "/home/pcc/pcc_test_scheme/"
 scheme_to_test = sys.argv[1]
@@ -52,6 +56,9 @@ if "--is-remote" not in sys.argv:
         with open(file_locations.local_test_running_dir, 'w') as f:
             f.write("true {} {}\r\n".format(test_dur, time.time()))
 
+default_bw = 30
+default_lat = 30
+
 is_git_repo = False
 git_repo = None
 git_branch = None
@@ -59,8 +66,9 @@ git_checksum = None
 
 scheme_nickname = arg_helpers.arg_or_default("--nickname", None)
 
-web_result = "web-result" in sys.argv
-mptcp = "mptcp" in sys.argv
+web_result = ("--web-result" in sys.argv) or ('--web_result' in sys.argv)
+print('web_result ' + str(web_result))
+mptcp = "mptcp" in sys.argv[2]
 
 # This means we are testing a branch from a repository -- we probably have to build it first
 if (":" in scheme_to_test):
@@ -298,6 +306,73 @@ def run_test(test_dict):
             metadata["PCC Args"].append(extra_arg)
     with open(os.path.join(results_dir, "test_metadata.json"), "w") as f:
         json.dump(metadata, f)
+
+    if web_result:
+        print("Saving test results to pcc-web directory...")
+        web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
+        test_split = test["Name"].split('.')
+        testname = test_split[0] + '_test'
+        detail = test_split[1]
+        filename = test['Name']
+
+        test_dir = web_dir + testname + '/' + scheme_name + '/'
+        num_trial = get_num_trial(test_dir, detail)
+
+        filename = "{}{}-trial{}.json".format(test_dir, detail, num_trial)
+        metric_filename = "{}metric-{}-trial{}.json".format(test_dir, detail, num_trial)
+        os.system('mkdir -p {}'.format(test_dir))
+
+        metric = {}
+        datapoints = {}
+        meanThrput = []
+
+        split = detail.split('_to_')
+        bw = [default_bw] * len(flows)
+        lat = [default_lat] * len(flows)
+
+        if 'mbps' in split[0]:
+            for i, sp in enumerate(split):
+                bw[i] = int(sp.split('mbps')[0])
+
+        if 'ms' in split[0]:
+            for i, sp in enumerate(split):
+                lat[i] = int(sp.split('ms')[0])
+
+        for i in range(0, len(flows)):
+            flow = flows[i]
+            orig_data = "%s/%s.%s_orig.json" % (results_dir, flow["protocol"], flow["name"])
+            merged_data = "%s/%s.%s.json" % (results_dir, flow["protocol"], flow["name"])
+            with open(orig_data) as f:
+                data = json.load(f)
+
+            with open(merged_data) as f:
+                merged_data = json.load(f)
+
+            points, thrput = calculate_metrics.getTimeThrputFromJson(merged_data)
+
+            datapoints['flow{}'.format(i+1)] = points
+            meanThrput.append(thrput)
+
+            flow_protocol = flow["protocol"]
+            if flow_protocol not in metric:
+                metric[flow_protocol] = {}
+
+            metric[flow_protocol]['flow{}'.format(i+1)] = calculate_metrics.getMetricScore(data, bw[i], lat[i])
+
+            datapoints['flow{} lat'.format(i+1)] = lat[i]
+            datapoints['flow{} bw'.format(i+1)] = bw[i]
+
+        if len(flows) > 1:
+            if testname.startswith('rtt_fairness'):
+                datapoints['Ratio'] = datapoints['flow2 lat'] / datapoints['flow1 lat']
+            datapoints["Jain idx"] = calculate_metrics.getJainIndex(meanThrput)
+
+        with open(metric_filename, 'w') as f:
+            f.write(json.dumps(metric, indent=4))
+
+        with open(filename, 'w') as f:
+            f.write(json.dumps(datapoints, indent=4))
+
     os.system("rm -rf %s/*" % data_dir)
 
 ##
