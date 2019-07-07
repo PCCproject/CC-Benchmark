@@ -1,0 +1,122 @@
+{
+    "Metrics": {
+        "bandwidth_sweep_test": {
+            "tcp": [
+                {
+                    "Link Utilization": 12.34014238646608,
+                    "95 Queueing delay": 136.59112757421235,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.1010975592208574,
+                    "name": "bandwidth_sweep.8mbps"
+                },
+                {
+                    "Link Utilization": 87.42568949271772,
+                    "95 Queueing delay": 9.80188318845088,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.490657416787577,
+                    "name": "bandwidth_sweep.32mbps"
+                },
+                {
+                    "Link Utilization": 3.736994625095955,
+                    "95 Queueing delay": 1.9447967627960168,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.5580548749280942,
+                    "name": "bandwidth_sweep.128mbps"
+                },
+                {
+                    "Link Utilization": 51.97054027342533,
+                    "95 Queueing delay": 1.4282733132563266,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.2067515877289345,
+                    "name": "bandwidth_sweep.64mbps"
+                },
+                {
+                    "Link Utilization": 2.986061121583184,
+                    "95 Queueing delay": 905.6581764705883,
+                    "Avg Loss": 0.0,
+                    "Overall": -0.043512570750271345,
+                    "name": "bandwidth_sweep.1mbps"
+                },
+                {
+                    "Link Utilization": 5.160350990336444,
+                    "95 Queueing delay": 454.94135874183,
+                    "Avg Loss": 0.0,
+                    "Overall": 1.1607590994027117,
+                    "name": "bandwidth_sweep.2mbps"
+                },
+                {
+                    "Link Utilization": 39.82469373258367,
+                    "95 Queueing delay": 57.20833808762664,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.919969693477583,
+                    "name": "bandwidth_sweep.16mbps"
+                },
+                {
+                    "Link Utilization": 10.850203168672273,
+                    "95 Queueing delay": 227.16234523057932,
+                    "Avg Loss": 0.0,
+                    "Overall": 2.5382587007255446,
+                    "name": "bandwidth_sweep.4mbps"
+                }
+            ],
+            "pcc": [
+                {
+                    "Link Utilization": 12.34014238646608,
+                    "95 Queueing delay": 136.59112757421235,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.1010975592208574,
+                    "name": "bandwidth_sweep.8mbps"
+                },
+                {
+                    "Link Utilization": 87.42568949271772,
+                    "95 Queueing delay": 9.80188318845088,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.490657416787577,
+                    "name": "bandwidth_sweep.32mbps"
+                },
+                {
+                    "Link Utilization": 3.736994625095955,
+                    "95 Queueing delay": 1.9447967627960168,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.5580548749280942,
+                    "name": "bandwidth_sweep.128mbps"
+                },
+                {
+                    "Link Utilization": 51.97054027342533,
+                    "95 Queueing delay": 1.4282733132563266,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.2067515877289345,
+                    "name": "bandwidth_sweep.64mbps"
+                },
+                {
+                    "Link Utilization": 2.986061121583184,
+                    "95 Queueing delay": 905.6581764705883,
+                    "Avg Loss": 0.0,
+                    "Overall": -0.043512570750271345,
+                    "name": "bandwidth_sweep.1mbps"
+                },
+                {
+                    "Link Utilization": 5.160350990336444,
+                    "95 Queueing delay": 454.94135874183,
+                    "Avg Loss": 0.0,
+                    "Overall": 1.1607590994027117,
+                    "name": "bandwidth_sweep.2mbps"
+                },
+                {
+                    "Link Utilization": 39.82469373258367,
+                    "95 Queueing delay": 57.20833808762664,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.919969693477583,
+                    "name": "bandwidth_sweep.16mbps"
+                },
+                {
+                    "Link Utilization": 10.850203168672273,
+                    "95 Queueing delay": 227.16234523057932,
+                    "Avg Loss": 0.0,
+                    "Overall": 2.5382587007255446,
+                    "name": "bandwidth_sweep.4mbps"
+                }
+            ]
+        }
+    }
+}

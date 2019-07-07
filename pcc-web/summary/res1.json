@@ -1,0 +1,474 @@
+{
+    "Tests": [
+        {
+            "name": "Example Test 1",
+            "thpt": {
+                "copa": 0.162,
+                "vivace": 0.062,
+                "cubic": 0.069,
+                "pcc": 0.185,
+                "bbr": 0.062,
+                "taova": 0.092,
+                "vegas": 0.115,
+                "sprout": 0.208,
+                "ledbat": 0.046
+            },
+            "lat": {
+                "copa": 0.082,
+                "vivace": 0.034,
+                "cubic": 0.158,
+                "pcc": 0.13,
+                "bbr": 0.089,
+                "taova": 0.096,
+                "vegas": 0.123,
+                "sprout": 0.178,
+                "ledbat": 0.11
+            },
+            "loss": {
+                "copa": 0.091,
+                "vivace": 0.033,
+                "cubic": 0.033,
+                "pcc": 0.174,
+                "bbr": 0.157,
+                "taova": 0.14,
+                "vegas": 0.116,
+                "sprout": 0.14,
+                "ledbat": 0.116
+            },
+            "overall": {
+                "copa": 0.148,
+                "vivace": 0.117,
+                "cubic": 0.016,
+                "pcc": 0.07,
+                "bbr": 0.211,
+                "taova": 0.016,
+                "vegas": 0.156,
+                "sprout": 0.078,
+                "ledbat": 0.187
+            }
+        },
+        {
+            "name": "Example Test 2",
+            "thpt": {
+                "copa": 0.229,
+                "vivace": 0.22,
+                "cubic": 0.156,
+                "pcc": 0.0,
+                "bbr": 0.083,
+                "taova": 0.064,
+                "vegas": 0.138,
+                "sprout": 0.037,
+                "ledbat": 0.073
+            },
+            "lat": {
+                "copa": 0.134,
+                "vivace": 0.162,
+                "cubic": 0.204,
+                "pcc": 0.049,
+                "bbr": 0.085,
+                "taova": 0.028,
+                "vegas": 0.148,
+                "sprout": 0.056,
+                "ledbat": 0.134
+            },
+            "loss": {
+                "copa": 0.08,
+                "vivace": 0.009,
+                "cubic": 0.107,
+                "pcc": 0.241,
+                "bbr": 0.125,
+                "taova": 0.179,
+                "vegas": 0.045,
+                "sprout": 0.116,
+                "ledbat": 0.098
+            },
+            "overall": {
+                "copa": 0.006,
+                "vivace": 0.181,
+                "cubic": 0.018,
+                "pcc": 0.157,
+                "bbr": 0.012,
+                "taova": 0.163,
+                "vegas": 0.139,
+                "sprout": 0.145,
+                "ledbat": 0.181
+            }
+        },
+        {
+            "name": "Example Test 3",
+            "thpt": {
+                "copa": 0.15,
+                "vivace": 0.075,
+                "cubic": 0.044,
+                "pcc": 0.119,
+                "bbr": 0.169,
+                "taova": 0.031,
+                "vegas": 0.15,
+                "sprout": 0.163,
+                "ledbat": 0.1
+            },
+            "lat": {
+                "copa": 0.131,
+                "vivace": 0.126,
+                "cubic": 0.166,
+                "pcc": 0.166,
+                "bbr": 0.006,
+                "taova": 0.091,
+                "vegas": 0.069,
+                "sprout": 0.131,
+                "ledbat": 0.114
+            },
+            "loss": {
+                "copa": 0.075,
+                "vivace": 0.151,
+                "cubic": 0.094,
+                "pcc": 0.132,
+                "bbr": 0.132,
+                "taova": 0.145,
+                "vegas": 0.182,
+                "sprout": 0.044,
+                "ledbat": 0.044
+            },
+            "overall": {
+                "copa": 0.022,
+                "vivace": 0.059,
+                "cubic": 0.207,
+                "pcc": 0.081,
+                "bbr": 0.215,
+                "taova": 0.015,
+                "vegas": 0.215,
+                "sprout": 0.089,
+                "ledbat": 0.096
+            }
+        },
+        {
+            "name": "Example Test 4",
+            "thpt": {
+                "copa": 0.116,
+                "vivace": 0.11,
+                "cubic": 0.037,
+                "pcc": 0.012,
+                "bbr": 0.177,
+                "taova": 0.122,
+                "vegas": 0.152,
+                "sprout": 0.159,
+                "ledbat": 0.116
+            },
+            "lat": {
+                "copa": 0.014,
+                "vivace": 0.167,
+                "cubic": 0.101,
+                "pcc": 0.159,
+                "bbr": 0.072,
+                "taova": 0.145,
+                "vegas": 0.058,
+                "sprout": 0.159,
+                "ledbat": 0.123
+            },
+            "loss": {
+                "copa": 0.065,
+                "vivace": 0.211,
+                "cubic": 0.024,
+                "pcc": 0.089,
+                "bbr": 0.171,
+                "taova": 0.008,
+                "vegas": 0.187,
+                "sprout": 0.024,
+                "ledbat": 0.22
+            },
+            "overall": {
+                "copa": 0.103,
+                "vivace": 0.171,
+                "cubic": 0.158,
+                "pcc": 0.007,
+                "bbr": 0.048,
+                "taova": 0.048,
+                "vegas": 0.185,
+                "sprout": 0.158,
+                "ledbat": 0.123
+            }
+        },
+        {
+            "name": "Example Test 5",
+            "thpt": {
+                "copa": 0.166,
+                "vivace": 0.185,
+                "cubic": 0.07,
+                "pcc": 0.166,
+                "bbr": 0.025,
+                "taova": 0.013,
+                "vegas": 0.121,
+                "sprout": 0.166,
+                "ledbat": 0.089
+            },
+            "lat": {
+                "copa": 0.183,
+                "vivace": 0.19,
+                "cubic": 0.087,
+                "pcc": 0.056,
+                "bbr": 0.016,
+                "taova": 0.214,
+                "vegas": 0.056,
+                "sprout": 0.143,
+                "ledbat": 0.056
+            },
+            "loss": {
+                "copa": 0.18,
+                "vivace": 0.18,
+                "cubic": 0.187,
+                "pcc": 0.158,
+                "bbr": 0.065,
+                "taova": 0.094,
+                "vegas": 0.014,
+                "sprout": 0.079,
+                "ledbat": 0.043
+            },
+            "overall": {
+                "copa": 0.075,
+                "vivace": 0.136,
+                "cubic": 0.177,
+                "pcc": 0.041,
+                "bbr": 0.184,
+                "taova": 0.082,
+                "vegas": 0.116,
+                "sprout": 0.041,
+                "ledbat": 0.15
+            }
+        },
+        {
+            "name": "Example Test 6",
+            "thpt": {
+                "copa": 0.022,
+                "vivace": 0.27,
+                "cubic": 0.067,
+                "pcc": 0.022,
+                "bbr": 0.213,
+                "taova": 0.281,
+                "vegas": 0.022,
+                "sprout": 0.056,
+                "ledbat": 0.045
+            },
+            "lat": {
+                "copa": 0.099,
+                "vivace": 0.163,
+                "cubic": 0.142,
+                "pcc": 0.007,
+                "bbr": 0.028,
+                "taova": 0.184,
+                "vegas": 0.021,
+                "sprout": 0.191,
+                "ledbat": 0.163
+            },
+            "loss": {
+                "copa": 0.023,
+                "vivace": 0.053,
+                "cubic": 0.121,
+                "pcc": 0.182,
+                "bbr": 0.053,
+                "taova": 0.144,
+                "vegas": 0.197,
+                "sprout": 0.129,
+                "ledbat": 0.098
+            },
+            "overall": {
+                "copa": 0.138,
+                "vivace": 0.132,
+                "cubic": 0.079,
+                "pcc": 0.09,
+                "bbr": 0.101,
+                "taova": 0.074,
+                "vegas": 0.153,
+                "sprout": 0.127,
+                "ledbat": 0.106
+            }
+        },
+        {
+            "name": "Example Test 7",
+            "thpt": {
+                "copa": 0.019,
+                "vivace": 0.165,
+                "cubic": 0.044,
+                "pcc": 0.158,
+                "bbr": 0.146,
+                "taova": 0.082,
+                "vegas": 0.057,
+                "sprout": 0.146,
+                "ledbat": 0.184
+            },
+            "lat": {
+                "copa": 0.048,
+                "vivace": 0.199,
+                "cubic": 0.007,
+                "pcc": 0.199,
+                "bbr": 0.199,
+                "taova": 0.014,
+                "vegas": 0.116,
+                "sprout": 0.164,
+                "ledbat": 0.055
+            },
+            "loss": {
+                "copa": 0.132,
+                "vivace": 0.181,
+                "cubic": 0.035,
+                "pcc": 0.056,
+                "bbr": 0.16,
+                "taova": 0.153,
+                "vegas": 0.056,
+                "sprout": 0.042,
+                "ledbat": 0.188
+            },
+            "overall": {
+                "copa": 0.021,
+                "vivace": 0.041,
+                "cubic": 0.193,
+                "pcc": 0.193,
+                "bbr": 0.186,
+                "taova": 0.097,
+                "vegas": 0.083,
+                "sprout": 0.062,
+                "ledbat": 0.124
+            }
+        },
+        {
+            "name": "Example Test 8",
+            "thpt": {
+                "copa": 0.184,
+                "vivace": 0.158,
+                "cubic": 0.063,
+                "pcc": 0.101,
+                "bbr": 0.165,
+                "taova": 0.12,
+                "vegas": 0.07,
+                "sprout": 0.127,
+                "ledbat": 0.013
+            },
+            "lat": {
+                "copa": 0.181,
+                "vivace": 0.043,
+                "cubic": 0.16,
+                "pcc": 0.117,
+                "bbr": 0.011,
+                "taova": 0.053,
+                "vegas": 0.149,
+                "sprout": 0.138,
+                "ledbat": 0.149
+            },
+            "loss": {
+                "copa": 0.136,
+                "vivace": 0.018,
+                "cubic": 0.064,
+                "pcc": 0.064,
+                "bbr": 0.091,
+                "taova": 0.136,
+                "vegas": 0.136,
+                "sprout": 0.236,
+                "ledbat": 0.118
+            },
+            "overall": {
+                "copa": 0.126,
+                "vivace": 0.189,
+                "cubic": 0.157,
+                "pcc": 0.031,
+                "bbr": 0.0,
+                "taova": 0.197,
+                "vegas": 0.173,
+                "sprout": 0.008,
+                "ledbat": 0.118
+            }
+        },
+        {
+            "name": "Example Test 9",
+            "thpt": {
+                "copa": 0.009,
+                "vivace": 0.211,
+                "cubic": 0.132,
+                "pcc": 0.193,
+                "bbr": 0.053,
+                "taova": 0.105,
+                "vegas": 0.096,
+                "sprout": 0.114,
+                "ledbat": 0.088
+            },
+            "lat": {
+                "copa": 0.179,
+                "vivace": 0.138,
+                "cubic": 0.033,
+                "pcc": 0.089,
+                "bbr": 0.187,
+                "taova": 0.098,
+                "vegas": 0.146,
+                "sprout": 0.106,
+                "ledbat": 0.024
+            },
+            "loss": {
+                "copa": 0.217,
+                "vivace": 0.058,
+                "cubic": 0.017,
+                "pcc": 0.192,
+                "bbr": 0.025,
+                "taova": 0.158,
+                "vegas": 0.233,
+                "sprout": 0.092,
+                "ledbat": 0.008
+            },
+            "overall": {
+                "copa": 0.085,
+                "vivace": 0.116,
+                "cubic": 0.14,
+                "pcc": 0.07,
+                "bbr": 0.0,
+                "taova": 0.085,
+                "vegas": 0.202,
+                "sprout": 0.186,
+                "ledbat": 0.116
+            }
+        },
+        {
+            "name": "Example Test 10",
+            "thpt": {
+                "copa": 0.163,
+                "vivace": 0.114,
+                "cubic": 0.054,
+                "pcc": 0.147,
+                "bbr": 0.163,
+                "taova": 0.152,
+                "vegas": 0.125,
+                "sprout": 0.043,
+                "ledbat": 0.038
+            },
+            "lat": {
+                "copa": 0.008,
+                "vivace": 0.146,
+                "cubic": 0.169,
+                "pcc": 0.046,
+                "bbr": 0.146,
+                "taova": 0.192,
+                "vegas": 0.077,
+                "sprout": 0.177,
+                "ledbat": 0.038
+            },
+            "loss": {
+                "copa": 0.118,
+                "vivace": 0.181,
+                "cubic": 0.16,
+                "pcc": 0.042,
+                "bbr": 0.118,
+                "taova": 0.0,
+                "vegas": 0.014,
+                "sprout": 0.188,
+                "ledbat": 0.181
+            },
+            "overall": {
+                "copa": 0.133,
+                "vivace": 0.048,
+                "cubic": 0.164,
+                "pcc": 0.164,
+                "bbr": 0.042,
+                "taova": 0.018,
+                "vegas": 0.182,
+                "sprout": 0.176,
+                "ledbat": 0.073
+            }
+        }
+    ]
+}

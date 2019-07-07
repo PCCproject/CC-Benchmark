@@ -1,0 +1,120 @@
+{
+    "Metrics": {
+        "latency_sweep_test": {
+            "pcc": [
+                {
+                    "Link Utilization": 0.006828102057753614,
+                    "95 Queueing delay": -24.47060199165173,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.914750276064833,
+                    "name": "latency_sweep.5ms"
+                },
+                {
+                    "Link Utilization": 0.08491551544742984,
+                    "95 Queueing delay": 2.4677941676370834,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.665190651618732,
+                    "name": "latency_sweep.1ms"
+                },
+                {
+                    "Link Utilization": 0.07783639504801952,
+                    "95 Queueing delay": 62.856546053545344,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.527335812430712,
+                    "name": "latency_sweep.64ms"
+                },
+                {
+                    "Link Utilization": 0.0836780904055859,
+                    "95 Queueing delay": 384.27401516393616,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.104232027250443,
+                    "name": "latency_sweep.384ms"
+                },
+                {
+                    "Link Utilization": 0.023175820916657496,
+                    "95 Queueing delay": 26.251901850782403,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.817052156796713,
+                    "name": "latency_sweep.48ms"
+                },
+                {
+                    "Link Utilization": 0.01615660796216129,
+                    "95 Queueing delay": -26.804404132730006,
+                    "Avg Loss": 0.0,
+                    "Overall": 7.3243380320162,
+                    "name": "latency_sweep.2ms"
+                },
+                {
+                    "Link Utilization": 0.0793862941281516,
+                    "95 Queueing delay": 512.6512315776318,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.7816413955246255,
+                    "name": "latency_sweep.512ms"
+                },
+                {
+                    "Link Utilization": 0.012759008112917344,
+                    "95 Queueing delay": -21.219377707647908,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.077472734196469,
+                    "name": "latency_sweep.8ms"
+                },
+                {
+                    "Link Utilization": 0.08451178674991436,
+                    "95 Queueing delay": 0.4325607088161082,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.725160376288944,
+                    "name": "latency_sweep.16ms"
+                },
+                {
+                    "Link Utilization": 0.0465618508749171,
+                    "95 Queueing delay": 267.1683480851455,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.8502652229718457,
+                    "name": "latency_sweep.256ms"
+                },
+                {
+                    "Link Utilization": 0.0838866170294527,
+                    "95 Queueing delay": 129.86384764499135,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.0589260636845195,
+                    "name": "latency_sweep.128ms"
+                },
+                {
+                    "Link Utilization": 0.05832701757991406,
+                    "95 Queueing delay": 3.5086807050538704,
+                    "Avg Loss": 0.0,
+                    "Overall": 6.258043353203567,
+                    "name": "latency_sweep.3ms"
+                },
+                {
+                    "Link Utilization": 0.017035242146621575,
+                    "95 Queueing delay": 7.859381528749033,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.905187930417364,
+                    "name": "latency_sweep.32ms"
+                },
+                {
+                    "Link Utilization": 0.03290638207321184,
+                    "95 Queueing delay": 26.424203415689544,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.164550892576822,
+                    "name": "latency_sweep.4ms"
+                },
+                {
+                    "Link Utilization": 0.0848449750562428,
+                    "95 Queueing delay": 192.84682198564974,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.738123604575876,
+                    "name": "latency_sweep.192ms"
+                },
+                {
+                    "Link Utilization": 0.08871250456956199,
+                    "95 Queueing delay": 86.59881588085014,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.430444211548059,
+                    "name": "latency_sweep.96ms"
+                }
+            ]
+        }
+    }
+}

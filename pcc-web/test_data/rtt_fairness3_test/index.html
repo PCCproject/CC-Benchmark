@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rtt Fairness 3-star</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <!-- <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script> -->
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="../../js/jquery-3.4.1.min.js"></script>
+  <script src="../../js/chart.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../../index.html">Home</a></li>
+        <li class='left'><a href="../../summary/index.html">Summary</a></li>
+      </ul>
+    </div>
+  </header>
+  <div class='body-container'>
+  <div class='topo-outer-container'>
+    <h2>Test Description</h2>
+    <div class='topo-inner-container'>
+      <p class='topo-explain'>
+        This test measures the fairness of 2 different flows with 2 different round trip time.
+        The network topology used is 3-point-star topology which is illustrated below.
+      </p>
+    </div>
+    <div class='topo-img-container'>
+      <img class='fit-div' src='../3-point-star.png' />
+    </div>
+
+  </div>
+  <script>
+    var rtt3_points = getJainIndexCoord("jain_rtt_fairness3.json");
+    window.onload = function() {
+      renderRttFairnessChart('rtt_fairness_3_star', rtt3_points);
+    }
+  </script>
+  <br />
+  <br />
+  <div id='3-star'>
+    <h2>Jain Fairness Index Scores</h2>
+    <div id="rtt_fairness_3_star" class='fairness-graph'></div>
+  </div>
+
+  <h2>Detailed Graphs</h2>
+  <ul>
+    <li>
+      <a href="rtt3_tcp_results.html">TCP</a>
+    </li>
+    <li>
+      <a href="rtt3_vivace_results.html">PCC Vivace</a>
+    </li>
+  </ul>
+  </div>
+  <hr />
+  <br /><br />
+</body>
+
+</html>

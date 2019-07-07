@@ -1,0 +1,71 @@
+{
+    "Metrics": {
+        "jitter_sweep_test": {
+            "pcc": [
+                {
+                    "Link Utilization": 0.0045474987398043286,
+                    "95 Queueing delay": 0.6997858749999992,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.794104149134831,
+                    "name": "jitter_sweep.30ms_3ms"
+                },
+                {
+                    "Link Utilization": 0.0027032229240202144,
+                    "95 Queueing delay": 0.09037944316489661,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.294021710528168,
+                    "name": "jitter_sweep.30ms_10ms"
+                },
+                {
+                    "Link Utilization": 0.003096805293416216,
+                    "95 Queueing delay": 0.6627702519379852,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.411104280947633,
+                    "name": "jitter_sweep.30ms_4ms"
+                },
+                {
+                    "Link Utilization": 0.049320444448233476,
+                    "95 Queueing delay": 30.396165365071205,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.501195548840996,
+                    "name": "jitter_sweep.30ms_0ms"
+                },
+                {
+                    "Link Utilization": 0.002734936504880602,
+                    "95 Queueing delay": 0.8975867753623167,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.2792126115256925,
+                    "name": "jitter_sweep.30ms_5ms"
+                },
+                {
+                    "Link Utilization": 0.009452078776077037,
+                    "95 Queueing delay": 0.4255366559583237,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.534734890905975,
+                    "name": "jitter_sweep.30ms_1ms"
+                },
+                {
+                    "Link Utilization": 0.0020446621509579406,
+                    "95 Queueing delay": 1.349687569444444,
+                    "Avg Loss": 0.0,
+                    "Overall": 2.973810742004867,
+                    "name": "jitter_sweep.30ms_6ms"
+                },
+                {
+                    "Link Utilization": 0.006386329338603464,
+                    "95 Queueing delay": 0.9786907521903647,
+                    "Avg Loss": 0.0,
+                    "Overall": 4.124642566559295,
+                    "name": "jitter_sweep.30ms_8ms"
+                },
+                {
+                    "Link Utilization": 0.0053390982555947585,
+                    "95 Queueing delay": 1.377822156613862,
+                    "Avg Loss": 0.0,
+                    "Overall": 3.932737904753802,
+                    "name": "jitter_sweep.30ms_2ms"
+                }
+            ]
+        }
+    }
+}

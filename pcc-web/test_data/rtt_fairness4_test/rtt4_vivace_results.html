@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rtt Fairness With PCC Vivace</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <!-- <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script> -->
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="../../js/jquery-3.4.1.min.js"></script>
+  <script src="../../js/chart.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../../index.html">Home</a></li>
+        <li class='left'><a href="../../summary/index.html">Summary</a></li>
+      </ul>
+    </div>
+  </header>
+  <h3>PCC-Vivace Results</h3>
+  <hr />
+  <div id='rtt4_vivace'></div>
+  <script>
+  var allFiles = getAllPointsWithExtension("data/vivace/", ".json", "Time", "Throughput");
+  var allFiles2 = getAllPointsWithExtension("data/vivace/", ".json", "Time", "Avg Rtt");
+
+  var titles = [];
+  var points = [];
+  for (var i = 0; i < allFiles.length; i++) {
+    var title = allFiles[i]["title"];
+    var dataPoints = allFiles[i]["dataPoints"];
+    titles.push(title);
+    points.push(dataPoints);
+  }
+
+  var titles2 = [];
+  var points2 = [];
+  for (var i = 0; i < allFiles2.length; i++) {
+    var title = allFiles2[i]["title"] + 'lat';
+    var dataPoints = allFiles2[i]["dataPoints"];
+    titles2.push(title);
+    points2.push(dataPoints);
+  }
+  console.log(titles);
+  console.log(points);
+  var thrputCharts = {};
+  var latCharts = {};
+
+  window.onload = function() {
+    for (var i = 0; i < allFiles.length; i++) {
+      if (titles[i].includes('trial1')) {
+        var c1 = renderChartwithData(titles[i], points[i], titles[i].split(".json")[0], "Time(ms)", "Throughput");
+        var c2 = renderChartwithData(titles2[i], points2[i], titles2[i].split(".json")[0], "Time(ms)", "Latency");
+        var testname = titles[i].split('-')[0];
+        thrputCharts[testname] = c1;
+        latCharts[testname] = c2;
+      }
+    }
+  }
+  document.getElementById('rtt4_vivace').innerHTML += '<hr />';
+
+  var numTrials = getNumTrials(titles);
+  // console.log(numTrials);
+  for (var i = 0; i < allFiles.length; i++) {
+    var id = titles[i];
+    var testname = id.split('-')[0];
+    if (numTrials[testname] > 0) {
+      var content = '';
+      for (var j = 0; j < numTrials[testname]; j++) {
+        content += '<option value=' + testname +'-trial' + (j + 1) + '>trial ' + (j+1) + '</option>';
+      }
+      console.log(content);
+      numTrials[testname] = -1;
+
+      document.getElementById('rtt4_vivace').innerHTML += ('<select>' + content + '</select>');
+    }
+
+    if (id.includes("trial1")) {
+      var s = "<div class='timechart' id='" + id + "'></div>";
+      document.getElementById('rtt4_vivace').innerHTML += s;
+      id = titles2[i];
+      s = "<div class='timechart' id='" + id + "'></div>";
+      document.getElementById('rtt4_vivace').innerHTML += s;
+      document.getElementById('rtt4_vivace').innerHTML += '<hr />';
+      document.getElementById('rtt4_vivace').innerHTML += '<hr />';
+
+      document.getElementById('rtt4_vivace').innerHTML += '<br />';
+      document.getElementById('rtt4_vivace').innerHTML += '<br />';
+      document.getElementById('rtt4_vivace').innerHTML += '<br />';
+    }
+  }
+
+  $( "select" ).change(function() {
+    var chart;
+    var selected = this.value;
+    console.log(selected);
+    var thrputChart = searchChart(selected, thrputCharts);
+    var latChart = searchChart(selected, latCharts);
+    console.log(thrputChart.options)
+    thrputChart.options.title.text = selected;
+    latChart.options.title.text = selected;
+
+    var idx = getIndexOfDataPoints(selected, titles);
+    console.log(idx);
+    thrputChart.options.data = points[idx];
+    latChart.options.data = points2[idx];
+    thrputChart.render();
+    latChart.render();
+})
+  </script>
+  <hr />
+  <br /><br />
+
+  <a href="#" id="scroll" style="display: none;"><span></span></a>
+  <script>
+    $(document).ready(function() {
+      $(window).scroll(function() {
+        if ($(this).scrollTop() > 100) {
+          $('#scroll').fadeIn();
+        } else {
+          $('#scroll').fadeOut();
+        }
+      });
+      $('#scroll').click(function() {
+        $("html, body").animate({
+          scrollTop: 0
+        }, 600);
+        return false;
+      });
+    });
+  </script>
+
+</body>
+
+</html>

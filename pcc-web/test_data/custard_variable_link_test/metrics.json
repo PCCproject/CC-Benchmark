@@ -1,0 +1,15 @@
+{
+    "Metrics": {
+        "custard_variable_link_test": {
+            "pcc": [
+                {
+                    "Link Utilization": 0.06085059819540591,
+                    "95 Queueing delay": 57.21610356007581,
+                    "Avg Loss": 0.0,
+                    "Overall": 5.3438151369783276,
+                    "name": "custard_variable_link"
+                }
+            ]
+        }
+    }
+}

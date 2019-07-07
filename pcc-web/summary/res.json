@@ -1,0 +1,474 @@
+{
+    "Tests": [
+        {
+            "name": "Example Test 1",
+            "thpt": {
+                "copa": 2.1,
+                "vivace": 0.8,
+                "cubic": 0.9,
+                "pcc": 2.4,
+                "bbr": 0.8,
+                "taova": 1.2,
+                "vegas": 1.5,
+                "sprout": 2.7,
+                "ledbat": 0.6
+            },
+            "lat": {
+                "copa": 1.2,
+                "vivace": 0.5,
+                "cubic": 2.3,
+                "pcc": 1.9,
+                "bbr": 1.3,
+                "taova": 1.4,
+                "vegas": 1.8,
+                "sprout": 2.6,
+                "ledbat": 1.6
+            },
+            "loss": {
+                "copa": 1.1,
+                "vivace": 0.4,
+                "cubic": 0.4,
+                "pcc": 2.1,
+                "bbr": 1.9,
+                "taova": 1.7,
+                "vegas": 1.4,
+                "sprout": 1.7,
+                "ledbat": 1.4
+            },
+            "overall": {
+                "copa": 1.9,
+                "vivace": 1.5,
+                "cubic": 0.2,
+                "pcc": 0.9,
+                "bbr": 2.7,
+                "taova": 0.2,
+                "vegas": 2.0,
+                "sprout": 1.0,
+                "ledbat": 2.4
+            }
+        },
+        {
+            "name": "Example Test 2",
+            "thpt": {
+                "copa": 2.5,
+                "vivace": 2.4,
+                "cubic": 1.7,
+                "pcc": 0.0,
+                "bbr": 0.9,
+                "taova": 0.7,
+                "vegas": 1.5,
+                "sprout": 0.4,
+                "ledbat": 0.8
+            },
+            "lat": {
+                "copa": 1.9,
+                "vivace": 2.3,
+                "cubic": 2.9,
+                "pcc": 0.7,
+                "bbr": 1.2,
+                "taova": 0.4,
+                "vegas": 2.1,
+                "sprout": 0.8,
+                "ledbat": 1.9
+            },
+            "loss": {
+                "copa": 0.9,
+                "vivace": 0.1,
+                "cubic": 1.2,
+                "pcc": 2.7,
+                "bbr": 1.4,
+                "taova": 2.0,
+                "vegas": 0.5,
+                "sprout": 1.3,
+                "ledbat": 1.1
+            },
+            "overall": {
+                "copa": 0.1,
+                "vivace": 3.0,
+                "cubic": 0.3,
+                "pcc": 2.6,
+                "bbr": 0.2,
+                "taova": 2.7,
+                "vegas": 2.3,
+                "sprout": 2.4,
+                "ledbat": 3.0
+            }
+        },
+        {
+            "name": "Example Test 3",
+            "thpt": {
+                "copa": 2.4,
+                "vivace": 1.2,
+                "cubic": 0.7,
+                "pcc": 1.9,
+                "bbr": 2.7,
+                "taova": 0.5,
+                "vegas": 2.4,
+                "sprout": 2.6,
+                "ledbat": 1.6
+            },
+            "lat": {
+                "copa": 2.3,
+                "vivace": 2.2,
+                "cubic": 2.9,
+                "pcc": 2.9,
+                "bbr": 0.1,
+                "taova": 1.6,
+                "vegas": 1.2,
+                "sprout": 2.3,
+                "ledbat": 2.0
+            },
+            "loss": {
+                "copa": 1.2,
+                "vivace": 2.4,
+                "cubic": 1.5,
+                "pcc": 2.1,
+                "bbr": 2.1,
+                "taova": 2.3,
+                "vegas": 2.9,
+                "sprout": 0.7,
+                "ledbat": 0.7
+            },
+            "overall": {
+                "copa": 0.3,
+                "vivace": 0.8,
+                "cubic": 2.8,
+                "pcc": 1.1,
+                "bbr": 2.9,
+                "taova": 0.2,
+                "vegas": 2.9,
+                "sprout": 1.2,
+                "ledbat": 1.3
+            }
+        },
+        {
+            "name": "Example Test 4",
+            "thpt": {
+                "copa": 1.9,
+                "vivace": 1.8,
+                "cubic": 0.6,
+                "pcc": 0.2,
+                "bbr": 2.9,
+                "taova": 2.0,
+                "vegas": 2.5,
+                "sprout": 2.6,
+                "ledbat": 1.9
+            },
+            "lat": {
+                "copa": 0.2,
+                "vivace": 2.3,
+                "cubic": 1.4,
+                "pcc": 2.2,
+                "bbr": 1.0,
+                "taova": 2.0,
+                "vegas": 0.8,
+                "sprout": 2.2,
+                "ledbat": 1.7
+            },
+            "loss": {
+                "copa": 0.8,
+                "vivace": 2.6,
+                "cubic": 0.3,
+                "pcc": 1.1,
+                "bbr": 2.1,
+                "taova": 0.1,
+                "vegas": 2.3,
+                "sprout": 0.3,
+                "ledbat": 2.7
+            },
+            "overall": {
+                "copa": 1.5,
+                "vivace": 2.5,
+                "cubic": 2.3,
+                "pcc": 0.1,
+                "bbr": 0.7,
+                "taova": 0.7,
+                "vegas": 2.7,
+                "sprout": 2.3,
+                "ledbat": 1.8
+            }
+        },
+        {
+            "name": "Example Test 5",
+            "thpt": {
+                "copa": 2.6,
+                "vivace": 2.9,
+                "cubic": 1.1,
+                "pcc": 2.6,
+                "bbr": 0.4,
+                "taova": 0.2,
+                "vegas": 1.9,
+                "sprout": 2.6,
+                "ledbat": 1.4
+            },
+            "lat": {
+                "copa": 2.3,
+                "vivace": 2.4,
+                "cubic": 1.1,
+                "pcc": 0.7,
+                "bbr": 0.2,
+                "taova": 2.7,
+                "vegas": 0.7,
+                "sprout": 1.8,
+                "ledbat": 0.7
+            },
+            "loss": {
+                "copa": 2.5,
+                "vivace": 2.5,
+                "cubic": 2.6,
+                "pcc": 2.2,
+                "bbr": 0.9,
+                "taova": 1.3,
+                "vegas": 0.2,
+                "sprout": 1.1,
+                "ledbat": 0.6
+            },
+            "overall": {
+                "copa": 1.1,
+                "vivace": 2.0,
+                "cubic": 2.6,
+                "pcc": 0.6,
+                "bbr": 2.7,
+                "taova": 1.2,
+                "vegas": 1.7,
+                "sprout": 0.6,
+                "ledbat": 2.2
+            }
+        },
+        {
+            "name": "Example Test 6",
+            "thpt": {
+                "copa": 0.2,
+                "vivace": 2.4,
+                "cubic": 0.6,
+                "pcc": 0.2,
+                "bbr": 1.9,
+                "taova": 2.5,
+                "vegas": 0.2,
+                "sprout": 0.5,
+                "ledbat": 0.4
+            },
+            "lat": {
+                "copa": 1.4,
+                "vivace": 2.3,
+                "cubic": 2.0,
+                "pcc": 0.1,
+                "bbr": 0.4,
+                "taova": 2.6,
+                "vegas": 0.3,
+                "sprout": 2.7,
+                "ledbat": 2.3
+            },
+            "loss": {
+                "copa": 0.3,
+                "vivace": 0.7,
+                "cubic": 1.6,
+                "pcc": 2.4,
+                "bbr": 0.7,
+                "taova": 1.9,
+                "vegas": 2.6,
+                "sprout": 1.7,
+                "ledbat": 1.3
+            },
+            "overall": {
+                "copa": 2.6,
+                "vivace": 2.5,
+                "cubic": 1.5,
+                "pcc": 1.7,
+                "bbr": 1.9,
+                "taova": 1.4,
+                "vegas": 2.9,
+                "sprout": 2.4,
+                "ledbat": 2.0
+            }
+        },
+        {
+            "name": "Example Test 7",
+            "thpt": {
+                "copa": 0.3,
+                "vivace": 2.6,
+                "cubic": 0.7,
+                "pcc": 2.5,
+                "bbr": 2.3,
+                "taova": 1.3,
+                "vegas": 0.9,
+                "sprout": 2.3,
+                "ledbat": 2.9
+            },
+            "lat": {
+                "copa": 0.7,
+                "vivace": 2.9,
+                "cubic": 0.1,
+                "pcc": 2.9,
+                "bbr": 2.9,
+                "taova": 0.2,
+                "vegas": 1.7,
+                "sprout": 2.4,
+                "ledbat": 0.8
+            },
+            "loss": {
+                "copa": 1.9,
+                "vivace": 2.6,
+                "cubic": 0.5,
+                "pcc": 0.8,
+                "bbr": 2.3,
+                "taova": 2.2,
+                "vegas": 0.8,
+                "sprout": 0.6,
+                "ledbat": 2.7
+            },
+            "overall": {
+                "copa": 0.3,
+                "vivace": 0.6,
+                "cubic": 2.8,
+                "pcc": 2.8,
+                "bbr": 2.7,
+                "taova": 1.4,
+                "vegas": 1.2,
+                "sprout": 0.9,
+                "ledbat": 1.8
+            }
+        },
+        {
+            "name": "Example Test 8",
+            "thpt": {
+                "copa": 2.9,
+                "vivace": 2.5,
+                "cubic": 1.0,
+                "pcc": 1.6,
+                "bbr": 2.6,
+                "taova": 1.9,
+                "vegas": 1.1,
+                "sprout": 2.0,
+                "ledbat": 0.2
+            },
+            "lat": {
+                "copa": 1.7,
+                "vivace": 0.4,
+                "cubic": 1.5,
+                "pcc": 1.1,
+                "bbr": 0.1,
+                "taova": 0.5,
+                "vegas": 1.4,
+                "sprout": 1.3,
+                "ledbat": 1.4
+            },
+            "loss": {
+                "copa": 1.5,
+                "vivace": 0.2,
+                "cubic": 0.7,
+                "pcc": 0.7,
+                "bbr": 1.0,
+                "taova": 1.5,
+                "vegas": 1.5,
+                "sprout": 2.6,
+                "ledbat": 1.3
+            },
+            "overall": {
+                "copa": 1.6,
+                "vivace": 2.4,
+                "cubic": 2.0,
+                "pcc": 0.4,
+                "bbr": 0.0,
+                "taova": 2.5,
+                "vegas": 2.2,
+                "sprout": 0.1,
+                "ledbat": 1.5
+            }
+        },
+        {
+            "name": "Example Test 9",
+            "thpt": {
+                "copa": 0.1,
+                "vivace": 2.4,
+                "cubic": 1.5,
+                "pcc": 2.2,
+                "bbr": 0.6,
+                "taova": 1.2,
+                "vegas": 1.1,
+                "sprout": 1.3,
+                "ledbat": 1.0
+            },
+            "lat": {
+                "copa": 2.2,
+                "vivace": 1.7,
+                "cubic": 0.4,
+                "pcc": 1.1,
+                "bbr": 2.3,
+                "taova": 1.2,
+                "vegas": 1.8,
+                "sprout": 1.3,
+                "ledbat": 0.3
+            },
+            "loss": {
+                "copa": 2.6,
+                "vivace": 0.7,
+                "cubic": 0.2,
+                "pcc": 2.3,
+                "bbr": 0.3,
+                "taova": 1.9,
+                "vegas": 2.8,
+                "sprout": 1.1,
+                "ledbat": 0.1
+            },
+            "overall": {
+                "copa": 1.1,
+                "vivace": 1.5,
+                "cubic": 1.8,
+                "pcc": 0.9,
+                "bbr": 0.0,
+                "taova": 1.1,
+                "vegas": 2.6,
+                "sprout": 2.4,
+                "ledbat": 1.5
+            }
+        },
+        {
+            "name": "Example Test 10",
+            "thpt": {
+                "copa": 3.0,
+                "vivace": 2.1,
+                "cubic": 1.0,
+                "pcc": 2.7,
+                "bbr": 3.0,
+                "taova": 2.8,
+                "vegas": 2.3,
+                "sprout": 0.8,
+                "ledbat": 0.7
+            },
+            "lat": {
+                "copa": 0.1,
+                "vivace": 1.9,
+                "cubic": 2.2,
+                "pcc": 0.6,
+                "bbr": 1.9,
+                "taova": 2.5,
+                "vegas": 1.0,
+                "sprout": 2.3,
+                "ledbat": 0.5
+            },
+            "loss": {
+                "copa": 1.7,
+                "vivace": 2.6,
+                "cubic": 2.3,
+                "pcc": 0.6,
+                "bbr": 1.7,
+                "taova": 0.0,
+                "vegas": 0.2,
+                "sprout": 2.7,
+                "ledbat": 2.6
+            },
+            "overall": {
+                "copa": 2.2,
+                "vivace": 0.8,
+                "cubic": 2.7,
+                "pcc": 2.7,
+                "bbr": 0.7,
+                "taova": 0.3,
+                "vegas": 3.0,
+                "sprout": 2.9,
+                "ledbat": 1.2
+            }
+        }
+    ]
+}
