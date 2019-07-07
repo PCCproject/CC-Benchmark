@@ -49,6 +49,17 @@ def get_wait_time_from_VM():
 
     return 0
 
+def get_num_trial(test_dir, detail):
+    next = 1
+    try:
+        for file in os.listdir(test_dir):
+            if file.startswith(detail) and file.endswith('.json'):
+                next += 1
+    except:
+        return next
+
+    return next
+
 def get_test_dur(test):
     test_file = file_locations.tests_dir + "/" + test + ".json"
     max_dur = 0
