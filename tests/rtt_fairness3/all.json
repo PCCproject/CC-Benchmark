@@ -1,10 +1,10 @@
 {
     "Tests": [
-        "rtt_fairness/4ms_to_4ms",
-        "rtt_fairness/4ms_to_8ms",
-        "rtt_fairness/4ms_to_16ms",
-        "rtt_fairness/4ms_to_32ms",
-        "rtt_fairness/4ms_to_64ms",
-        "rtt_fairness/4ms_to_128ms"
+        "rtt_fairness3/4ms_to_4ms",
+        "rtt_fairness3/4ms_to_8ms",
+        "rtt_fairness3/4ms_to_16ms",
+        "rtt_fairness3/4ms_to_32ms",
+        "rtt_fairness3/4ms_to_64ms",
+        "rtt_fairness3/4ms_to_128ms"
     ]
 }
