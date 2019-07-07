@@ -1,5 +1,5 @@
 {
-    "Name":"rtt_fairness.4ms_to_32ms",
+    "Name":"rtt_fairness3.4ms_to_8ms",
     "Topology":"3_point_star",
     "Flows":[
         {
@@ -27,7 +27,7 @@
         },
         "L2":{
             "bw":30,
-            "dl":"15ms",
+            "dl":"3ms",
             "queue":1000
         },
         "L3":{
