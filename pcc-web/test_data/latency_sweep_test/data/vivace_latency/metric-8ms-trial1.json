@@ -1,0 +1,12 @@
+{
+    "vivace_latency": {
+        "flow1": {
+            "Avg Lat": 9.75627969531182,
+            "Overall": 5.286400396711029,
+            "95 Queue Delay": 8.267,
+            "Avg Thrput": 3214.859429846136,
+            "Link Util": 10.716198099487121,
+            "Avg Loss": 0.0
+        }
+    }
+}

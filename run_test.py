@@ -313,7 +313,7 @@ def run_test(test_dict):
         test_split = test["Name"].split('.')
         testname = test_split[0] + '_test'
         if len(test_split) > 1:
-            detail = test_split[1]
+            detail = '.'.join(test_split[1:])
         else:
             detail = testname
 
