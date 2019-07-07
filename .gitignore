@@ -3,3 +3,4 @@ results/
 *.pyc
 *.pdf
 push.sh
+test_data
