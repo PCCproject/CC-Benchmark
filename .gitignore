@@ -3,3 +3,6 @@ results/
 *.pyc
 *.pdf
 push.sh
+data/
+jain.json
+metrics.json
