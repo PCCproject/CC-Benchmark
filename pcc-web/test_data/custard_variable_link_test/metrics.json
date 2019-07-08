@@ -1,15 +1,22 @@
 {
-    "Metrics": {
+    "vivace_latency": {
         "custard_variable_link_test": {
-            "pcc": [
-                {
-                    "Link Utilization": 0.06085059819540591,
-                    "95 Queueing delay": 57.21610356007581,
-                    "Avg Loss": 0.0,
-                    "Overall": 5.3438151369783276,
-                    "name": "custard_variable_link"
-                }
-            ]
+            "Avg Lat": 34.48838923185073,
+            "Avg Thrput": 8355.185559178666,
+            "Overall": 4.887779502438315,
+            "Avg Loss": 8.690786714749002e-05,
+            "95 Queue Delay": 32.98257795193308,
+            "Link Util": 27.850618530595554
+        }
+    },
+    "default_tcp": {
+        "custard_variable_link_test": {
+            "Overall": 4.236902307722191,
+            "Link Util": 40.88125795049007,
+            "Avg Loss": 0.007793379066822699,
+            "Avg Lat": 103.9018530909265,
+            "95 Queue Delay": 147.2483549019608,
+            "Avg Thrput": 12264.377385147021
         }
     }
 }

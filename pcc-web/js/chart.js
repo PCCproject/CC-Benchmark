@@ -83,11 +83,10 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
 }
 
 function getJainIndexCoord(jsonfile) {
-  var schemes = ['tcp', 'vivace'];
   var res = new Array();
   $.getJSON(jsonfile, function(data) {
-    for (var i = 0; i < schemes.length; i++) {
-      var scheme = schemes[i];
+    // console.log(data)
+    for (var scheme in data) {
       var dataPoints = data[scheme];
       var points = [];
       for (var j = 0; j < dataPoints.length; j++) {
@@ -104,14 +103,13 @@ function getJainIndexCoord(jsonfile) {
         legendText: scheme,
         dataPoints: points
       });
-      // console.log(points);
     }
   });
 
   return res;
 }
 
-function getAllPointsWithExtension(dir, fileextension, x_axis, y_axis) {
+function getAllPointsWithExtensionRtt(dir, fileextension, x_axis, y_axis) {
   var files = new Array();
   $.ajax({
     url: dir,
@@ -124,39 +122,41 @@ function getAllPointsWithExtension(dir, fileextension, x_axis, y_axis) {
         flows = name.split(".json")[0].split("_to_");
         var i = 1
         var points = new Array();
-        $.getJSON(filename, function(data) {
-          for (var j = 0; j < flows.length; j++) {
-            var legend = flows[j];
+        if (!filename.includes('metric')) {
+          $.getJSON(filename, function(data) {
+            for (var j = 0; j < flows.length; j++) {
+              var legend = flows[j];
 
-            if (legend.includes('-')) {
-              legend = legend.split('-')[0];
-            }
-            var line = {
-              type:'line',
-              showInLegend: true,
-              //toolTipContent: "<b>Time: </b>{x}<br/><b>Throughput: </b>{y}",
-              legendText: legend,
-              dataPoints: []
-            }
-
-            var allFlowPoint = data['flow'+i];
-            // console.log(allFlowPoint.length);
-            for (var k = 0; k < allFlowPoint.length; k++) {
-              var currData = allFlowPoint[k];
-              // console.log(currData);
-              var loc = {
-                x: currData[x_axis],
-                y: currData[y_axis]
+              if (legend.includes('-')) {
+                legend = legend.split('-')[0];
               }
-              line.dataPoints.push(loc);
-            }
-            i += 1;
-            points.push(line);
-          }
+              var line = {
+                type:'line',
+                showInLegend: true,
+                toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(kbps): </b>{y}",
+                legendText: legend,
+                dataPoints: []
+              }
 
-        });
-        // console.log(points);
-        files.push({"title": name, "dataPoints": points});
+              var allFlowPoint = data['flow'+i];
+              // console.log(allFlowPoint.length);
+              for (var k = 0; k < allFlowPoint.length; k++) {
+                var currData = allFlowPoint[k];
+                // console.log(currData);
+                var loc = {
+                  x: currData[x_axis],
+                  y: currData[y_axis]
+                }
+                line.dataPoints.push(loc);
+              }
+              i += 1;
+              points.push(line);
+            }
+
+          });
+          // console.log(points);
+          files.push({"title": name, "dataPoints": points});
+        }
       });
     }
   });
