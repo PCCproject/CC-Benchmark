@@ -3,7 +3,9 @@ async: false
 });
 
 function searchChart(name, dict) {
+  console.log(dict);
   var testname = name.split('-')[0];
+  console.log(testname);
   return dict[testname];
 }
 
@@ -49,7 +51,94 @@ function renderRttFairnessChart(id, chartData) {
   chart.render();
 }
 
+function parseDateTime(datetime) {
+  var monthToVal = {
+    "January":1,
+    "February":2,
+    "March":3,
+    "April":4,
+    "May":5,
+    "June":6,
+    "July":7,
+    "August":8,
+    "September":9,
+    "October":10,
+    "November":11,
+    "December":12
+  };
+  datetime = datetime.split('_');
+  month = parseInt(monthToVal[datetime[0]]);
+  day = parseInt(datetime[1]);
+  year = parseInt(datetime[2]);
+  sec = parseInt(datetime[3]);
+
+  return [year, month, day, sec];
+}
+
+function sortTime(a, b) {
+  var t1 = parseDateTime(a);
+  var t2 = parseDateTime(b);
+
+  if (t1[0] > t2[0]) {
+    return 1;
+  }
+  if (t1[0] < t2[0]) {
+    return -1;
+  }
+  if (t1[1] > t2[1]) {
+    return 1;
+  }
+  if (t1[1] < t2[1]) {
+    return -1;
+  }
+  if (t1[2] > t2[2]) {
+    return 1;
+  }
+  if (t1[2] < t2[2]) {
+    return -1;
+  }
+  if (t1[3] > t2[3]) {
+    return 1;
+  }
+  if (t1[3] < t2[3]) {
+    return -1;
+  }
+
+  return 0;
+}
+
+function getMatchingIdx(titles, target) {
+  for (var i = 0; i < titles.length; i++) {
+    if (titles[i] === target) {
+      return i;
+    }
+  }
+  return -1;
+}
+function getTestTrials(titles) {
+  var res = {};
+  for (var i = 0; i < titles.length; i++) {
+    var split = titles[i].split('-');
+    var testid = split[0];
+    var detail = split[1].split('.json')[0];
+    // console.log(testid);
+    // console.log(detail);
+    if (!res.hasOwnProperty(testid)) {
+      res[testid] = [];
+    }
+    res[testid].push(detail);
+  }
+  var keys = Object.keys(res);
+
+  for (var i = 0; i < keys.length; i++) {
+    res[keys[i]].sort(sortTime);
+  }
+
+  return res
+}
+
 function renderChartwithData(id, chartData, title, x_name, y_name) {
+  // console.log(id);
   var chart = new CanvasJS.Chart(id, {
     animationEnabled: true,
     zoomEnabled: true,

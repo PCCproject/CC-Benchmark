@@ -23,64 +23,64 @@
   <hr />
   <div id='rtt3_tcp'></div>
   <script>
-  var allFiles = getAllPointsWithExtensionRtt("data/default_tcp/", ".json", "Time", "Throughput");
-  var allFiles2 = getAllPointsWithExtensionRtt("data/default_tcp/", ".json", "Time", "Avg Rtt");
+    var allFiles = getAllPointsWithExtensionRtt("data/default_tcp/", ".json", "Time", "Throughput");
+    var allFiles2 = getAllPointsWithExtensionRtt("data/default_tcp/", ".json", "Time", "Avg Rtt");
 
-  var titles = [];
-  var points = [];
-  for (var i = 0; i < allFiles.length; i++) {
-    var title = allFiles[i]["title"];
-    var dataPoints = allFiles[i]["dataPoints"];
-    titles.push(title);
-    points.push(dataPoints);
-  }
-
-  var titles2 = [];
-  var points2 = [];
-  for (var i = 0; i < allFiles2.length; i++) {
-    var title = allFiles2[i]["title"] + 'lat';
-    var dataPoints = allFiles2[i]["dataPoints"];
-    titles2.push(title);
-    points2.push(dataPoints);
-  }
-  console.log(titles);
-  console.log(points);
-  var thrputCharts = {};
-  var latCharts = {};
-
-  window.onload = function() {
+    var titles = [];
+    var points = [];
     for (var i = 0; i < allFiles.length; i++) {
-      if (titles[i].includes('trial1')) {
-        var c1 = renderChartwithData(titles[i], points[i], titles[i].split(".json")[0], "Time(ms)", "Throughput");
-        var c2 = renderChartwithData(titles2[i], points2[i], titles2[i].split(".json")[0], "Time(ms)", "Latency");
-        var testname = titles[i].split('-')[0];
-        thrputCharts[testname] = c1;
-        latCharts[testname] = c2;
+      var title = allFiles[i]["title"];
+      var dataPoints = allFiles[i]["dataPoints"];
+      titles.push(title);
+      points.push(dataPoints);
+    }
+
+    var titles2 = [];
+    var points2 = [];
+    for (var i = 0; i < allFiles2.length; i++) {
+      var title = allFiles2[i]["title"] + 'lat';
+      var dataPoints = allFiles2[i]["dataPoints"];
+      titles2.push(title);
+      points2.push(dataPoints);
+    }
+
+    var thrputCharts = {};
+    var latCharts = {};
+
+    var testTrials = getTestTrials(titles);
+    var tests = Object.keys(testTrials);
+
+    window.onload = function() {
+      for (var i = 0; i < tests.length; i++) {
+        var key = tests[i];
+        var date = testTrials[key][0];
+        var target = key + '-' + date + '.json';
+        var idx = getMatchingIdx(titles, target);
+
+        thrputCharts[key] = renderChartwithData(titles[idx], points[idx], titles[idx].split(".json")[0], "Time(ms)", "Throughput");
+        latCharts[key] = renderChartwithData(titles2[idx], points2[idx], titles2[idx].split(".json")[0], "Time(ms)", "Latency");
       }
     }
-  }
-  document.getElementById('rtt3_tcp').innerHTML += '<hr />';
+    document.getElementById('rtt3_tcp').innerHTML += '<hr />';
 
-  var numTrials = getNumTrials(titles);
-  // console.log(numTrials);
-  for (var i = 0; i < allFiles.length; i++) {
-    var id = titles[i];
-    var testname = id.split('-')[0];
-    if (numTrials[testname] > 0) {
+    for (var i = 0; i < tests.length; i++) {
+      var key = tests[i];
+      var date = testTrials[key][0];
+      var target = key + '-' + date + '.json';
+      var idx = getMatchingIdx(titles, target);
+
       var content = '';
-      for (var j = 0; j < numTrials[testname]; j++) {
-        content += '<option value=' + testname +'-trial' + (j + 1) + '>trial ' + (j+1) + '</option>';
+
+      for (var j = 0; j < testTrials[key].length; j++) {
+        var testStr = key + '-' + testTrials[key][j];
+        content += '<option value=' + testStr + '>' + testTrials[key][j] + '</option>';
       }
-      console.log(content);
-      numTrials[testname] = -1;
 
+      var id = titles[idx];
       document.getElementById('rtt3_tcp').innerHTML += ('<select>' + content + '</select>');
-    }
-
-    if (id.includes("trial1")) {
       var s = "<div class='timechart' id='" + id + "'></div>";
       document.getElementById('rtt3_tcp').innerHTML += s;
-      id = titles2[i];
+      id = titles2[idx];
       s = "<div class='timechart' id='" + id + "'></div>";
       document.getElementById('rtt3_tcp').innerHTML += s;
       document.getElementById('rtt3_tcp').innerHTML += '<hr />';
@@ -90,25 +90,21 @@
       document.getElementById('rtt3_tcp').innerHTML += '<br />';
       document.getElementById('rtt3_tcp').innerHTML += '<br />';
     }
-  }
 
-  $( "select" ).change(function() {
-    var chart;
-    var selected = this.value;
-    console.log(selected);
-    var thrputChart = searchChart(selected, thrputCharts);
-    var latChart = searchChart(selected, latCharts);
-    console.log(thrputChart.options)
-    thrputChart.options.title.text = selected;
-    latChart.options.title.text = selected;
-
-    var idx = getIndexOfDataPoints(selected, titles);
-    console.log(idx);
-    thrputChart.options.data = points[idx];
-    latChart.options.data = points2[idx];
-    thrputChart.render();
-    latChart.render();
-})
+    $( "select" ).change(function() {
+      var chart;
+      var selected = this.value;
+      var thrputChart = searchChart(selected, thrputCharts);
+      var latChart = searchChart(selected, latCharts);
+      console.log(thrputChart.options)
+      thrputChart.options.title.text = selected;
+      latChart.options.title.text = selected;
+      var idx = getIndexOfDataPoints(selected, titles);
+      thrputChart.options.data = points[idx];
+      latChart.options.data = points2[idx];
+      thrputChart.render();
+      latChart.render();
+    })// Do not put semicolon here!!
   </script>
   <hr />
   <br /><br />
