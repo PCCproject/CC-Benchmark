@@ -7,8 +7,8 @@
   <!-- <script src="canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script> -->
   <script src="js/jquery-3.4.1.min.js"></script>
   <script src="js/chart.js"></script>
+  <script src="js/fill_table.js"></script>
   <meta charset="utf-8">
-
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -17,7 +17,7 @@
     <div class="nav">
       <ul>
         <li class='left'><a href="index.html">Home</a></li>
-        <li class='left'><a href="/summary/index.html">Summary</a></li>
+        <li class='left'><a href="indev/index.html">In-development Schemes</a></li>
       </ul>
     </div>
 
@@ -48,8 +48,54 @@
       We used Mininet to simulate various network environments and anaylze flows using Pantheon that was developed at Stanford University.
     </p>
 
-  <h2>List of Tests</h2>
-  <ul>
+  <h2>Test Results</h2>
+  <div class=rank-grad>
+    <span class='left'>Best</span>
+    <span class='right'>Worst</span>
+  </div>
+  <h3>Select Metrics</h3>
+  <label class="container">Throughput(Link Utilization)
+    <input type="radio" name="radio" onclick='disp_thpt()'>
+    <span class="checkmark"></span>
+  </label>
+  <label class="container">Latency(95% Queueing Delay)
+    <input type="radio" name="radio" onclick='disp_latency()'>
+    <span class="checkmark"></span>
+  </label>
+  <label class="container">Loss(Average Loss Rate)
+    <input type="radio" name="radio" onclick='disp_loss()'>
+    <span class="checkmark"></span>
+  </label>
+  <label class="container">Overall(Kleinrock's power metric)
+    <input type="radio" name="radio" onclick='disp_power_metric()'>
+    <span class="checkmark"></span>
+  </label>
+  <hr />
+  <table>
+    <thead>
+      <tr>
+      <th class='description'>Test Description</th>
+      <th class="cell">Copa</th>
+      <th class="cell">Vivace Latency</th>
+      <th class="cell">TCP Cubic</th>
+      <th class="cell">PCC</th>
+      <th class="cell">TCP BBR</th>
+      <th class="cell">Taova</th>
+      <th class="cell">Vegas</th>
+      <th class="cell">Sprout</th>
+      <th class="cell">Ledbat</th>
+      </tr>
+    </thead>
+    <caption>
+      Each value in the table is normalized per row.
+    </caption>
+    <tbody id="table-body"></tbody>
+  </table>
+  <br />
+  <br />
+  <br />
+  <br />
+  <!-- <ul>
     <li>
       <span class='topology'>Dumbell Topology</span>
     </li>
@@ -89,8 +135,7 @@
         <a href=test_data/rtt_fairness4_test/index.html>Rtt Fairness</a>
       </li>
     </ul>
-
-  </ul>
+  </ul> -->
   </div>
 
 

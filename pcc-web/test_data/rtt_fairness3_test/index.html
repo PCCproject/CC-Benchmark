@@ -15,7 +15,7 @@
     <div class="nav">
       <ul>
         <li class='left'><a href="../../index.html">Home</a></li>
-        <li class='left'><a href="../../summary/index.html">Summary</a></li>
+        <li class='left'><a href="../../indev/index.html">In-development Schemes</a></li>
       </ul>
     </div>
   </header>
@@ -24,8 +24,12 @@
     <h2>Test Description</h2>
     <div class='topo-inner-container'>
       <p class='topo-explain'>
-        This test measures the fairness of 2 different flows with 2 different round trip time.
+        This test measures the fairness(measured using jain's fairness index)
+        of various congestion control protocols of 2 flows with <b>different latencies</b>.
         The network topology used is 3-point-star topology which is illustrated below.
+      </p>
+      <p class='topo-explain'>
+        The bandwidth is 30Mbps and the latency per packet varies for each flow.
       </p>
     </div>
     <div class='topo-img-container'>
