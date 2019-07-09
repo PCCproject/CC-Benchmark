@@ -262,6 +262,9 @@ def run_test(test_dict):
         sys.stderr.write("(PCC Tester) ERROR: test run did not create all expected log files.")
 
     for i in range(0, len(flows)):
+        date_string_split = date_string.split('_')
+        date_string_split[-1] = date_string_split[-1][-5:]
+        date_string = '_'.join(date_string_split)
         flow = flows[i]
         run_id = run_ids[i]
         log_name = "%s/%s_datalink_run%d.log" % (data_dir, flow["protocol"], run_id)
@@ -308,6 +311,8 @@ def run_test(test_dict):
         json.dump(metadata, f)
 
     if web_result:
+        if is_git_repo:
+            scheme_name = '{}-{}-{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][-5:])
         print("Saving test results to pcc-web directory...")
         web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
         test_split = test["Name"].split('.')
@@ -322,8 +327,8 @@ def run_test(test_dict):
         test_dir = web_dir + testname + '/data/' + scheme_name + '/'
         num_trial = get_num_trial(test_dir, detail)
 
-        filename = "{}{}-trial{}.json".format(test_dir, detail, num_trial)
-        metric_filename = "{}metric-{}-trial{}.json".format(test_dir, detail, num_trial)
+        filename = "{}{}-{}.json".format(test_dir, detail, date_string)
+        metric_filename = "{}metric-{}-{}.json".format(test_dir, detail, date_string)
         os.system('mkdir -p {}'.format(test_dir))
 
         metric = {}

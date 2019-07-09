@@ -1,6 +1,6 @@
 var json_data = undefined;
 
-$.getJSON('res2.json', function(data) {
+$.getJSON('example_summary.json', function(data) {
   json_data = data;
 });
 
@@ -21,6 +21,22 @@ function get_rgb(normalized_val) {
 
   return 'background-color: rgb(' + red + ',' + green + ',0)'
 }
+
+function upperCaseFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getDisplayName(test_name) {
+  var ret = "";
+  var split_name = test_name.split('_');
+  for (var i = 0; i < split_name.length - 1; i++) {
+    ret += upperCaseFirst(split_name[i]);
+    ret += ' ';
+  }
+
+  return ret;
+}
+
 function table_formatter(type) {
   var return_str = "";
   for (var i = 0; i < json_data.Tests.length; i++) {
@@ -51,8 +67,9 @@ function table_formatter(type) {
     console.log(copa_bg)
     console.log(copa)
     //background-color: rgb(201, 76, 76);
+    var displayName = getDisplayName(test_name);
 
-    return_str += ("<th class='description'>" + test_name + "</th>");
+    return_str += ("<th class='description'><a href=test_data/" + test_name + "/index.html>" + displayName + "</a></th>");
     return_str += ("<th class='cell' style='" + copa_bg + "'>" + copa + "</th>");
     return_str += ("<th class='cell' style='" + vivace_bg + "'>" + vivace + "</th>");
     return_str += ("<th class='cell' style='" + cubic_bg + "'>" + cubic + "</th>");

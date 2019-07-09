@@ -41,12 +41,12 @@ header>h1>a:hover {
   color: black;
 }
 
-ul>li>a, h3>span>a {
+ul>li>a, h3>span>a, th>a {
   color: black;
   font-size: 20px;
 }
 
-ul>li>a:hover, h3>span>a:hover {
+ul>li>a:hover, h3>span>a:hover, th>a:hover {
   color: blue;
 }
 
@@ -138,9 +138,8 @@ table {
     max-width:100%;
     white-space:nowrap;
     font-size: 12px;
-    margin-left: 15%;
     table-layout: fixed;
-    width: 70%;
+    width: 100%;
 }
 
 table, td, th{
