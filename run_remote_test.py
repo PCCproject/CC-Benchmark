@@ -62,6 +62,12 @@ for host in remote_hosts.keys():
         print("VM(s) are booting up. Please wait 30 seconds")
         time.sleep(30)
 
+web_result = False
+for arg in sys.argv:
+    if 'web-result' or 'web_result' in arg:
+        web_result = True
+
+shutdown = '--shutdown' in sys.argv
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
         print("Creating VM manager for %s:%s" % (hostname, vm_ip))
@@ -184,11 +190,12 @@ class RemoteHostManager:
 
     def free_vm_and_shutdown(self, name, vm_ip, result_str):
         # print("FREE VM")
+        global shutdown
         cmd = "ssh {} -t ssh pcc@{} {}".format(self.hostname, str(vm_ip), free_vm_script)
         # print(cmd)
         os.system(cmd)
 
-        if vm_ip not in result_str:
+        if shutdown and vm_ip not in result_str:
             print("Shutting down {}".format(name))
             cmd = "ssh {} virsh shutdown {}".format(self.hostname, name)
             os.system(cmd)
