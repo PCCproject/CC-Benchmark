@@ -2,7 +2,7 @@
 
 import average_metric
 import average_jain_idx
-import scp_to_cpanel
+import rsync_with_cpanel
 import get_overall_score
 
 def main():
@@ -11,7 +11,7 @@ def main():
     average_metric.merge_metric_for_all_test(test_data_dir, multiflow_dir)
     average_jain_idx.merge_all_jain_idx_with_multiflow(test_data_dir, multiflow_dir)
     get_overall_score.get_overall_score(test_data_dir)
-    scp_to_cpanel.scp_to_cpanel()
+    rsync_with_cpanel.rsync_with_cpanel()
 
 if __name__ == '__main__':
     main()
