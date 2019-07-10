@@ -70,7 +70,6 @@ def merge_metric_for_all_test(test_data_dir, multiflow_dir):
                             # print(filepath)
                             with open(filepath) as f:
                                 metric = json.load(f)
-
                             if len(metric[scheme]) > 1:
                                 multiflow_dir.add(test_dir)
                                 metric = _merge_single_trial(metric[scheme])

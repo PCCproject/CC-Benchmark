@@ -2,10 +2,12 @@ $.ajaxSetup({
 async: false
 });
 
+const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr']);
+
 function searchChart(name, dict) {
-  console.log(dict);
+  // console.log(dict);
   var testname = name.split('-')[0];
-  console.log(testname);
+  // console.log(testname);
   return dict[testname];
 }
 
@@ -160,8 +162,8 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
         elements: {
             point: {
                 radius: 0,
-                hitRadius: 10,
-                hoverRadius: 10
+                hitRadius: 1,
+                hoverRadius: 1
             }
         }
     }
@@ -169,6 +171,75 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
   chart.render();
 
   return chart;
+}
+
+function getMetricCoordForSingleScheme(data) {
+  var res1 = [];
+  var res2 = [];
+  for (var name in data) {
+    var x = parseInt(name);
+    var linkUtil = data[name]['Link Util'];
+    var delay = data[name]['95 Queue Delay'];
+    res1.push({
+      'x': x,
+      'y': linkUtil
+    });
+    res2.push({
+      'x': x,
+      'y': delay
+    });
+  }
+
+  return new Array(res1, res2);
+}
+
+
+function getPublicLinkUtilAndQueueingDelay(jsonfile) {
+  var res = {};
+  $.getJSON(jsonfile, function(data) {
+    // console.log(data);
+    for (var scheme in data) {
+      if (public_scheme.has(scheme)) {
+        var dataPoint = getMetricCoordForSingleScheme(data[scheme]);
+        res[scheme] = dataPoint;
+      }
+    }
+  });
+
+  var utilData = new Array();
+  var delayData = new Array();
+  for (var scheme in res) {
+    var utilPoints = [];
+    var delayPoints = [];
+    for (var j = 0; j < res[scheme][0].length; j++) {
+      utilPoints.push({
+        x: res[scheme][0][j]['x'],
+        y: res[scheme][0][j]['y']
+      });
+      delayPoints.push({
+        x: res[scheme][1][j]['x'],
+        y: res[scheme][1][j]['y']
+      });
+    }
+
+    utilData.push({
+      type:'scatter',
+      showInLegend: true,
+      toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
+      legendText: scheme,
+      dataPoints: utilPoints
+    });
+
+    delayData.push({
+      type:'scatter',
+      showInLegend: true,
+      toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
+      legendText: scheme,
+      dataPoints: delayPoints
+    });
+  }
+
+  return new Array(utilData, delayData);
 }
 
 function getJainIndexCoord(jsonfile) {
