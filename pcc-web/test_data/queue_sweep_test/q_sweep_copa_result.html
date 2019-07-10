@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Rtt Fairness With Default TCP</title>
+  <title>Queue Sweep using Copa</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
@@ -19,12 +19,12 @@
       </ul>
     </div>
   </header>
-  <h3>TCP Results</h3>
+  <h3>Copa Results</h3>
   <hr />
-  <div id='rtt4_tcp'></div>
+  <div id='chartdata'></div>
   <script>
-    var allFiles = getAllPointsWithExtensionRtt("data/default_tcp/", ".json", "Time", "Throughput");
-    var allFiles2 = getAllPointsWithExtensionRtt("data/default_tcp/", ".json", "Time", "Avg Rtt");
+    var allFiles = getAllPointsWithExtensionRtt("data/copa/", ".json", "Time", "Throughput");
+    var allFiles2 = getAllPointsWithExtensionRtt("data/copa/", ".json", "Time", "Avg Rtt");
 
     var titles = [];
     var points = [];
@@ -61,7 +61,7 @@
         latCharts[key] = renderChartwithData(titles2[idx], points2[idx], titles2[idx].split(".json")[0], "Time(ms)", "Latency");
       }
     }
-    document.getElementById('rtt4_tcp').innerHTML += '<hr />';
+    document.getElementById('chartdata').innerHTML += '<hr />';
 
     for (var i = 0; i < tests.length; i++) {
       var key = tests[i];
@@ -77,18 +77,18 @@
       }
 
       var id = titles[idx];
-      document.getElementById('rtt4_tcp').innerHTML += ('<select>' + content + '</select>');
+      document.getElementById('chartdata').innerHTML += ('<select>' + content + '</select>');
       var s = "<div class='timechart' id='" + id + "'></div>";
-      document.getElementById('rtt4_tcp').innerHTML += s;
+      document.getElementById('chartdata').innerHTML += s;
       id = titles2[idx];
       s = "<div class='timechart' id='" + id + "'></div>";
-      document.getElementById('rtt4_tcp').innerHTML += s;
-      document.getElementById('rtt4_tcp').innerHTML += '<hr />';
-      document.getElementById('rtt4_tcp').innerHTML += '<hr />';
+      document.getElementById('chartdata').innerHTML += s;
+      document.getElementById('chartdata').innerHTML += '<hr />';
+      document.getElementById('chartdata').innerHTML += '<hr />';
 
-      document.getElementById('rtt4_tcp').innerHTML += '<br />';
-      document.getElementById('rtt4_tcp').innerHTML += '<br />';
-      document.getElementById('rtt4_tcp').innerHTML += '<br />';
+      document.getElementById('chartdata').innerHTML += '<br />';
+      document.getElementById('chartdata').innerHTML += '<br />';
+      document.getElementById('chartdata').innerHTML += '<br />';
     }
 
     $( "select" ).change(function() {

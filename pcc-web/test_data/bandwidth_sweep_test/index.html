@@ -38,37 +38,22 @@
       </div>
     </div>
 
-    <!-- <script>
-      var points = getLinkUtilAndQueueingDelay("linkutil_queuedelay.json");
-      var link_util = points[0]
-      var queue_delay = points[1]
-      window.onload = function() {
-        renderRttFairnessChart('rtt_fairness_3_star', link_util);
-        renderRttFairnessChart('rtt_fairness_3_star', queue_delay);
-      }
-    </script>
-    <br />
-    <br />
-    <div>
-      <h2>Jain Fairness Index Scores</h2>
-      <div id="rtt_fairness_3_star" class='fairness-graph'></div>
-    </div> -->
-
     <script>
       var datas = getPublicLinkUtilAndQueueingDelay('metrics.json');
       var utilData = datas[0];
       var delayData = datas[1];
 
+      var x_axis_label = 'Bandwidth(mbps)';
       window.onload = function() {
-        renderChartwithData('utilChart', utilData, 'Link Utilization', 'Bandwidth(mbps)', 'Link Utilization(%)');
-        renderChartwithData('delayChart', delayData, '95% Queueing Delay', 'Bandwidth(mbps)', '95% Queueing Delay(ms)');
+        renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(kbps)');
+        renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)');
       }
     </script>
 
     <br />
     <br />
     <div>
-      <h2>Link Utilization</h2>
+      <h2>Average Throughput</h2>
       <div id="utilChart" class='fairness-graph'></div>
       <h2>95% Queueing Delay</h2>
       <div id="delayChart" class='fairness-graph'></div>

@@ -1,6 +1,46 @@
 $.ajaxSetup({
 async: false
 });
+$(document).ready(function() {
+  $('input[type="radio"]').click(function() {
+    console.log($('input[type="radio"]'));
+    // setActiveBox($(this));
+      setActiveBox($(this));
+  });
+
+  function setActiveBox($radioButton) {
+    if(!($radioButton instanceof jQuery)) {
+        $radioButton = $($radioButton);
+    }
+
+    var value = $radioButton.attr("value");
+    console.log("VALUE");
+    console.log(value);
+    if (value == 'thrput') {
+      disp_thpt();
+    } else if (value == 'lat') {
+      disp_latency();
+    } else if (value == 'loss') {
+      disp_loss();
+    } else if (value == 'overall') {
+      disp_power_metric();
+    }
+    saveData("activeRadio",value);
+  }
+
+  function saveData(key,value) {
+    localStorage.setItem(key,value) || (document.cookie = key + "=" + value);
+  }
+
+  function getData(key) {
+    return localStorage.getItem(key) || document.cookie.match(new RegExp(key + "\=(.+?)(?=;)"))[1];
+  }
+
+  //check stored radioButton on page load
+  var $radioButton = $("[value=" + getData("activeRadio") + "]");
+  $($radioButton).attr("checked",true);
+  setActiveBox($radioButton);
+});
 
 const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr']);
 
@@ -173,12 +213,22 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
   return chart;
 }
 
-function getMetricCoordForSingleScheme(data) {
+function getMetricCoordForSingleScheme(data, testname) {
   var res1 = [];
   var res2 = [];
   for (var name in data) {
-    var x = parseInt(name);
-    var linkUtil = data[name]['Link Util'];
+    var x = undefined;
+    if (testname == undefined) {
+      x = parseFloat(name);
+    } else if (testname.includes("rtt")) {
+      var split = name.split('_to_');
+      x = parseFloat(split[1]) / parseFloat(split[0])
+    } else if (testname.includes('jitter')) {
+      var split = name.split('_');
+      x = parseFloat(split[1]);
+    }
+
+    var linkUtil = data[name]['Avg Thrput'];
     var delay = data[name]['95 Queue Delay'];
     res1.push({
       'x': x,
@@ -194,13 +244,12 @@ function getMetricCoordForSingleScheme(data) {
 }
 
 
-function getPublicLinkUtilAndQueueingDelay(jsonfile) {
+function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
   var res = {};
   $.getJSON(jsonfile, function(data) {
-    // console.log(data);
     for (var scheme in data) {
       if (public_scheme.has(scheme)) {
-        var dataPoint = getMetricCoordForSingleScheme(data[scheme]);
+        var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
         res[scheme] = dataPoint;
       }
     }

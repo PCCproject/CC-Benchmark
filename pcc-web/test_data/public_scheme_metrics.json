@@ -1,0 +1,111 @@
+{
+    "Tests": [
+        {
+            "name": "queue_sweep_test",
+            "avg thrput": {
+                "vivace_latency": 0.4290212418025974,
+                "copa": 0.36508199717627776,
+                "default_tcp": 0.2058967610211247
+            },
+            "95 qdelay": {
+                "vivace_latency": 0.19496317300215174,
+                "copa": 0.19393155976488607,
+                "default_tcp": 0.6111052672329622
+            },
+            "avg loss": {
+                "vivace_latency": 0.017869567519672253,
+                "copa": 0.9642499778917394,
+                "default_tcp": 0.017880454588588418
+            },
+            "overall": {
+                "vivace_latency": 0.36562536780473825,
+                "copa": 0.35490247570367206,
+                "default_tcp": 0.27947215649158974
+            }
+        },
+        {
+            "name": "bandwidth_sweep_test",
+            "avg thrput": {
+                "vivace_latency": 0.3795776845079431,
+                "copa": 0.2249243320947923,
+                "default_tcp": 0.3954979833972646
+            },
+            "95 qdelay": {
+                "vivace_latency": 0.2563162379505939,
+                "copa": 0.23219668551785125,
+                "default_tcp": 0.5114870765315549
+            },
+            "avg loss": {
+                "vivace_latency": 0.7480307861188298,
+                "copa": 0.17069632802249363,
+                "default_tcp": 0.08127288585867658
+            },
+            "overall": {
+                "vivace_latency": 0.36568118863907045,
+                "copa": 0.34023058819593605,
+                "default_tcp": 0.2940882231649935
+            }
+        },
+        {
+            "name": "loss_sweep_test",
+            "avg thrput": {
+                "vivace_latency": 0.27798161953868267,
+                "copa": 0.6349671357009148,
+                "default_tcp": 0.08705124476040248
+            },
+            "95 qdelay": {
+                "vivace_latency": 0.18308410024405236,
+                "copa": 0.5802690975497851,
+                "default_tcp": 0.23664680220616263
+            },
+            "avg loss": {
+                "vivace_latency": 0.338132242818953,
+                "copa": 0.37963784740311124,
+                "default_tcp": 0.28222990977793594
+            },
+            "overall": {
+                "vivace_latency": 0.3241600442804585,
+                "copa": 0.4323736808048056,
+                "default_tcp": 0.24346627491473583
+            }
+        },
+        {
+            "name": "latency_sweep_test",
+            "avg thrput": {
+                "vivace_latency": 0.3376361711509244,
+                "copa": 0.3125506898355959,
+                "default_tcp": 0.34981313901347977
+            },
+            "95 qdelay": {
+                "vivace_latency": 0.29551416694001514,
+                "copa": 0.31484833696932457,
+                "default_tcp": 0.38963749609066034
+            },
+            "avg loss": {
+                "vivace_latency": 1,
+                "copa": 1,
+                "default_tcp": 1
+            },
+            "overall": {
+                "vivace_latency": 0.3397009422582441,
+                "copa": 0.3419835502459399,
+                "default_tcp": 0.318315507495816
+            }
+        },
+        {
+            "name": "jitter_sweep_test",
+            "avg thrput": {
+                "vivace_latency": 1.0
+            },
+            "95 qdelay": {
+                "vivace_latency": 1.0
+            },
+            "avg loss": {
+                "vivace_latency": 1.0
+            },
+            "overall": {
+                "vivace_latency": 1.0
+            }
+        }
+    ]
+}

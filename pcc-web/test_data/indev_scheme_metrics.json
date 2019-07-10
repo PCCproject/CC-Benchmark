@@ -1,0 +1,199 @@
+{
+    "Tests": [
+        {
+            "name": "queue_sweep_test",
+            "avg thrput": {
+                "PCC,fls_controller,3e685": 0.10845693482781044,
+                "PCC_Uspace,master,84d74": 0.1241068094126546,
+                "PCC,fls_controller,b805a": 0.1808712176928045,
+                "PCC,stat_controller,fc9af": 0.11953474604553249,
+                "PCC_Uspace,njay_staged,df797": 0.04722538022174281,
+                "PCC_Uspace,njay_staged,a7c27": 0.07427584091273322,
+                "PCC_Uspace,njay_staged,f9603": 0.26282404852429786,
+                "PCC_Uspace,njay_staged,79e7e": 0.08270502236242412
+            },
+            "95 qdelay": {
+                "PCC,fls_controller,3e685": 0.10134916465882393,
+                "PCC_Uspace,master,84d74": 0.17002382919839212,
+                "PCC,fls_controller,b805a": 0.1381510662302324,
+                "PCC,stat_controller,fc9af": 0.05531812278067516,
+                "PCC_Uspace,njay_staged,df797": 0.09029702855236657,
+                "PCC_Uspace,njay_staged,a7c27": 0.15856175837157138,
+                "PCC_Uspace,njay_staged,f9603": 0.14337020160670458,
+                "PCC_Uspace,njay_staged,79e7e": 0.14292882860123385
+            },
+            "avg loss": {
+                "PCC,fls_controller,3e685": 0.02858543952624946,
+                "PCC_Uspace,master,84d74": 0.036298881217135245,
+                "PCC,fls_controller,b805a": 0.02197231715068475,
+                "PCC,stat_controller,fc9af": 0.02185416365067988,
+                "PCC_Uspace,njay_staged,df797": 0.7749322916001585,
+                "PCC_Uspace,njay_staged,a7c27": 0.05556532504500698,
+                "PCC_Uspace,njay_staged,f9603": 0.026386352191627344,
+                "PCC_Uspace,njay_staged,79e7e": 0.03440522961845782
+            },
+            "overall": {
+                "PCC,fls_controller,3e685": 0.1289273330599554,
+                "PCC_Uspace,master,84d74": 0.1301869990142278,
+                "PCC,fls_controller,b805a": 0.11769629148150118,
+                "PCC,stat_controller,fc9af": 0.1308737062446112,
+                "PCC_Uspace,njay_staged,df797": 0.13533496728010094,
+                "PCC_Uspace,njay_staged,a7c27": 0.11574253467413538,
+                "PCC_Uspace,njay_staged,f9603": 0.1214266264977895,
+                "PCC_Uspace,njay_staged,79e7e": 0.11981154174767855
+            }
+        },
+        {
+            "name": "bandwidth_sweep_test",
+            "avg thrput": {
+                "PCC,fls_controller,3e685": 0.12616347529148106,
+                "PCC_Uspace,master,84d74": 0.1212028430126397,
+                "PCC,fls_controller,b805a": 0.21574626715194947,
+                "PCC,stat_controller,fc9af": 0.07581243720539384,
+                "PCC_Uspace,njay_staged,df797": 0.03918800480248871,
+                "PCC_Uspace,njay_staged,a7c27": 0.058212282908088185,
+                "PCC_Uspace,njay_staged,f9603": 0.27672659227720187,
+                "PCC_Uspace,njay_staged,79e7e": 0.08694809735075726
+            },
+            "95 qdelay": {
+                "PCC,fls_controller,3e685": 0.10036777289057325,
+                "PCC_Uspace,master,84d74": 0.1425184360156445,
+                "PCC,fls_controller,b805a": 0.14338117268097877,
+                "PCC,stat_controller,fc9af": 0.07378813282880557,
+                "PCC_Uspace,njay_staged,df797": 0.1302581853769041,
+                "PCC_Uspace,njay_staged,a7c27": 0.13961983222600013,
+                "PCC_Uspace,njay_staged,f9603": 0.1345944060733463,
+                "PCC_Uspace,njay_staged,79e7e": 0.13547206190774747
+            },
+            "avg loss": {
+                "PCC,fls_controller,3e685": 0.11685299816878852,
+                "PCC_Uspace,master,84d74": 0.16158604501646812,
+                "PCC,fls_controller,b805a": 0.29176583468121126,
+                "PCC,stat_controller,fc9af": 0.0005537405336075145,
+                "PCC_Uspace,njay_staged,df797": 0.03992513585968531,
+                "PCC_Uspace,njay_staged,a7c27": 0.012220441477049723,
+                "PCC_Uspace,njay_staged,f9603": 0.05775728459753195,
+                "PCC_Uspace,njay_staged,79e7e": 0.31933851966565757
+            },
+            "overall": {
+                "PCC,fls_controller,3e685": 0.1415007626382856,
+                "PCC_Uspace,master,84d74": 0.12408913176848502,
+                "PCC,fls_controller,b805a": 0.10307066177415,
+                "PCC,stat_controller,fc9af": 0.1434550586643672,
+                "PCC_Uspace,njay_staged,df797": 0.13216665470151853,
+                "PCC_Uspace,njay_staged,a7c27": 0.10951669963666227,
+                "PCC_Uspace,njay_staged,f9603": 0.12383156889785227,
+                "PCC_Uspace,njay_staged,79e7e": 0.12236946191867921
+            }
+        },
+        {
+            "name": "loss_sweep_test",
+            "avg thrput": {
+                "PCC,fls_controller,3e685": 0.13691770833784125,
+                "PCC_Uspace,master,84d74": 0.12453205547255469,
+                "PCC,fls_controller,b805a": 0.19807801054818208,
+                "PCC,stat_controller,fc9af": 0.1431695189435212,
+                "PCC_Uspace,njay_staged,df797": 0.10009633539072484,
+                "PCC_Uspace,njay_staged,a7c27": 0.05607040424136928,
+                "PCC_Uspace,njay_staged,f9603": 0.17788263110923327,
+                "PCC_Uspace,njay_staged,79e7e": 0.06325333595657326
+            },
+            "95 qdelay": {
+                "PCC,fls_controller,3e685": 0.16402360614297531,
+                "PCC_Uspace,master,84d74": 0.10290170214776723,
+                "PCC,fls_controller,b805a": 0.2946459220314341,
+                "PCC,stat_controller,fc9af": 0.0694559500022273,
+                "PCC_Uspace,njay_staged,df797": 0.15345358969113676,
+                "PCC_Uspace,njay_staged,a7c27": 0.08471921502796922,
+                "PCC_Uspace,njay_staged,f9603": 0.06985562700905187,
+                "PCC_Uspace,njay_staged,79e7e": 0.06094438794743819
+            },
+            "avg loss": {
+                "PCC,fls_controller,3e685": 0.13044851358805987,
+                "PCC_Uspace,master,84d74": 0.13067695885255146,
+                "PCC,fls_controller,b805a": 0.10867137435544061,
+                "PCC,stat_controller,fc9af": 0.1299632058311436,
+                "PCC_Uspace,njay_staged,df797": 0.12946070924440756,
+                "PCC_Uspace,njay_staged,a7c27": 0.12481461796209309,
+                "PCC_Uspace,njay_staged,f9603": 0.12946538193195056,
+                "PCC_Uspace,njay_staged,79e7e": 0.11649923823435333
+            },
+            "overall": {
+                "PCC,fls_controller,3e685": 0.12921801888947884,
+                "PCC_Uspace,master,84d74": 0.13309815446774614,
+                "PCC,fls_controller,b805a": 0.11660648731254754,
+                "PCC,stat_controller,fc9af": 0.13056324859652546,
+                "PCC_Uspace,njay_staged,df797": 0.1597544730193881,
+                "PCC_Uspace,njay_staged,a7c27": 0.10715562996447744,
+                "PCC_Uspace,njay_staged,f9603": 0.1104275845823213,
+                "PCC_Uspace,njay_staged,79e7e": 0.11317640316751525
+            }
+        },
+        {
+            "name": "latency_sweep_test",
+            "avg thrput": {
+                "PCC,fls_controller,3e685": 0.1063177801625589,
+                "PCC_Uspace,master,84d74": 0.09902087294566328,
+                "PCC,fls_controller,b805a": 0.2096348630121403,
+                "PCC,stat_controller,fc9af": 0.09709780374262031,
+                "PCC_Uspace,njay_staged,df797": 0.062299553518568675,
+                "PCC_Uspace,njay_staged,a7c27": 0.07915657853684464,
+                "PCC_Uspace,njay_staged,f9603": 0.25980172082144176,
+                "PCC_Uspace,njay_staged,79e7e": 0.08667082726016224
+            },
+            "95 qdelay": {
+                "PCC,fls_controller,3e685": 0.12535840978199647,
+                "PCC_Uspace,master,84d74": 0.1337136475298205,
+                "PCC,fls_controller,b805a": 0.131133669167439,
+                "PCC,stat_controller,fc9af": 0.11672318968830438,
+                "PCC_Uspace,njay_staged,df797": 0.08040043759008866,
+                "PCC_Uspace,njay_staged,a7c27": 0.1391104146707805,
+                "PCC_Uspace,njay_staged,f9603": 0.14021070326263893,
+                "PCC_Uspace,njay_staged,79e7e": 0.13334952830893154
+            },
+            "avg loss": {
+                "PCC,fls_controller,3e685": 0.0008531400175178023,
+                "PCC_Uspace,master,84d74": 0.0,
+                "PCC,fls_controller,b805a": 0.0,
+                "PCC,stat_controller,fc9af": 0.0,
+                "PCC_Uspace,njay_staged,df797": 0.8654081967910804,
+                "PCC_Uspace,njay_staged,a7c27": 0.0,
+                "PCC_Uspace,njay_staged,f9603": 0.02747215529277535,
+                "PCC_Uspace,njay_staged,79e7e": 0.1062665078986265
+            },
+            "overall": {
+                "PCC,fls_controller,3e685": 0.12937943240430985,
+                "PCC_Uspace,master,84d74": 0.12619430001446666,
+                "PCC,fls_controller,b805a": 0.11672826315558951,
+                "PCC,stat_controller,fc9af": 0.1315577119047504,
+                "PCC_Uspace,njay_staged,df797": 0.1423978115850029,
+                "PCC_Uspace,njay_staged,a7c27": 0.11316255089340871,
+                "PCC_Uspace,njay_staged,f9603": 0.12057595849485965,
+                "PCC_Uspace,njay_staged,79e7e": 0.12000397154761246
+            }
+        },
+        {
+            "name": "jitter_sweep_test",
+            "avg thrput": {
+                "PCC,fls_controller,b805a": 0.4987900616654936,
+                "PCC,stat_controller,fc9af": 0.09922031298517961,
+                "PCC_Uspace,njay_staged,f9603": 0.4019896253493267
+            },
+            "95 qdelay": {
+                "PCC,fls_controller,b805a": 0.638848357913524,
+                "PCC,stat_controller,fc9af": 0.19571462472061243,
+                "PCC_Uspace,njay_staged,f9603": 0.1654370173658636
+            },
+            "avg loss": {
+                "PCC,fls_controller,b805a": 1,
+                "PCC,stat_controller,fc9af": 1,
+                "PCC_Uspace,njay_staged,f9603": 1
+            },
+            "overall": {
+                "PCC,fls_controller,b805a": 0.33277402648340215,
+                "PCC,stat_controller,fc9af": 0.3711186028115552,
+                "PCC_Uspace,njay_staged,f9603": 0.29610737070504267
+            }
+        }
+    ]
+}

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Bandwidth Sweep using PCC Vivace</title>
+  <title>Latency Sweep using Copa</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
@@ -19,12 +19,12 @@
       </ul>
     </div>
   </header>
-  <h3>PCC-Vivace Results</h3>
+  <h3>Copa Results</h3>
   <hr />
   <div id='chartdata'></div>
   <script>
-    var allFiles = getAllPointsWithExtensionRtt("data/vivace_latency/", ".json", "Time", "Throughput");
-    var allFiles2 = getAllPointsWithExtensionRtt("data/vivace_latency/", ".json", "Time", "Avg Rtt");
+    var allFiles = getAllPointsWithExtensionRtt("data/copa/", ".json", "Time", "Throughput");
+    var allFiles2 = getAllPointsWithExtensionRtt("data/copa/", ".json", "Time", "Avg Rtt");
 
     var titles = [];
     var points = [];

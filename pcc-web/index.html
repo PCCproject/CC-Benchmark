@@ -54,20 +54,20 @@
     <span class='right'>Worst</span>
   </div>
   <h3>Select Metrics</h3>
-  <label class="container">Throughput(Link Utilization)
-    <input type="radio" name="radio" onclick='disp_thpt()'>
+  <label class="container">Throughput(Average Throughput)
+    <input type="radio" name="metricSelect" value='thrput' checked>
     <span class="checkmark"></span>
   </label>
   <label class="container">Latency(95% Queueing Delay)
-    <input type="radio" name="radio" onclick='disp_latency()'>
+    <input type="radio" name="metricSelect" value='lat'>
     <span class="checkmark"></span>
   </label>
   <label class="container">Loss(Average Loss Rate)
-    <input type="radio" name="radio" onclick='disp_loss()'>
+    <input type="radio" name="metricSelect" value='loss'>
     <span class="checkmark"></span>
   </label>
   <label class="container">Overall(Kleinrock's power metric)
-    <input type="radio" name="radio" onclick='disp_power_metric()'>
+    <input type="radio" name="metricSelect" value='overall'>
     <span class="checkmark"></span>
   </label>
   <hr />
@@ -78,7 +78,6 @@
       <th class="cell">Copa</th>
       <th class="cell">Vivace Latency</th>
       <th class="cell">TCP Cubic</th>
-      <th class="cell">PCC</th>
       <th class="cell">TCP BBR</th>
       <th class="cell">Taova</th>
       <th class="cell">Vegas</th>
@@ -87,7 +86,7 @@
       </tr>
     </thead>
     <caption>
-      Each value in the table is normalized per row.
+      **Each value in the table is normalized per row.**
     </caption>
     <tbody id="table-body"></tbody>
   </table>
