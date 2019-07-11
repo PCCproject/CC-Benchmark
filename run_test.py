@@ -73,7 +73,7 @@ web_result = False
 for args in sys.argv:
     if 'web-result' in args or 'web_result' in args:
         web_result = True
-        
+
 print('web_result ' + str(web_result))
 mptcp = "mptcp" in sys.argv[2]
 
@@ -143,10 +143,11 @@ def wait_for_all_logs_or_timeout(log_names, timeout):
 def run_test(test_dict):
     global remote_test
     date_string = datetime.date.today().strftime("%B_%d_%Y") + "_%d" % (int(round(time.time() * 1000)))
-    results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
-
     if remote_test:
-        results_dir += '/remote/'
+        results_dir = os.path.join(file_locations.results_dir, 'remote', test["Name"], date_string)
+    else:
+        results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
+
 
     os.system("mkdir -p %s" % results_dir)
     print("Removing any running mininet instance.")
