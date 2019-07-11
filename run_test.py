@@ -343,8 +343,8 @@ def run_test(test_dict):
         test_dir = data_dir + testname + '/data/' + scheme_name + '/'
         num_trial = get_num_trial(test_dir, detail)
 
-        filename = "{}/{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
-        metric_filename = "{}/{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
+        filename = "{}{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
+        metric_filename = "{}{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
         # os.system('mkdir -p {}'.format(test_dir))
         print(filename)
 
