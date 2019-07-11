@@ -56,6 +56,8 @@ if "--is-remote" not in sys.argv:
         with open(file_locations.local_test_running_dir, 'w') as f:
             f.write("true {} {}\r\n".format(test_dur, time.time()))
 
+remote_test = '--is-remote' in sys.argv
+
 default_bw = 30
 default_lat = 30
 
@@ -134,8 +136,13 @@ def wait_for_all_logs_or_timeout(log_names, timeout):
     return True
 
 def run_test(test_dict):
+    global remote_test
     date_string = datetime.date.today().strftime("%B_%d_%Y") + "_%d" % (int(round(time.time() * 1000)))
     results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
+
+    if remote_test:
+        results_dir += '/remote/'
+
     os.system("mkdir -p %s" % results_dir)
     print("Removing any running mininet instance.")
     mininet_clean_output = subprocess.check_output(["sudo", "mn", "-c"])
@@ -313,7 +320,7 @@ def run_test(test_dict):
     if web_result:
         if is_git_repo:
             scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][-5:]).replace('-', '_')
-            
+
         print("Saving test results to pcc-web directory...")
         # web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
         test_split = test["Name"].split('.')
@@ -328,8 +335,8 @@ def run_test(test_dict):
         test_dir = data_dir + testname + '/data/' + scheme_name + '/'
         num_trial = get_num_trial(test_dir, detail)
 
-        filename = "{}{}-{}-{}-{}.json".format(data_dir, testname, scheme_name, detail, date_string)
-        metric_filename = "{}{}-{}-metric-{}-{}.json".format(data_dir, testname, scheme_name, detail, date_string)
+        filename = "{}{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
+        metric_filename = "{}{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
         # os.system('mkdir -p {}'.format(test_dir))
 
         metric = {}
@@ -386,7 +393,9 @@ def run_test(test_dict):
         with open(filename, 'w') as f:
             f.write(json.dumps(datapoints, indent=4))
 
-    # os.system("rm -rf %s/*" % data_dir)
+    os.system("rm -rf %s/*" % data_dir)
+    if remote_test:
+        os.system('rm -rf {}'.format(results_dir))
 
 ##
 #   Load in the test descriptor files.
