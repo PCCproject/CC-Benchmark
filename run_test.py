@@ -344,6 +344,7 @@ def run_test(test_dict):
         filename = "{}/{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
         metric_filename = "{}/{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
         # os.system('mkdir -p {}'.format(test_dir))
+        print(filename)
 
         metric = {}
         datapoints = {}
