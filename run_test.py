@@ -403,8 +403,8 @@ def run_test(test_dict):
             f.write(json.dumps(datapoints, indent=4))
 
     os.system("rm -rf %s/*" % data_dir)
-    if remote_test:
-        os.system('rm -rf {}'.format(results_dir))
+    # if remote_test:
+    #     os.system('rm -rf {}'.format(results_dir))
 
 ##
 #   Load in the test descriptor files.
