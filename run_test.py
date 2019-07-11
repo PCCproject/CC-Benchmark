@@ -69,7 +69,11 @@ git_checksum = None
 
 scheme_nickname = arg_helpers.arg_or_default("--nickname", None)
 
-web_result = ("--web-result" in sys.argv) or ('--web_result' in sys.argv)
+web_result = False
+for args in sys.argv:
+    if 'web-result' in args or 'web_result' in args:
+        web_result = True
+        
 print('web_result ' + str(web_result))
 mptcp = "mptcp" in sys.argv[2]
 
