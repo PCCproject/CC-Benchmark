@@ -29,7 +29,7 @@ from mininet.link import TCLink
 from mininet.net import Mininet
 
 from pprint import pprint
-
+results_dir = None
 default_build_dir = "/home/pcc/pcc_test_scheme/"
 scheme_to_test = sys.argv[1]
 tests_to_run = sys.argv[2]
