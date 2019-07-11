@@ -343,8 +343,8 @@ def run_test(test_dict):
         test_dir = data_dir + testname + '/data/' + scheme_name + '/'
         num_trial = get_num_trial(test_dir, detail)
 
-        filename = "{}{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
-        metric_filename = "{}{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
+        filename = "{}/{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
+        metric_filename = "{}/{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
         # os.system('mkdir -p {}'.format(test_dir))
         print(filename)
 
@@ -403,8 +403,7 @@ def run_test(test_dict):
             f.write(json.dumps(datapoints, indent=4))
 
     os.system("rm -rf %s/*" % data_dir)
-    # if remote_test:
-    #     os.system('rm -rf {}'.format(results_dir))
+
 
 ##
 #   Load in the test descriptor files.
@@ -431,3 +430,6 @@ if "--is-remote" in sys.argv:
     os.system("sudo killall ssh")
 else:
     clear_testfile_and_exit()
+
+if remote_test:
+    os.system('rm -rf {}'.format(results_dir))
