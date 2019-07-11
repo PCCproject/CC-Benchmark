@@ -148,6 +148,8 @@ def run_test(test_dict):
     else:
         results_dir = os.path.join(file_locations.results_dir, test["Name"], date_string)
 
+    print(results_dir)
+
 
     os.system("mkdir -p %s" % results_dir)
     print("Removing any running mininet instance.")
