@@ -57,6 +57,7 @@ if "--is-remote" not in sys.argv:
             f.write("true {} {}\r\n".format(test_dur, time.time()))
 
 remote_test = '--is-remote' in sys.argv
+print("Remote Test {}".format(remote_test))
 
 default_bw = 30
 default_lat = 30
