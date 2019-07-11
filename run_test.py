@@ -312,9 +312,10 @@ def run_test(test_dict):
 
     if web_result:
         if is_git_repo:
-            scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][-5:])
+            scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][-5:]).replace('-', '_')
+            
         print("Saving test results to pcc-web directory...")
-        web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
+        # web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
         test_split = test["Name"].split('.')
         testname = test_split[0] + '_test'
         if len(test_split) > 1:
@@ -324,12 +325,12 @@ def run_test(test_dict):
 
         filename = test['Name']
 
-        test_dir = web_dir + testname + '/data/' + scheme_name + '/'
+        test_dir = data_dir + testname + '/data/' + scheme_name + '/'
         num_trial = get_num_trial(test_dir, detail)
 
-        filename = "{}{}-{}.json".format(test_dir, detail, date_string)
-        metric_filename = "{}metric-{}-{}.json".format(test_dir, detail, date_string)
-        os.system('mkdir -p {}'.format(test_dir))
+        filename = "{}{}-{}-{}-{}.json".format(data_dir, testname, scheme_name, detail, date_string)
+        metric_filename = "{}{}-{}-metric-{}-{}.json".format(data_dir, testname, scheme_name, detail, date_string)
+        # os.system('mkdir -p {}'.format(test_dir))
 
         metric = {}
         datapoints = {}
@@ -385,7 +386,7 @@ def run_test(test_dict):
         with open(filename, 'w') as f:
             f.write(json.dumps(datapoints, indent=4))
 
-    os.system("rm -rf %s/*" % data_dir)
+    # os.system("rm -rf %s/*" % data_dir)
 
 ##
 #   Load in the test descriptor files.
