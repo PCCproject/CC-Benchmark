@@ -46,7 +46,7 @@
     var x_axis_label = 'Queue Size';
 
     window.onload = function() {
-      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(kbps)');
+      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)');
       renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)');
     }
   </script>
@@ -60,7 +60,7 @@
     <div id="delayChart" class='fairness-graph'></div>
   </div>
 
-  <h2>Detailed Graphs</h2>
+  <h2>Detailed Traces</h2>
   <ul>
     <li>
       <a href="bw_sweep_defaulttcp_result.html">TCP Cubic</a>

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Rtt Fairness 3-star</title>
+  <title>Rtt Fairness 2 flows</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
@@ -46,7 +46,7 @@
 
     window.onload = function() {
       renderRttFairnessChart('rtt_fairness_3_star', rtt3_points);
-      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(kbps)');
+      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)');
       renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)');
     }
   </script>
@@ -61,7 +61,7 @@
     <div id="delayChart" class='fairness-graph'></div>
   </div>
 
-  <h2>Detailed Graphs</h2>
+  <h2>Detailed Traces</h2>
   <ul>
     <li>
       <a href="rtt3_tcp_result.html">TCP</a>
