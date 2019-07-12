@@ -5,6 +5,6 @@ results/
 push.sh
 data/
 jain.json
-metrics.json
+*metrics.json
 .htaccess
 ._data/
