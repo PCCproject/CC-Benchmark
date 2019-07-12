@@ -16,6 +16,9 @@ VM_NAMES = [
     "pcc_test_vm_4"
 ]
 
+ocean0_web_dir = '/srv/shared/PCC/testing/pcc-web/test_data'
+ocean0_res_dir = '/srv/shared/PCC/results'
+
 def get_idle_percent(host):
     usage_str = subprocess.check_output(["ssh", host, "\"\"mpstat 1 1\"\""]).decode("utf-8")
     lines = str(usage_str).split("\n")
@@ -113,3 +116,17 @@ def cleanup_ssh_connections():
 
     for sshd_pid in sshd_pids:
         os.system("sudo kill -9 %d" % sshd_pid)
+
+def copy_back_to_ocean0(local_dir):
+    local_dir = "/home/jaelee/PCC-Tester/results" + '/web'
+
+    ocean0_web_dir = '/srv/shared/PCC/testing/pcc-web/test_data'
+    ocean0_res_dir = '/srv/shared/PCC/results'
+    for test in os.listdir(local_dir):
+        test_path = local_dir + '/' + test
+        if os.path.isdir(test_path):
+            for date in os.listdir(test_path):
+                data_path = test_path + '/' + date
+                if os.path.isdir(data_path):
+                    for file in os.listdir(data_path):
+                        print(file)

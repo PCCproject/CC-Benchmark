@@ -26,6 +26,8 @@ from python_utils.arg_helpers import arg_or_default
 from graphing.analysis.results_library import ResultsLibrary
 from graphing.utils import data_utils
 from python_utils.file_locations import results_dir
+from python_utils.file_locations import ocean0_copy_web_script_dir
+from python_utils.file_locations import web_data_update_script_dir
 
 results_lib = ResultsLibrary(results_dir)
 
@@ -121,6 +123,7 @@ class RemoteVmManager:
     def run_first_test_setup(self):
         try:
             self.run_on_vm_host("mkdir -p %s" % vm_config.host_results_dir)
+            self.run_on_vm_host("chmod 777 %s" % vm_config.host_results_dir)
         except Exception as e:
             print(e)
             os._exit(1)
@@ -132,8 +135,13 @@ class RemoteVmManager:
         if not self.has_run_test:
             self.run_first_test_setup()
             self.has_run_test = True
-        self.run_on_vm('sudo %s %s %s --is-remote --extra-args=%s' % (vm_config.run_test_cmd, test_scheme,
-            test_name, EXTRA_ARGS))
+        if web_result:
+            self.run_on_vm('sudo %s %s %s --is-remote --extra-args=%s --web-result' %
+            (vm_config.run_test_cmd, test_scheme, test_name, EXTRA_ARGS))
+        else:
+            self.run_on_vm('sudo %s %s %s --is-remote --extra-args=%s' %
+            (vm_config.run_test_cmd, test_scheme, test_name, EXTRA_ARGS))
+        self.run_on_vm_host('ssh pcc@%s ls %s' % (self.vm_ip, vm_config.vm_results_dir))
         self.run_on_vm_host("scp -r pcc@%s:%s/* %s" % (self.vm_ip, vm_config.vm_results_dir,
             vm_config.host_results_dir))
         self.run_on_vm("sudo rm -rf %s" % (vm_config.vm_results_dir))
@@ -200,7 +208,6 @@ class RemoteHostManager:
             cmd = "ssh {} virsh shutdown {}".format(self.hostname, name)
             os.system(cmd)
 
-
     def free_and_shutdown_all_vms(self, result_str):
         for name, vm_ip in self.vm_ips.items():
             self.free_vm_and_shutdown(name, vm_ip, result_str)
@@ -236,7 +243,7 @@ class RemoteHostManager:
                         test_queue.put(vm_manager.cur_test)
                         vm_manager.restart_proc()
                 elif (not test_queue.empty()):
-                    if (get_idle_percent(self.hostname) > 25):
+                    if (get_idle_percent(self.hostname) > 10):
                         print("Tests remaining: %d" % test_queue.qsize())
                         vm_manager.assign_test(test_queue.get())
                         busy_start[vm_manager.get_id_string()] = time.time()
@@ -248,9 +255,18 @@ class RemoteHostManager:
 
         print("Manager for %s done" % self.hostname)
         self.cleanup_remote_vm_managers()
+        # if web_result:
+        #     os.system('mkdir -p {}'.format(local_results_dir + 'web/'))
+        #     remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir + 'web/')
+        # else:
+        os.system('mkdir -p {}'.format(local_results_dir))
         remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
-        remote_call(self.hostname, "rm -rf " + vm_config.host_results_dir)
 
+        if web_result:
+            remote_call(self.hostname, ocean0_copy_web_script_dir)
+            remote_call(self.hostname, web_data_update_script_dir)
+
+        remote_call(self.hostname, "rm -rf " + vm_config.host_results_dir)
         result_str = subprocess.check_output(['ssh', self.hostname, 'w']).decode('utf-8')
         self.free_and_shutdown_all_vms(result_str)
 

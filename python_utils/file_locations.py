@@ -13,3 +13,6 @@ local_test_running_dir = vm_status_dir + "test_running"
 remote_test_running_dir = vm_status_dir + "remote_test_running"
 free_vm_script = vm_status_dir + "free.sh"
 occupy_vm_script = vm_status_dir + "occupy_vm.sh"
+
+ocean0_copy_web_script_dir = '/srv/shared/PCC/copy_web_results.py'
+web_data_update_script_dir = '/srv/shared/PCC/testing/pcc-web/test_data/update.py'
