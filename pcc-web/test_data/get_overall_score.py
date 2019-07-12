@@ -3,7 +3,6 @@ import json
 import numpy as np
 import numpy.linalg as la
 
-test_data_dir = '/Users/jaewooklee/PCC-Tester/pcc-web/test_data/'
 public_scheme = {'default_tcp', 'copa', 'vivace_latency', 'bbr'}
 def get_overall_score_one_scheme(scheme, dir):
     # print(scheme)
@@ -79,6 +78,3 @@ def get_overall_score(dir):
 
     with open("indev_scheme_metrics.json", 'w') as f:
         f.write(json.dumps(indev_res, indent=4))
-
-
-get_overall_score('/Users/jaewooklee/PCC-Tester/pcc-web/test_data/')
