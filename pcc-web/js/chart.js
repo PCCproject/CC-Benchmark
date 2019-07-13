@@ -334,7 +334,7 @@ function getAllPoints(dir) {
         var lat_line = {
           type:'line',
           showInLegend: true,
-          toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(Mbps): </b>{y}",
+          toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Latency(ms): </b>{y}",
           legendText: legend,
           dataPoints: []
         }
@@ -359,8 +359,8 @@ function getAllPoints(dir) {
       }
 
     });
-    files.push({"title": allFileName[i], "dataPoints": points});
-    files2.push({"title": allFileName[i], "dataPoints": points});
+    files.push({"title": allFileName[i], "dataPoints": thrput_points});
+    files2.push({"title": allFileName[i], "dataPoints": lat_points});
   }
   return [files, files2];
 }
