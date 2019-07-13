@@ -59,7 +59,7 @@ def merge_metric_for_all_test(test_data_dir, multiflow_dir):
         if os.path.isdir(test_path) and 'pycache' not in test_dir:
             data_path = test_path + '/data/'
             res = {}
-            os.system('mkdir -p {}'.format(data_path)
+            os.system('mkdir -p {}'.format(data_path))
             for scheme in os.listdir(data_path):
                 scheme_path = data_path + scheme
                 if os.path.isdir(scheme_path):
