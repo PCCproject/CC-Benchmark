@@ -156,6 +156,15 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
       minimum: 0
     },
     data: chartData,
+    options: {
+        elements: {
+            point: {
+                radius: 0,
+                hitRadius: 1,
+                hoverRadius: 1
+            }
+        }
+    }
   });
   chart.render();
 
