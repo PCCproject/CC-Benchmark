@@ -49,32 +49,36 @@
     </p>
 
   <h2>Test Results</h2>
+  <div class="switch-field">
+    <input type="radio" id="thrput-radio" name="metric-radio" value="thrput" checked/>
+    <label for="thrput-radio">Throughput</label>
+
+    <input type="radio" id="latency-radio" name="metric-radio" value="lat" />
+    <label for="latency-radio">Latency</label>
+
+    <input type="radio" id="loss-radio" name="metric-radio" value="loss" />
+    <label for="loss-radio">Loss</label>
+
+    <input type="radio" id="overall-radio" name="metric-radio" value="overall" />
+    <label for="overall-radio">Overall</label>
+  </div>
+  <div class='metric-explaination'>
+    <p id='metric-description'>
+
+    </p>
+  </div>
+
+  <!-- <br />
+
   <div class=rank-grad>
     <span class='left'>Best</span>
     <span class='right'>Worst</span>
-  </div>
-  <h3>Select Metrics</h3>
-  <label class="container">Throughput(Average Throughput)
-    <input type="radio" name="metricSelect" value='thrput' checked>
-    <span class="checkmark"></span>
-  </label>
-  <label class="container">Latency(95% Queueing Delay)
-    <input type="radio" name="metricSelect" value='lat'>
-    <span class="checkmark"></span>
-  </label>
-  <label class="container">Loss(Average Loss Rate)
-    <input type="radio" name="metricSelect" value='loss'>
-    <span class="checkmark"></span>
-  </label>
-  <label class="container">Overall(Kleinrock's power metric)
-    <input type="radio" name="metricSelect" value='overall'>
-    <span class="checkmark"></span>
-  </label>
+  </div> -->
   <hr />
   <table>
     <thead>
       <tr>
-      <th class='description'>Test Description</th>
+      <th class='description' style='text-decoration: none;'>Tests</th>
       <th class="cell">Copa</th>
       <th class="cell">Vivace Latency</th>
       <th class="cell">TCP Cubic</th>
@@ -85,9 +89,6 @@
       <th class="cell">Ledbat</th>
       </tr>
     </thead>
-    <caption>
-      **Each value in the table is normalized per row.**
-    </caption>
     <tbody id="table-body"></tbody>
   </table>
   <script>
@@ -103,7 +104,7 @@
   <footer>
     <hr />
     <p class='center'>
-      Contact: username@domain.com
+      Contact: njay2@illinois.edu
     </p>
   </footer>
 </body>

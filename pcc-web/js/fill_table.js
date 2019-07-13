@@ -94,22 +94,26 @@ function disp_power_metric() {
   // console.log(json_data);
   var s = table_formatter('overall');
   document.getElementById("table-body").innerHTML = s;
+  document.getElementById("metric-description").innerHTML = 'Overall';
 }
 
 function disp_latency() {
   // console.log(json_data);
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
+  document.getElementById("metric-description").innerHTML = 'Lat';
 }
 
 function disp_thpt() {
   // console.log(json_data);
   var s = table_formatter('avg thrput');
   document.getElementById("table-body").innerHTML = s;
+  document.getElementById("metric-description").innerHTML = 'Throughput';
 }
 
 function disp_loss() {
   // console.log(json_data);
   var s = table_formatter('avg loss');
   document.getElementById("table-body").innerHTML = s;
+  document.getElementById("metric-description").innerHTML = 'Loss';
 }

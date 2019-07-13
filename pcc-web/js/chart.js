@@ -1,46 +1,6 @@
 $.ajaxSetup({
 async: false
 });
-$(document).ready(function() {
-  $('input[type="radio"]').click(function() {
-    console.log($('input[type="radio"]'));
-    // setActiveBox($(this));
-      setActiveBox($(this));
-  });
-
-  function setActiveBox($radioButton) {
-    if(!($radioButton instanceof jQuery)) {
-        $radioButton = $($radioButton);
-    }
-
-    var value = $radioButton.attr("value");
-    console.log("VALUE");
-    console.log(value);
-    if (value == 'thrput') {
-      disp_thpt();
-    } else if (value == 'lat') {
-      disp_latency();
-    } else if (value == 'loss') {
-      disp_loss();
-    } else if (value == 'overall') {
-      disp_power_metric();
-    }
-    saveData("activeRadio",value);
-  }
-
-  function saveData(key,value) {
-    localStorage.setItem(key,value) || (document.cookie = key + "=" + value);
-  }
-
-  function getData(key) {
-    return localStorage.getItem(key) || document.cookie.match(new RegExp(key + "\=(.+?)(?=;)"))[1];
-  }
-
-  //check stored radioButton on page load
-  var $radioButton = $("[value=" + getData("activeRadio") + "]");
-  $($radioButton).attr("checked",true);
-  setActiveBox($radioButton);
-});
 
 const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr']);
 
@@ -163,8 +123,6 @@ function getTestTrials(titles) {
     var split = titles[i].split('-');
     var testid = split[0];
     var detail = split[1].split('.json')[0];
-    // console.log(testid);
-    // console.log(detail);
     if (!res.hasOwnProperty(testid)) {
       res[testid] = [];
     }
@@ -318,57 +276,73 @@ function getJainIndexCoord(jsonfile) {
   return res;
 }
 
-function getAllPointsWithExtensionRtt(dir, fileextension, x_axis, y_axis) {
+function getAllDataPointsFileLoc(dir) {
   var files = new Array();
   $.ajax({
     url: dir,
     async: false,
     success: function(data) {
-      $(data).find("a:contains(" + fileextension + ")").each(function() {
-        var filename = this.href.replace(window.location.host, "").replace("http://", "");
-        var file = filename.split("/");
-        var name = file[file.length - 1];
-        flows = name.split(".json")[0].split("_to_");
-        var i = 1
-        var points = new Array();
-        if (!filename.includes('metric')) {
-          $.getJSON(filename, function(data) {
-            for (var j = 0; j < flows.length; j++) {
-              var legend = flows[j];
-
-              if (legend.includes('-')) {
-                legend = legend.split('-')[0];
-              }
-              var line = {
-                type:'line',
-                showInLegend: true,
-                toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(kbps): </b>{y}",
-                legendText: legend,
-                dataPoints: []
-              }
-
-              var allFlowPoint = data['flow'+i];
-              // console.log(allFlowPoint.length);
-              for (var k = 0; k < allFlowPoint.length; k++) {
-                var currData = allFlowPoint[k];
-                // console.log(currData);
-                var loc = {
-                  x: currData[x_axis],
-                  y: currData[y_axis]
-                }
-                line.dataPoints.push(loc);
-              }
-              i += 1;
-              points.push(line);
-            }
-
-          });
-          // console.log(points);
-          files.push({"title": name, "dataPoints": points});
+      var split = data.split('Parent Directory')[1].split('href=\"');
+      for (var i = 1; i < split.length; i++) {
+        var file = split[i].split('\">')[0];
+        if (file.includes('metric-')) {
+          files.push(split[i].split('metric-')[1].split('\">')[0]);
         }
-      });
+      }
     }
   });
+  return files;
+}
+
+function getNumFlows(data) {
+  var i = 1;
+  while (true) {
+    if (data.hasOwnProperty('flow'+i)) {
+      i += 1;
+    } else {
+      break;
+    }
+  }
+  return i - 1;
+}
+
+function getAllPointsWithExtensionRtt(dir, x_axis, y_axis) {
+  var allFileName = getAllDataPointsFileLoc(dir);
+  var files = new Array();
+  for (let i in allFileName) {
+    var filename = dir + '/' + allFileName[i];
+    var points = new Array();
+    var flows = allFileName[i].split(".json")[0].split("_to_");
+    $.getJSON(filename, function(data) {
+      for (var j = 0; j < flows.length; j++) {
+        var legend = flows[j];
+
+        if (legend.includes('-')) {
+          legend = legend.split('-')[0];
+        }
+
+        var line = {
+          type:'line',
+          showInLegend: true,
+          toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(kbps): </b>{y}",
+          legendText: legend,
+          dataPoints: []
+        }
+        var allFlowPoint = data['flow'+(j+1)];
+        for (var k = 0; k < allFlowPoint.length; k++) {
+          var currData = allFlowPoint[k];
+          var loc = {
+            x: currData[x_axis],
+            y: currData[y_axis]
+          }
+          line.dataPoints.push(loc);
+        }
+        points.push(line);
+      }
+
+    });
+    files.push({"title": allFileName[i], "dataPoints": points});
+  }
   return files;
 }
 
