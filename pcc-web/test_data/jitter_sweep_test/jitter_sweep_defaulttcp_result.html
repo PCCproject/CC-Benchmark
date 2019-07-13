@@ -23,8 +23,9 @@
   <hr />
   <div id='chartdata'></div>
   <script>
-    var allFiles = getAllPointsWithExtensionRtt("data/default_tcp/", "Time", "Throughput");
-    var allFiles2 = getAllPointsWithExtensionRtt("data/default_tcp/","Time", "Avg Rtt");
+    var dataPoints = getAllPoints("data/default_tcp/");
+    var allFiles = dataPoints[0];
+    var allFiles2 = dataPoints[1];
 
     var titles = [];
     var points = [];

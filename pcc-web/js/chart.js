@@ -306,12 +306,14 @@ function getNumFlows(data) {
   return i - 1;
 }
 
-function getAllPointsWithExtensionRtt(dir, x_axis, y_axis) {
+function getAllPoints(dir) {
   var allFileName = getAllDataPointsFileLoc(dir);
   var files = new Array();
+  var files2 = new Array();
   for (let i in allFileName) {
     var filename = dir + '/' + allFileName[i];
-    var points = new Array();
+    var thrput_points = new Array();
+    var lat_points = new Array();
     var flows = allFileName[i].split(".json")[0].split("_to_");
     $.getJSON(filename, function(data) {
       for (var j = 0; j < flows.length; j++) {
@@ -321,30 +323,46 @@ function getAllPointsWithExtensionRtt(dir, x_axis, y_axis) {
           legend = legend.split('-')[0];
         }
 
-        var line = {
+        var thrput_line = {
           type:'line',
-          markerType: 'none',
           showInLegend: true,
-          toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(kbps): </b>{y}",
+          toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(Mbps): </b>{y}",
           legendText: legend,
           dataPoints: []
         }
+
+        var lat_line = {
+          type:'line',
+          showInLegend: true,
+          toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(Mbps): </b>{y}",
+          legendText: legend,
+          dataPoints: []
+        }
+
         var allFlowPoint = data['flow'+(j+1)];
         for (var k = 0; k < allFlowPoint.length; k++) {
           var currData = allFlowPoint[k];
-          var loc = {
-            x: currData[x_axis],
-            y: currData[y_axis]
+          var thrput_loc = {
+            x: currData["Time"],
+            y: currData["Throughput"] / 1000
           }
-          line.dataPoints.push(loc);
+
+          var lat_loc = {
+            x: currData["Time"],
+            y: currData["Avg Rtt"]
+          }
+          thrput_line.dataPoints.push(thrput_loc);
+          lat_line.dataPoints.push(lat_loc);
         }
-        points.push(line);
+        thrput_points.push(thrput_line);
+        lat_points.push(lat_line);
       }
 
     });
     files.push({"title": allFileName[i], "dataPoints": points});
+    files2.push({"title": allFileName[i], "dataPoints": points});
   }
-  return files;
+  return [files, files2];
 }
 
 function getXAndYCoordFromJson(jsonfile) {

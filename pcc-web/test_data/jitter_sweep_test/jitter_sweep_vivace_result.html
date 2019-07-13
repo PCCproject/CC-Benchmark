@@ -23,9 +23,10 @@
   <hr />
   <div id='chartdata'></div>
   <script>
-    var allFiles = getAllPointsWithExtensionRtt("data/vivace_latency/", "Time", "Throughput");
-    var allFiles2 = getAllPointsWithExtensionRtt("data/vivace_latency/", "Time", "Avg Rtt");
-
+    var dataPoints = getAllPoints("data/vivace_latency/");
+    var allFiles = dataPoints[0];
+    var allFiles2 = dataPoints[1];
+    
     var titles = [];
     var points = [];
     for (var i = 0; i < allFiles.length; i++) {
