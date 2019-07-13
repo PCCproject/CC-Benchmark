@@ -156,15 +156,6 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
       minimum: 0
     },
     data: chartData,
-    options: {
-        elements: {
-            point: {
-                radius: 0,
-                hitRadius: 1,
-                hoverRadius: 1
-            }
-        }
-    }
   });
   chart.render();
 
@@ -323,6 +314,7 @@ function getAllPointsWithExtensionRtt(dir, x_axis, y_axis) {
 
         var line = {
           type:'line',
+          markerType: 'none',
           showInLegend: true,
           toolTipContent: "<b>Time(ms): </b>{x}<br/><b>Throughput(kbps): </b>{y}",
           legendText: legend,
