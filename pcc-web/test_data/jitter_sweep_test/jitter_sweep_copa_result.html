@@ -23,8 +23,9 @@ chartdata<!DOCTYPE html>
   <hr />
   <div id='chartdata'></div>
   <script>
-    var allFiles = getAllPointsWithExtensionRtt("data/copa/", ".json", "Time", "Throughput");
-    var allFiles2 = getAllPointsWithExtensionRtt("data/copa/", ".json", "Time", "Avg Rtt");
+    var dataPoints = getAllPoints("data/copa/");
+    var allFiles = dataPoints[0];
+    var allFiles2 = dataPoints[1];
 
     var titles = [];
     var points = [];
