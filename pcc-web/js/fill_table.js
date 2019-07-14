@@ -5,7 +5,7 @@ $.getJSON('../test_data/public_scheme_metrics.json', function(data) {
 });
 
 function get_rgb(normalized_val) {
-  if (normalized_val === "N/A") {
+  if (normalized_val === "N/A" || normalized_val == undefined) {
     return 'background-color: rgb(255, 255, 255)'
   }
 
@@ -22,7 +22,6 @@ function get_rgb(normalized_val) {
   } else {
     red = 255 * (1 - normalized_val) / 0.5;
   }
-
   return 'background-color: rgb(' + red + ',' + green + ',0)'
 }
 
@@ -31,7 +30,7 @@ function upperCaseFirst(string) {
 }
 
 function round(num) {
-    return Math.ceil(num * 1000) / 1000;
+    return Math.ceil(num * 100) / 100;
 }
 
 function getDisplayName(test_name) {
@@ -62,14 +61,14 @@ function table_formatter(type) {
     var sprout = (metrics.sprout == undefined) ? "N/A" : round(metrics.sprout);
     var ledbat = (metrics.ledbat == undefined) ? "N/A" : round(metrics.ledbat);
 
-    var copa_bg = get_rgb(copa);
-    var vivace_bg = get_rgb(vivace);
-    var cubic_bg = get_rgb(cubic);
-    var bbr_bg = get_rgb(bbr);
-    var taova_bg = get_rgb(taova);
-    var vegas_bg = get_rgb(vegas);
-    var sprout_bg = get_rgb(sprout);
-    var ledbat_bg = get_rgb(ledbat);
+    var copa_bg = get_rgb(metrics["copa score"]);
+    var vivace_bg = get_rgb(metrics["vivace_latency score"]);
+    var cubic_bg = get_rgb(metrics["default_tcp score"]);
+    var bbr_bg = get_rgb(metrics["bbr score"]);
+    var taova_bg = get_rgb(metrics["taova score"]);
+    var vegas_bg = get_rgb(metrics["vegas score"]);
+    var sprout_bg = get_rgb(metrics["sprout score"]);
+    var ledbat_bg = get_rgb(metrics["ledbat score"]);
     // console.log(vivace_bg)
     // console.log(vivace)
     //background-color: rgb(201, 76, 76);
@@ -94,26 +93,30 @@ function disp_power_metric() {
   // console.log(json_data);
   var s = table_formatter('overall');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = 'Overall';
+  document.getElementById("metric-description").innerHTML = '<pre>Kleinrock\'s power metric' +
+  '<br>Color: log(average throughput / 95% delay)';
 }
 
 function disp_latency() {
   // console.log(json_data);
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = 'Lat';
+  document.getElementById("metric-description").innerHTML = '<pre>Number: 95% Queueing delay among all tests' +
+  '<br>Color: 1 - 5*(95% queueing delay / base latency)';
 }
 
 function disp_thpt() {
   // console.log(json_data);
   var s = table_formatter('avg thrput');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = 'Throughput';
+  document.getElementById("metric-description").innerHTML = '<pre>Number: Average throughput among' +
+  ' all tests<br>Color: Average throughput / link capacity';
 }
 
 function disp_loss() {
   // console.log(json_data);
   var s = table_formatter('avg loss');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = 'Loss';
+  document.getElementById("metric-description").innerHTML = '<pre>Number: Average loss' +
+  '<br>Color: 1 - 10*( (measured loss - random loss) / (1 - random loss) )';
 }

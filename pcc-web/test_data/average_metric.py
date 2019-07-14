@@ -10,6 +10,7 @@ def _average_single_merged_metric(merged_metric):
     # add more if necessary
 
     for k in merged_metric.keys():
+        print(k)
         if k in sum:
             merged_metric[k] = np.sum(merged_metric[k])
         else:

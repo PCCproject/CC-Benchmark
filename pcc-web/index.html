@@ -13,7 +13,7 @@
   <script>
   $(document).ready(function() {
     $('input[type="radio"]').click(function() {
-      console.log($('input[type="radio"]'));
+      // console.log($('input[type="radio"]'));
       // setActiveBox($(this));
         setActiveBox($(this));
     });
@@ -24,8 +24,8 @@
       }
 
       var value = $radioButton.attr("value");
-      console.log("VALUE");
-      console.log(value);
+      // console.log("VALUE");
+      // console.log(value);
       if (value == 'thrput') {
         disp_thpt();
       } else if (value == 'lat') {
@@ -93,10 +93,10 @@
   <h2>Test Results</h2>
   <div class="switch-field">
     <input type="radio" id="thrput-radio" name="metric-radio" value="thrput" checked/>
-    <label for="thrput-radio">Throughput</label>
+    <label for="thrput-radio">Throughput(Mbps)</label>
 
     <input type="radio" id="latency-radio" name="metric-radio" value="lat" />
-    <label for="latency-radio">Latency</label>
+    <label for="latency-radio">Latency(ms)</label>
 
     <input type="radio" id="loss-radio" name="metric-radio" value="loss" />
     <label for="loss-radio">Loss</label>

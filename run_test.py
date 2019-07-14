@@ -355,7 +355,7 @@ def run_test(test_dict):
         split = detail.split('_to_')
         bw = [default_bw] * len(flows)
         lat = [default_lat] * len(flows)
-
+        loss = [0] * len(flows)
         if 'mbps' in split[0]:
             for i, sp in enumerate(split):
                 bw[i] = int(sp.split('mbps')[0])
@@ -363,6 +363,10 @@ def run_test(test_dict):
         if 'ms' in split[0]:
             for i, sp in enumerate(split):
                 lat[i] = int(sp.split('ms')[0])
+
+        if 'loss' in split[0]:
+            for i, sp in enumerate(split):
+                loss[i] = float(sp.split('loss')[0])
 
         for i in range(0, len(flows)):
             flow = flows[i]
@@ -386,7 +390,7 @@ def run_test(test_dict):
             if flow_protocol not in metric:
                 metric[flow_protocol] = {}
 
-            metric[flow_protocol]['flow{}'.format(i+1)] = calculate_metrics.getMetricScore(data, bw[i], lat[i])
+            metric[flow_protocol]['flow{}'.format(i+1)] = calculate_metrics.getMetricScore(data, bw[i], lat[i], loss[i])
 
             datapoints['flow{} lat'.format(i+1)] = lat[i]
             datapoints['flow{} bw'.format(i+1)] = bw[i]

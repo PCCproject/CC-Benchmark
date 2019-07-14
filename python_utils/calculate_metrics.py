@@ -46,15 +46,18 @@ def getAvgLoss(data):
 def getKleinrock(data):
     return np.log(getAvgThrput(data) / get95Lat(data))
 
-def getMetricScore(data, bw, lat):
+def getMetricScore(data, bw, lat, loss=0):
     # Units [kbps, ms, %, None, %, ms]
     return {
-        "Avg Thrput":getAvgThrput(data),
+        "Avg Thrput":getAvgThrput(data) / 1000,
         "Avg Lat":getAvgLat(data),
         "Avg Loss":getAvgLoss(data),
         "Overall":getKleinrock(data),
         "Link Util":getLinkUtilization(data, bw),
-        "95 Queue Delay":get95QueueDelay(data, lat)
+        "95 Queue Delay":get95QueueDelay(data, lat),
+        "bw": bw,
+        "lat": lat,
+        "loss": loss
     }
 
 def getTimeThrputFromJson(data):
