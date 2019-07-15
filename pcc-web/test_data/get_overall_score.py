@@ -78,7 +78,7 @@ def get_overall_score_one_scheme(scheme, dir):
     #   Average Score,
     #   avg thrput / Capacity,
     #   delay score,
-    #   loss score) f'{a:.5f}'
+    #   loss score)
     return (round(np.mean(avg_thrput), 3), round(np.mean(delay), 3),
     round(np.mean(loss), 3), round(np.mean(overall), 3),
     round(np.mean(link_util) / 100, 3), round(np.mean(delay_score_mean), 3),
