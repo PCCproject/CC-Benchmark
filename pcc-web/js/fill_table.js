@@ -8,7 +8,14 @@ function get_rgb(normalized_val) {
   if (normalized_val === "N/A" || normalized_val == undefined) {
     return 'background-color: rgb(255, 255, 255)'
   }
+  if (normalized_val > 1) {
+    normalized_val = 1;
+  }
 
+  if (normalized_val < 0) {
+    normalized_val = 0;
+  }
+  
   var green = 0;
   if (normalized_val >= 0.5) {
     green = 255;

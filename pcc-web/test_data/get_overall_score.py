@@ -54,9 +54,9 @@ def get_overall_score_one_scheme(scheme, dir):
                 delay_stat.append(get_delay_score(metric))
                 loss_stat.append(get_loss_score(metric))
 
-            avg_thrput.append(np.sum(avg_thrput_test))
-            delay.append(np.sum(delay_test))
-            loss.append(np.sum(loss_test))
+            avg_thrput.append(np.mean(avg_thrput_test))
+            delay.append(np.mean(delay_test))
+            loss.append(np.mean(loss_test))
             overall.append(np.mean(overall_test))
             link_util.append(np.sum(link_util_stat))
 
