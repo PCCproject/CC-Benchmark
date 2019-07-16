@@ -120,8 +120,8 @@ def get_overall_score(dir):
             if len(indev_testres['avg thrput']) > 0:
                 indev_res["Tests"].append(indev_testres)
 
-    with open("public_scheme_metrics.json", 'w') as f:
+    with open(dir + "/public_scheme_metrics.json", 'w') as f:
         f.write(json.dumps(public_res, indent=4))
 
-    with open("indev_scheme_metrics.json", 'w') as f:
+    with open(dir + "/indev_scheme_metrics.json", 'w') as f:
         f.write(json.dumps(indev_res, indent=4))
