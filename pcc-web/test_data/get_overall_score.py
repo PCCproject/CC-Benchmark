@@ -54,7 +54,7 @@ def get_overall_score_one_scheme(scheme, dir):
                 delay_stat.append(get_delay_score(metric))
                 loss_stat.append(get_loss_score(metric))
 
-            avg_thrput.append(np.mean(avg_thrput_test))
+            avg_thrput.append(np.sum(avg_thrput_test))
             delay.append(np.mean(delay_test))
             loss.append(np.mean(loss_test))
             overall.append(np.mean(overall_test))
@@ -81,7 +81,7 @@ def get_overall_score_one_scheme(scheme, dir):
     #   loss score)
     return (round(np.mean(avg_thrput), 3), round(np.mean(delay), 3),
     round(np.mean(loss), 3), round(np.mean(overall), 3),
-    round(np.mean(link_util) / 100, 3), round(np.mean(delay_score_mean), 3),
+    round(np.mean(link_util) / 100, 3), round(np.mean(delay_score), 3),
     round(np.mean(loss_score), 3))
 
 def add_metric_to_res(scheme, metric, testres):
