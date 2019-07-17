@@ -221,7 +221,7 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     for (var j = 0; j < res[scheme][0].length; j++) {
       utilPoints.push({
         x: res[scheme][0][j]['x'],
-        y: res[scheme][0][j]['y']/1000
+        y: res[scheme][0][j]['y']
       });
       delayPoints.push({
         x: res[scheme][1][j]['x'],
