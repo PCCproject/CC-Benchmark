@@ -141,10 +141,10 @@ def add_metric_to_res(scheme, metric, testres):
     testres['95 qdelay'][scheme] = metric[1]
     testres['avg loss'][scheme] = metric[2]
     testres['overall'][scheme] = metric[3]
+    testres['overall'][scheme + ' score'] = metric[3]
     testres['avg thrput'][scheme + ' score'] = metric[4]
     testres['95 qdelay'][scheme + ' score'] = metric[5]
     testres['avg loss'][scheme + ' score'] = metric[6]
-    testres['overall'][scheme + ' score'] = metric[6]
 
 def get_overall_score(dir):
     public_res = {"Tests": []}
