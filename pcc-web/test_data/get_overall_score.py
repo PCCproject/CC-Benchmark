@@ -3,20 +3,71 @@ import json
 import numpy as np
 import numpy.linalg as la
 
+class test_params:
+    def __init__(self, bw, lat, loss):
+        self.bw = bw
+        self.lat = lat
+        self.loss = loss
+
+    def __key(self):
+        return (self.bw, self.lat, self.loss)
+
+    def __eq__(self, other):
+        return (isinstance(other, type(self)) and self.__key() == other.__key())
+
+    def __hash__(self):
+        return hash(self.__key()) ^ hash(self.bw) ^ hash(self.lat) ^ hash(self.loss)
+
+    def __repr__(self):
+        return f"{self.bw}, {self.lat}, {self.loss}"
+
 public_scheme = {'default_tcp', 'copa', 'vivace_latency', 'bbr'}
-def get_bw_lat_from_filename(filename):
-    bw = 30
-    lat = 30
-    detail = filename.split('-')[1]
-    split = detail.split('_to_')
-    # print(split)
-    return (bw, lat)
+
+def get_average_test_params(metrics):
+    bw = []
+    lat = []
+    loss = []
+
+    for flow, metric in metrics.items():
+        bw.append(metric['bw'])
+        lat.append(metric['lat'])
+        loss.append(metric['loss'])
+
+    return test_params(round(np.mean(bw), 5), round(np.mean(lat), 5), round(np.mean(loss), 5))
 
 def get_delay_score(metric):
-    return 1 - ((metric['95 Queue Delay'] * 5) / metric['lat'])
+    return 1 - (metric['95 Queue Delay'] / metric['lat'])
 
 def get_loss_score(metric):
-    return 1 - ((10 * (metric['Avg Loss']/100 - metric['loss'])) / (1 - metric['loss']))
+    return 1 - (metric['Avg Loss'] - metric['loss']) / (1 - metric['loss'])
+
+def average_metrics(metrics):
+    for k, v in metrics.items():
+        metrics[k] = np.mean(v)
+
+def get_avg_thrput_and_linkutil(link_util_stat):
+    avg_thrput = np.mean([value for value in link_util_stat.values()])
+    avg_linkcap = np.mean([metric.bw for metric in link_util_stat.keys()])
+
+    return avg_thrput, avg_thrput / avg_linkcap
+
+def get_mean_metric_and_score(metric_stat):
+    return np.mean([value for value in metric_stat.values()])
+
+def get_avg_loss_and_lossscore(loss_stat):
+    avg_loss = np.mean([value for value in loss_stat.values()])
+    avg_rand_loss = np.mean([metric.loss for metric in loss_stat.keys()])
+    num = avg_loss - avg_rand_loss
+    denom = 1 - avg_rand_loss
+
+    return avg_loss, (1 - 10*(num/denom))
+
+def get_avg_delay_and_delayscore(delay_stat):
+    avg_delay = np.mean([value for value in delay_stat.values()])
+    base_delay = np.mean([metric.lat for metric in delay_stat.keys()])
+    score = 1 - ((3 * avg_delay) / base_delay)
+
+    return avg_delay, score
 
 def get_overall_score_one_scheme(scheme, dir):
     # print(scheme)
@@ -27,51 +78,54 @@ def get_overall_score_one_scheme(scheme, dir):
     link_util = []
     delay_score = []
     loss_score = []
+
+    link_util_stat = {}
+    delay_stat = {}
+    loss_stat = {}
+    overall_stat = {}
+
     for file in os.listdir(dir):
         filepath = dir + '/' + file
         if file.startswith('metric'):
             with open(filepath) as f:
-                metric = json.load(f)
-            # print(metric[scheme])
+                metrics = json.load(f)
 
+            test_param = get_average_test_params(metrics[scheme])
+            # print(test_param)
             avg_thrput_test = []
             delay_test = []
             loss_test = []
             overall_test = []
-            link_util_stat = []
-            delay_stat = []
-            loss_stat = []
-            bw, lat = 30, 30
-            if 'jitter' not in dir:
-                bw, lat = get_bw_lat_from_filename(file)
+
             # print(metric)
-            for flow, metric in metric[scheme].items():
+            for flow, metric in metrics[scheme].items():
                 avg_thrput_test.append(metric['Avg Thrput'])
                 delay_test.append(metric['95 Queue Delay'])
-                loss_test.append(metric['Avg Loss'] / 100)
+                loss_test.append(metric['Avg Loss'])
                 overall_test.append(metric['Overall'])
-                link_util_stat.append(metric['Link Util'])
-                delay_stat.append(get_delay_score(metric))
-                loss_stat.append(get_loss_score(metric))
 
-            avg_thrput.append(np.sum(avg_thrput_test))
-            delay.append(np.mean(delay_test))
-            loss.append(np.mean(loss_test))
-            overall.append(np.mean(overall_test))
-            link_util.append(np.sum(link_util_stat))
+            if test_param not in link_util_stat:
+                link_util_stat[test_param] = []
+                delay_stat[test_param] = []
+                loss_stat[test_param] = []
+                overall_stat[test_param] = []
 
-            delay_score_mean = np.mean(delay_stat)
-            if delay_score_mean < 0:
-                delay_score.append(0)
-            else:
-                delay_score.append(delay_score_mean)
+            link_util_stat[test_param].append(np.mean(avg_thrput_test))
+            delay_stat[test_param].append(np.mean(delay_test))
+            loss_stat[test_param].append(np.mean(loss_test))
+            overall_stat[test_param].append(np.mean(overall_test))
 
-            loss_score_mean = np.mean(loss_stat)
-            if loss_score_mean < 0:
-                loss_score.append(0)
-            else:
-                loss_score.append(loss_score_mean)
+    average_metrics(link_util_stat)
+    average_metrics(delay_stat)
+    average_metrics(loss_stat)
+    average_metrics(overall_stat)
 
+    avg_thrput, thrput_score = get_avg_thrput_and_linkutil(link_util_stat)
+    avg95_delay, delay_score = get_avg_delay_and_delayscore(delay_stat)
+    avg_loss, loss_score = get_avg_loss_and_lossscore(loss_stat)
+    overall_score = get_mean_metric_and_score(overall_stat)
+
+    # print(avg_thrput, thrput_score, avg95_delay, delay_score, avg_loss, loss_score, overall_score)
     # (Average throughput among all flows,
     #   Average 95% queueing Delay
     #   Average loss Rate
@@ -79,10 +133,8 @@ def get_overall_score_one_scheme(scheme, dir):
     #   avg thrput / Capacity,
     #   delay score,
     #   loss score)
-    return (round(np.mean(avg_thrput), 3), round(np.mean(delay), 3),
-    round(np.mean(loss), 3), round(np.mean(overall), 3),
-    round(np.mean(link_util) / 100, 3), round(np.mean(delay_score), 3),
-    round(np.mean(loss_score), 3))
+    return (round(avg_thrput, 3), round(avg95_delay, 3), round(avg_loss, 3), round(overall_score, 3),
+    round(thrput_score, 3), round(delay_score, 3), round(loss_score, 3))
 
 def add_metric_to_res(scheme, metric, testres):
     testres['avg thrput'][scheme] = metric[0]
