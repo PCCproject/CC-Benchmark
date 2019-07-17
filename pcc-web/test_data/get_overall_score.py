@@ -19,7 +19,7 @@ class test_params:
         return hash(self.__key()) ^ hash(self.bw) ^ hash(self.lat) ^ hash(self.loss)
 
     def __repr__(self):
-        return f"{self.bw}, {self.lat}, {self.loss}"
+        return "{}, {}, {}".format(self.bw, self.lat, self.loss)
 
 public_scheme = {'default_tcp', 'copa', 'vivace_latency', 'bbr'}
 
