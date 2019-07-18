@@ -50,3 +50,24 @@ To see a graph of various performance characteristics from this run (and all run
 If there is a per-RTT statistic you see in the .json log files that you would like to see in the graph, you can edit
 sample.json and add it to the group of variables already graphed.
 
+## Creating new tests
+
+### Naming convention
+1. Make sure not to include - or . in the test name.
+2. The name of the test should be testname.detail, e.g. _bandwidth_sweep.1mbps_
+3. The filename of the test must match the detail part of the name, e.g. _bandwidth_sweep.1mbps_ should be named _1mbps.json_.
+4. For tests with varying bandwidth, latency, or loss for each flow, detailed part of the test name should be separated by _to_ keyword, e.g. 1mbps_to_0.1loss_to_30ms means the bandwidth of the first flow is 1mbps, the loss rate of the second flow is 0.1, and the latency of the third flow is 30ms. Note of the keywords **_mbps, loss, and ms._**
+
+### Creating html for newly created tests
+1. Create a directory under pcc-web/test_data named _testname_test_. e.g. bandwidth_sweep_test.
+2. Create an index.html under the directory created from 1.
+3. Refer to pcc-web/test_data/singleflow_index.html or pcc-web/test_data/multiflow_index.html depending on the test and fill out index.html created from 2.
+4. Refer to pcc-web/test_data/detailed_flow.html to create htmls for detailed traces **per scheme**. The currently supported schemes are [tcp-cubic, vivace latency, copa, bbr, ledbat, pcc, sprout, taova, vegas]. 
+5. Run the test with --web-result!
+
+## Web Results
+
+### Running the tests with --web-result
+./run_remote_tesy.py "scheme_1 scheme_2" test_name #num_replicas --web-result
+will automatically push the test results to the website.
+
