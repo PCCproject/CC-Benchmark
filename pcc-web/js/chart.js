@@ -117,6 +117,15 @@ function getMatchingIdx(titles, target) {
   }
   return -1;
 }
+
+function pointSort(p1, p2) {
+  var p1_xval = p1.x;
+  var p2_xval = p2.x;
+
+  if (p1_xval == p2_xval) {return 0;}
+  if (p1_xval > p2_xval) {return 1;}
+  return -1
+}
 function getTestTrials(titles) {
   var res = {};
   for (var i = 0; i < titles.length; i++) {
@@ -197,7 +206,8 @@ function getMetricCoordForSingleScheme(data, testname) {
       'y': delay
     });
   }
-
+  res1.sort(pointSort);
+  res2.sort(pointSort);
   return new Array(res1, res2);
 }
 
@@ -228,7 +238,8 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
         y: res[scheme][1][j]['y']
       });
     }
-
+    utilPoints.sort(pointSort);
+    delayPoints.sort(pointSort);
     utilData.push({
       // type:'scatter',
       type: 'line',
@@ -265,9 +276,10 @@ function getJainIndexCoord(jsonfile) {
         }
         points.push(coord);
       }
+      points.sort(pointSort);
       res.push({
         // type:'scatter',
-        type: 'line', 
+        type: 'line',
         showInLegend: true,
         toolTipContent: "<b>Rtt Ratio: </b>{x}<br/><b>Jain's Fairness Index: </b>{y}",
         legendText: scheme,
@@ -357,6 +369,8 @@ function getAllPoints(dir) {
           thrput_line.dataPoints.push(thrput_loc);
           lat_line.dataPoints.push(lat_loc);
         }
+        // thrput_line.dataPoints.sort(pointSort);
+        // lat_line.dataPoints.sort(pointSort);
         thrput_points.push(thrput_line);
         lat_points.push(lat_line);
       }
@@ -381,7 +395,7 @@ function getXAndYCoordFromJson(jsonfile) {
       points.push(loc);
     }
   });
-
+  points.sort(pointSort);
   return points;
 }
 
