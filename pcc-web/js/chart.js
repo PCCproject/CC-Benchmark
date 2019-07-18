@@ -230,7 +230,8 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     }
 
     utilData.push({
-      type:'scatter',
+      // type:'scatter',
+      type: 'line',
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
       legendText: scheme,
@@ -238,7 +239,8 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     });
 
     delayData.push({
-      type:'scatter',
+      // type:'scatter',
+      type: 'line',
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
       legendText: scheme,
@@ -264,7 +266,8 @@ function getJainIndexCoord(jsonfile) {
         points.push(coord);
       }
       res.push({
-        type:'scatter',
+        // type:'scatter',
+        type: 'line', 
         showInLegend: true,
         toolTipContent: "<b>Rtt Ratio: </b>{x}<br/><b>Jain's Fairness Index: </b>{y}",
         legendText: scheme,
