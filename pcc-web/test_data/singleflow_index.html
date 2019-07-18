@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>TITLE OF THE PAGE</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
+  <script src="../../js/jquery-3.4.1.min.js"></script>
+  <script src="../../js/chart.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../../index.html">Home</a></li>
+        <li class='left'><a href="../../indev/index.html">In-development Schemes</a></li>
+      </ul>
+    </div>
+  </header>
+  <div class='body-container'>
+  <div class='topo-outer-container'>
+    <h2>Test Description</h2>
+    <div class='topo-inner-container'>
+      <p class='topo-explain'>
+        TEST DESCRIPTIONS
+      </p>
+      <p class='topo-explain'>
+        EXPLAIN LINK BANDWIDTH AND LATENCY. DETAILS ABOUT THE TEST
+      </p>
+    </div>
+    <div class='dumbell-img-container'>
+      <img class='fit-div' src='PATH OF THE TOPOLOGY PNG FILE' />
+    </div>
+
+  </div>
+
+  <script>
+    var datas = getPublicLinkUtilAndQueueingDelay('metrics.json');
+    var utilData = datas[0];
+    var delayData = datas[1];
+    // var x_axis_label = 'Queue Size';/
+
+    // TODO
+    // DECLARE NAME OF THE X_AXIS_LABEL HERE
+
+    window.onload = function() {
+      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)');
+      renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)');
+    }
+  </script>
+
+  <br />
+  <br />
+  <div>
+    <h2>Average Throughput</h2>
+    <div id="utilChart" class='fairness-graph'></div>
+    <h2>95% Queueing Delay</h2>
+    <div id="delayChart" class='fairness-graph'></div>
+  </div>
+
+  <h2>Detailed Traces</h2>
+  <ul>
+    <li>
+      <a href="NAME OF FILE.html">TCP Cubic</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">Vivace Latency</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">Copa</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">BBR</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">Ledbat</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">PCC</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">Sprout</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">Taova</a>
+    </li>
+    <li>
+      <a href="NAME OF FILE.html">Vegas</a>
+    </li>
+  </ul>
+
+  </div>
+  <hr />
+  <br /><br />
+</body>
+
+</html>
