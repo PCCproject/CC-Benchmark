@@ -43,7 +43,7 @@ list_of_tests_to_run = read_test_list_to_list(tests_to_run)
 total_time_to_test = get_total_test_time(list_of_tests_to_run, 3)
 # print(total_time_to_test)
 
-schemes_to_test = sys.argv[1].split(",")
+schemes_to_test = sys.argv[1].split(" ")
 replicas = 1
 if (len(sys.argv) > 3):
     replicas = int(sys.argv[3])
