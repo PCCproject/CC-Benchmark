@@ -62,8 +62,9 @@ sample.json and add it to the group of variables already graphed.
 
 ### Creating html for newly created tests
 1. Create a directory under pcc-web/test_data named _test-directory_test_. e.g. pcc-web/test_data/**bandwidth_sweep_test**.
-2. Create an index.html under the directory created from 1. Refer to pcc-web/test_data/singleflow_index.html or pcc-web/test_data/multiflow_index.html depending on the test and fill out index.html.
-4. Refer to pcc-web/test_data/detailed_flow.html to create htmls for detailed traces **per scheme**. The currently supported schemes are [tcp-cubic, vivace latency, copa, bbr, ledbat, pcc, sprout, taova, vegas]. 
+2. Create an index.html under the directory created from 1. Refer to [pcc-web/test_data/singleflow_index.html](pcc-web/test_data/singleflow_index.html) or [pcc-web/test_data/multiflow_index.html](pcc-web/test_data/multiflow_index.html) depending on the test and fill out index.html.
+3. Refer to pcc-web/test_data/detailed_flow.html to create htmls for detailed traces **per scheme**. The currently supported schemes are [tcp-cubic, vivace latency, copa, bbr, ledbat, pcc, sprout, taova, vegas]. 
+4. (Optional) Include alias file under directory created from 1, e.g. pcc-web/test_data/rtt_fairness3/alias, only if you would like the test to be called differently or would like to provide more information. Note that the alias file should include exactly what you want the test to be called in one line and nothing else. For reference, take a look at [this](pcc-web/test_data/rtt_fairness3/alias).
 5. Run the test with --web-result!
 
 ## Web Results
