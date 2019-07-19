@@ -15,7 +15,7 @@ function get_rgb(normalized_val) {
   if (normalized_val < 0) {
     normalized_val = 0;
   }
-  
+
   var green = 0;
   if (normalized_val >= 0.5) {
     green = 255;
@@ -109,7 +109,7 @@ function disp_latency() {
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: 95% Queueing delay among all tests' +
-  '<br>Color: 1 - 5*(95% queueing delay / base latency)';
+  '<br>Color: 1 - (95%-delay / 60ms)';
 }
 
 function disp_thpt() {
@@ -117,7 +117,7 @@ function disp_thpt() {
   var s = table_formatter('avg thrput');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: Average throughput among' +
-  ' all tests<br>Color: Average throughput / link capacity';
+  ' all tests<br>Color: Average throughput / link bottleneck';
 }
 
 function disp_loss() {
