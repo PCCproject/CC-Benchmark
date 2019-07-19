@@ -109,7 +109,7 @@ function disp_latency() {
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: 95% Queueing delay among all tests' +
-  '<br>Color: 1 - (95%-delay / 60ms)';
+  '<br>Color: 1 - (95% delay / 60ms)';
 }
 
 function disp_thpt() {
