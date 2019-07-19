@@ -35,12 +35,6 @@ def get_average_test_params(metrics):
 
     return test_params(round(np.mean(bw), 5), round(np.mean(lat), 5), round(np.mean(loss), 5))
 
-def get_delay_score(metric):
-    return 1 - (metric['95 Queue Delay'] / metric['lat'])
-
-def get_loss_score(metric):
-    return 1 - (metric['Avg Loss'] - metric['loss']) / (1 - metric['loss'])
-
 def average_metrics(metrics):
     for k, v in metrics.items():
         metrics[k] = np.mean(v)
@@ -64,9 +58,10 @@ def get_avg_loss_and_lossscore(loss_stat):
 
 def get_avg_delay_and_delayscore(delay_stat):
     avg_delay = np.mean([value for value in delay_stat.values()])
-    base_delay = np.mean([metric.lat for metric in delay_stat.keys()])
-    score = 1 - ((3 * avg_delay) / base_delay)
-
+    # base_delay = np.mean([metric.lat for metric in delay_stat.keys()])
+    # score = 1 - ((3 * avg_delay) / base_delay)
+    score = 1 - (avg_delay / 30)
+    # return avg_delay, score
     return avg_delay, score
 
 def get_overall_score_one_scheme(scheme, dir):
@@ -110,7 +105,7 @@ def get_overall_score_one_scheme(scheme, dir):
                 loss_stat[test_param] = []
                 overall_stat[test_param] = []
 
-            link_util_stat[test_param].append(np.mean(avg_thrput_test))
+            link_util_stat[test_param].append(np.sum(avg_thrput_test))
             delay_stat[test_param].append(np.mean(delay_test))
             loss_stat[test_param].append(np.mean(loss_test))
             overall_stat[test_param].append(np.mean(overall_test))
@@ -141,7 +136,7 @@ def add_metric_to_res(scheme, metric, testres):
     testres['95 qdelay'][scheme] = metric[1]
     testres['avg loss'][scheme] = metric[2]
     testres['overall'][scheme] = metric[3]
-    testres['overall'][scheme + ' score'] = metric[3]
+    testres['overall'][scheme + ' score'] = (metric[3] / 5)
     testres['avg thrput'][scheme + ' score'] = metric[4]
     testres['95 qdelay'][scheme + ' score'] = metric[5]
     testres['avg loss'][scheme + ' score'] = metric[6]

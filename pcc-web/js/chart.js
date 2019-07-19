@@ -11,6 +11,18 @@ function searchChart(name, dict) {
   return dict[testname];
 }
 
+function check_semilogx(points) {
+  var threshold = 500;
+  var len = Object.keys(points).length;
+  return (points[len - 1].x - points[0].x) > threshold;
+}
+
+function convert_to_semilogx(points) {
+  for (var point of points) {
+    point.x = Math.log(point.x);
+  }
+}
+
 function getNumTrials(titles) {
   var ret = {};
   for (var i = 0; i < titles.length; i++) {
@@ -208,17 +220,27 @@ function getMetricCoordForSingleScheme(data, testname) {
   }
   res1.sort(pointSort);
   res2.sort(pointSort);
-  return new Array(res1, res2);
+  var logscale = 0;
+  if(check_semilogx(res1)) {
+    convert_to_semilogx(res1);
+    convert_to_semilogx(res2);
+    logscale = 1;
+  }
+  return new Array(res1, res2, logscale);
 }
 
 
 function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
   var res = {};
+  var logscale;
   $.getJSON(jsonfile, function(data) {
     for (var scheme in data) {
       if (public_scheme.has(scheme)) {
         var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
-        res[scheme] = dataPoint;
+        res[scheme] = new Array();
+        res[scheme].push(dataPoint[0]);
+        res[scheme].push(dataPoint[1]);
+        logscale = dataPoint[2];
       }
     }
   });
@@ -259,7 +281,7 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     });
   }
 
-  return new Array(utilData, delayData);
+  return new Array(utilData, delayData, logscale);
 }
 
 function getJainIndexCoord(jsonfile) {

@@ -40,10 +40,13 @@
     var datas = getPublicLinkUtilAndQueueingDelay('metrics.json', 'rtt_fairness');
     var utilData = datas[0];
     var delayData = datas[1];
-    // var x_axis_label = 'Queue Size';/
-
+    var logscale = datas[2];
     // TODO
     // DECLARE NAME OF THE X_AXIS_LABEL HERE
+
+    if (logscale == 1) {
+      x_axis_label += '-log scale';
+    }
 
     window.onload = function() {
       renderRttFairnessChart('rtt_fairness_3_star', point);
