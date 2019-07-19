@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  font-family: "Times New Roman", Times, serif;
 }
 
 div.invisible {
@@ -439,4 +440,8 @@ div.metric-explaination {
 
 div.metric-explaination > p {
 font-size: 16px;
+}
+
+pre {
+
 }

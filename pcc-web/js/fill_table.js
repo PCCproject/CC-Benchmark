@@ -40,7 +40,12 @@ function round(num) {
     return Math.ceil(num * 100) / 100;
 }
 
-function getDisplayName(test_name) {
+function getDisplayName(curr_test) {
+  if (curr_test.alias != undefined) {
+    return curr_test.alias;
+  }
+
+  var test_name = curr_test.name;
   var ret = "";
   var split_name = test_name.split('_');
   for (var i = 0; i < split_name.length - 1; i++) {
@@ -79,7 +84,7 @@ function table_formatter(type) {
     // console.log(vivace_bg)
     // console.log(vivace)
     //background-color: rgb(201, 76, 76);
-    var displayName = getDisplayName(test_name);
+    var displayName = getDisplayName(curr_test);
 
     return_str += ("<th class='description'><a href=test_data/" + test_name + "/index.html>" + displayName + "</a></th>");
     return_str += ("<th class='cell' style='" + copa_bg + "'>" + copa + "</th>");
@@ -100,15 +105,15 @@ function disp_power_metric() {
   // console.log(json_data);
   var s = table_formatter('overall');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Kleinrock\'s power metric' +
-  '<br>Color: log(average throughput / 95% delay) / 5';
+  document.getElementById("metric-description").innerHTML = '<pre>Number: log(mean throughput / 95% delay) (Kleinrock\'s power metric)' +
+  '<br>Color: log(mean throughput / 95% delay) / 5';
 }
 
 function disp_latency() {
   // console.log(json_data);
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: 95% Queueing delay among all tests' +
+  document.getElementById("metric-description").innerHTML = '<pre>Number: 95% queueing delay among all tests, in ms' +
   '<br>Color: 1 - (95% delay / 60ms)';
 }
 
@@ -116,14 +121,14 @@ function disp_thpt() {
   // console.log(json_data);
   var s = table_formatter('avg thrput');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: Average throughput among' +
-  ' all tests<br>Color: Average throughput / link bottleneck';
+  document.getElementById("metric-description").innerHTML = '<pre>Number: Mean throughput among all tests, in Mbps' +
+  '<br>Color: Mean throughput / link bottleneck';
 }
 
 function disp_loss() {
   // console.log(json_data);
   var s = table_formatter('avg loss');
   document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: Average loss' +
+  document.getElementById("metric-description").innerHTML = '<pre>Number: Mean fraction of packets lost' +
   '<br>Color: 1 - 10*( (measured loss - random loss) / (1 - random loss) )';
 }

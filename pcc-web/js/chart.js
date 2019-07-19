@@ -2,7 +2,8 @@ $.ajaxSetup({
 async: false
 });
 
-const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr']);
+const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr', 'pcc',
+                               'taova', 'vegas', 'sprout', 'ledbat']);
 
 function searchChart(name, dict) {
   // console.log(dict);

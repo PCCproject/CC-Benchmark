@@ -2,6 +2,7 @@ import os
 import json
 import numpy as np
 import numpy.linalg as la
+import sys
 
 class test_params:
     def __init__(self, bw, lat, loss):
@@ -21,7 +22,17 @@ class test_params:
     def __repr__(self):
         return "{}, {}, {}".format(self.bw, self.lat, self.loss)
 
-public_scheme = {'default_tcp', 'copa', 'vivace_latency', 'bbr'}
+public_scheme = {
+    "copa",
+    "vivace_latency",
+    "default_tcp",
+    "pcc",
+    "bbr",
+    "taova",
+    "vegas",
+    "sprout",
+    "ledbat"
+}
 
 def get_average_test_params(metrics):
     bw = []
@@ -60,7 +71,7 @@ def get_avg_delay_and_delayscore(delay_stat):
     avg_delay = np.mean([value for value in delay_stat.values()])
     # base_delay = np.mean([metric.lat for metric in delay_stat.keys()])
     # score = 1 - ((3 * avg_delay) / base_delay)
-    score = 1 - (avg_delay / 30)
+    score = 1 - (avg_delay / 60)
     # return avg_delay, score
     return avg_delay, score
 
@@ -146,11 +157,26 @@ def get_overall_score(dir):
     indev_res = {"Tests": []}
     for testname in os.listdir(dir):
         testpath = dir + testname
+        alias = None
+        try:
+            with open(os.path.join(testpath, 'alias')) as f:
+                alias = f.readline().strip()
+        except:
+            pass
+
         public_testres = {"name":testname, "avg thrput":{},
                                             "95 qdelay": {},
                                             "avg loss": {},
                                             "overall": {}}
-        indev_testres = {"name":testname, "avg thrput":{}, "95 qdelay": {}, "avg loss": {}, "overall": {}}
+        indev_testres = {"name":testname, "avg thrput":{},
+                                            "95 qdelay": {},
+                                            "avg loss": {},
+                                            "overall": {}}
+
+        if alias is not None:
+            public_testres["alias"] = alias
+            indev_testres["alias"] = alias
+
         if 'py' not in testname and os.path.isdir(testpath):
             datadir = testpath + '/data/'
             for scheme in os.listdir(datadir):

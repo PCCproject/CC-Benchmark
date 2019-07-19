@@ -86,17 +86,17 @@
     </p>
 
     <p>
-      This website will be presenting the performance of several congestion control algorithms (tcp-cubic, bbr, pcc-vivace, etc..) tested on several different network environments.
+      This website will be presenting the performance of several congestion control algorithms tested on several different network environments.
       We used Mininet to simulate various network environments and anaylze flows using Pantheon that was developed at Stanford University.
     </p>
 
   <h2>Test Results</h2>
   <div class="switch-field">
     <input type="radio" id="thrput-radio" name="metric-radio" value="thrput" checked/>
-    <label for="thrput-radio">Throughput(Mbps)</label>
+    <label for="thrput-radio">Throughput</label>
 
     <input type="radio" id="latency-radio" name="metric-radio" value="lat" />
-    <label for="latency-radio">Latency(ms)</label>
+    <label for="latency-radio">Latency</label>
 
     <input type="radio" id="loss-radio" name="metric-radio" value="loss" />
     <label for="loss-radio">Loss</label>
@@ -120,9 +120,9 @@
   <table>
     <thead>
       <tr>
-      <th class='description' style='text-decoration: none;'>Tests</th>
+      <th class='description' style='text-decoration: none;'>Test Scenario</th>
       <th class="cell">Copa</th>
-      <th class="cell">Vivace Latency</th>
+      <th class="cell">PCC Vivace</th>
       <th class="cell">TCP Cubic</th>
       <th class="cell">TCP BBR</th>
       <th class="cell">Taova</th>
@@ -134,7 +134,7 @@
     <tbody id="table-body"></tbody>
   </table>
   <script>
-  disp_thpt();
+    disp_thpt();
   </script>
   <br />
   <br />
