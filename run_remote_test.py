@@ -50,16 +50,25 @@ if (len(sys.argv) > 3):
 
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
+num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
 for host in remote_hosts.keys():
     vm_booting = False
     up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
-    for vm in VM_NAMES:
+    curr_aval_vms = len(up_vms.split('\n')[2:-2])
+
+    if curr_aval_vms >= num_vms_needed:
+        break
+
+    for i, vm in enumerate(VM_NAMES):
         if vm not in up_vms:
             vm_booting = True
             cmd = "ssh {} virsh start {}".format(host, vm)
             print(cmd)
             os.system(cmd)
-            # else:
+            curr_aval_vms += 1
+            if curr_aval_vms >= num_vms_needed:
+                break
+
     if vm_booting:
         print("VM(s) are booting up. Please wait 30 seconds")
         time.sleep(30)

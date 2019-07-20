@@ -11,7 +11,7 @@ MANNUALLY_MAMANGED_VM_IPS = [
 
 VM_NAMES = [
     "pcc_test_vm_1",
-    "pcc_test_vm_2",
+    # "pcc_test_vm_2", Mannually mannaged VM
     "pcc_test_vm_3",
     "pcc_test_vm_4"
 ]
@@ -73,10 +73,12 @@ def get_remote_vm_ips(hostname):
     ## Getting IP using VM_name(Used to automatically start/shutdown VMs)
     for vm_name in VM_NAMES:
         return_str = subprocess.check_output(["ssh", hostname, "virsh", "domifaddr", vm_name]).decode("utf-8")
+        if return_str.startswith('error'):
+            continue
         ip_line = return_str.split("\n")[2]
         ip_addr = ip_line.split(' ')[-1][:-3]
-        if ip_addr not in MANNUALLY_MAMANGED_VM_IPS:
-            addresses[vm_name] = ip_addr
+        # if ip_addr not in MANNUALLY_MAMANGED_VM_IPS:
+        addresses[vm_name] = ip_addr
 
     aval_addr = {}
     max_waittime = 0
