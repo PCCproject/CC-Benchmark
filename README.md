@@ -73,3 +73,8 @@ sample.json and add it to the group of variables already graphed.
 `./run_remote_test.py "scheme_1 scheme_2" test_name #num_replicas --web-result`<br>
 will automatically push the test results to the website.
 
+## Optional Flags
+**--shutdown** will shutdown the vms after running all the tests.<br>
+`./run_remote_test.py "scheme_1 scheme_2" test_name #num_replicas --shutdown`<br>
+**--web-result** will automatically update pcctesting.web.illinois.edu with new results.<br>
+`./run_remote_test.py "scheme_1 scheme_2" test_name #num_replicas --web-result`
