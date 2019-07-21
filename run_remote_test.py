@@ -79,6 +79,20 @@ for arg in sys.argv:
         web_result = True
 
 shutdown = '--shutdown' in sys.argv
+occupied_vms = None
+
+def free_vms_and_close_gracefully(sig, frame):
+    global occupied_vms
+    if occupied_vms is None:
+        return
+
+    for host in remote_hosts.keys():
+        for ip in occupied_vms.values():
+            cmd = "ssh {} -t ssh pcc@{} {}".format(host, str(ip), free_vm_script)
+            os.system(cmd)
+
+signal.signal(signal.SIGINT, free_vms_and_close_gracefully)
+
 class RemoteVmManager:
     def __init__(self, hostname, remote_testing_dir, vm_ip):
         print("Creating VM manager for %s:%s" % (hostname, vm_ip))
@@ -186,8 +200,10 @@ class RemoteHostManager:
         self.vm_ips = None
 
     def init_remote_vm_managers(self):
+        global occupied_vms
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
         self.vm_ips, waittime = get_remote_vm_ips(self.hostname)
+        occupied_vms = copy.deepcopy(self.vm_ips)
         if len(self.vm_ips) == 0:
             print("All the vms are busy")
             print("Approximate finish time: {} seconds".format(waittime))
@@ -310,3 +326,5 @@ for hostname in remote_hosts.keys():
 
 for manager in host_managers:
     manager.proc.join()
+
+free_vms_and_close_gracefully(None, None)

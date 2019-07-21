@@ -345,7 +345,13 @@ def run_test(test_dict):
 
         filename = "{}/{}-{}-datapoints-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
         metric_filename = "{}/{}-{}-metric-{}-{}.json".format(results_dir, testname, scheme_name, detail, date_string)
-        # os.system('mkdir -p {}'.format(test_dir))
+        os.system('mkdir -p {}'.format(results_dir))
+        try:
+            os.system('chmod -R 777 {}'.format(results_dir))
+        except:
+            # Do nothing
+            pass
+
         print(filename)
 
         metric = {}
