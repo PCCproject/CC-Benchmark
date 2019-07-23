@@ -132,3 +132,11 @@ function disp_loss() {
   document.getElementById("metric-description").innerHTML = '<pre>Number: Mean fraction of packets lost' +
   '<br>Color: 1 - 10*( (measured loss - random loss) / (1 - random loss) )';
 }
+
+function saveData(key,value) {
+  localStorage.setItem(key,value) || (document.cookie = key + "=" + value);
+}
+
+function getData(key) {
+  return localStorage.getItem(key) || document.cookie.match(new RegExp(key + "\=(.+?)(?=;)"))[1];
+}
