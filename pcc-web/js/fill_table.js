@@ -102,7 +102,7 @@ function table_formatter(type) {
 }
 
 function disp_power_metric() {
-  // console.log(json_data);
+  console.log(json_data);
   var s = table_formatter('overall');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: log(mean throughput / 95% delay) (Kleinrock\'s power metric)' +
@@ -110,7 +110,7 @@ function disp_power_metric() {
 }
 
 function disp_latency() {
-  // console.log(json_data);
+  console.log(json_data);
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: 95% queueing delay among all tests, in ms' +
@@ -118,7 +118,7 @@ function disp_latency() {
 }
 
 function disp_thpt() {
-  // console.log(json_data);
+  console.log(json_data);
   var s = table_formatter('avg thrput');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: Mean throughput among all tests, in Mbps' +
@@ -126,7 +126,7 @@ function disp_thpt() {
 }
 
 function disp_loss() {
-  // console.log(json_data);
+  console.log(json_data);
   var s = table_formatter('avg loss');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: Mean fraction of packets lost' +
