@@ -17,12 +17,10 @@
       // setActiveBox($(this));
         setActiveBox($(this));
     });
-
     function setActiveBox($radioButton) {
       if(!($radioButton instanceof jQuery)) {
           $radioButton = $($radioButton);
       }
-
       var value = $radioButton.attr("value");
       // console.log("VALUE");
       // console.log(value);
@@ -37,15 +35,12 @@
       }
       saveData("activeRadio",value);
     }
-
     function saveData(key,value) {
       localStorage.setItem(key,value) || (document.cookie = key + "=" + value);
     }
-
     function getData(key) {
       return localStorage.getItem(key) || document.cookie.match(new RegExp(key + "\=(.+?)(?=;)"))[1];
     }
-
     //check stored radioButton on page load
     var $radioButton = $("[value=" + getData("activeRadio") + "]");
     $($radioButton).attr("checked",true);
@@ -111,7 +106,6 @@
   </div>
 
   <!-- <br />
-
   <div class=rank-grad>
     <span class='left'>Best</span>
     <span class='right'>Worst</span>
@@ -152,3 +146,15 @@
 </body>
 
 </html>
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
