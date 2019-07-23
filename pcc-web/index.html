@@ -18,14 +18,6 @@
         setActiveBox($(this));
     });
 
-    function saveData(key,value) {
-      localStorage.setItem(key,value) || (document.cookie = key + "=" + value);
-    }
-
-    function getData(key) {
-      return localStorage.getItem(key) || document.cookie.match(new RegExp(key + "\=(.+?)(?=;)"))[1];
-    }
-
     function setActiveBox($radioButton) {
       if(!($radioButton instanceof jQuery)) {
           $radioButton = $($radioButton);
@@ -44,6 +36,14 @@
         disp_power_metric();
       }
       saveData("activeRadio",value);
+    }
+
+    function saveData(key,value) {
+      localStorage.setItem(key,value) || (document.cookie = key + "=" + value);
+    }
+
+    function getData(key) {
+      return localStorage.getItem(key) || document.cookie.match(new RegExp(key + "\=(.+?)(?=;)"))[1];
     }
 
     //check stored radioButton on page load
