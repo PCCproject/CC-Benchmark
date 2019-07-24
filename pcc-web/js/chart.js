@@ -383,7 +383,7 @@ function getAllPoints(dir) {
           var currData = allFlowPoint[k];
           var thrput_loc = {
             x: currData["Time"],
-            y: currData["Throughput"] / 1000;
+            y: currData["Throughput"] / 1000
           }
 
           var lat_loc = {
