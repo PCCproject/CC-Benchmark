@@ -72,9 +72,12 @@ def get_remote_vm_ips(hostname):
 
     ## Getting IP using VM_name(Used to automatically start/shutdown VMs)
     for vm_name in VM_NAMES:
-        return_str = subprocess.check_output(["ssh", hostname, "virsh", "domifaddr", vm_name]).decode("utf-8")
-        if return_str.startswith('error'):
+        return_str = ''
+        try:
+            return_str = subprocess.check_output(["ssh", hostname, "virsh", "domifaddr", vm_name]).decode("utf-8")
+        except:
             continue
+
         ip_line = return_str.split("\n")[2]
         ip_addr = ip_line.split(' ')[-1][:-3]
         # if ip_addr not in MANNUALLY_MAMANGED_VM_IPS:
