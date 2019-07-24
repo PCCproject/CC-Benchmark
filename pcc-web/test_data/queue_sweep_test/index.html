@@ -43,16 +43,16 @@
     var datas = getPublicLinkUtilAndQueueingDelay('metrics.json');
     var utilData = datas[0];
     var delayData = datas[1];
-    var logscale = datas[2];
+    var logscale = datas[2] == 1 ? true : false;
     var x_axis_label = 'Queue Size';
 
-    if (logscale == 1) {
+    if (logscale) {
       x_axis_label += '-log scale';
     }
-
+    console.log(logscale);
     window.onload = function() {
-      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)');
-      renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)');
+      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)', logscale);
+      renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)', logscale);
     }
   </script>
 

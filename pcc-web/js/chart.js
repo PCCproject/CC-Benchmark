@@ -159,7 +159,7 @@ function getTestTrials(titles) {
   return res
 }
 
-function renderChartwithData(id, chartData, title, x_name, y_name) {
+function renderChartwithData(id, chartData, title, x_name, y_name, logx) {
   // console.log(id);
   var chart = new CanvasJS.Chart(id, {
     animationEnabled: true,
@@ -170,12 +170,13 @@ function renderChartwithData(id, chartData, title, x_name, y_name) {
     axisX: {
       // title: "Time(ms)",
       title: x_name,
-      minimum: 0,
+      // minimum: 0,
+      logarithmic: logx
     },
     axisY: {
       // title: "Throughput",
       title: y_name,
-      minimum: 0
+      // minimum: 0
     },
     data: chartData,
     options: {
@@ -223,8 +224,8 @@ function getMetricCoordForSingleScheme(data, testname) {
   res2.sort(pointSort);
   var logscale = 0;
   if(check_semilogx(res1)) {
-    convert_to_semilogx(res1);
-    convert_to_semilogx(res2);
+    // convert_to_semilogx(res1);
+    // convert_to_semilogx(res2);
     logscale = 1;
   }
   return new Array(res1, res2, logscale);
