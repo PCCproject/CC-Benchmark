@@ -8,6 +8,7 @@ import sys
 import json
 import psutil
 import copy
+import signal
 
 from python_utils import vm_config
 from python_utils.file_locations import free_vm_script
@@ -54,7 +55,7 @@ num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
 for host in remote_hosts.keys():
     vm_booting = False
     up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
-    curr_aval_vms = len(up_vms.split('\n')[2:-2])
+    curr_aval_vms = len(get_remote_vm_ips(host)[0])
 
     if curr_aval_vms >= num_vms_needed:
         break
@@ -75,9 +76,9 @@ for host in remote_hosts.keys():
 
 web_result = False
 for arg in sys.argv:
-    if 'web-result' or 'web_result' in arg:
+    if 'web-result' in arg or 'web_result' in arg:
         web_result = True
-
+print("web result {}".format(web_result))
 shutdown = '--shutdown' in sys.argv
 occupied_vms = None
 
@@ -268,7 +269,7 @@ class RemoteHostManager:
                         test_queue.put(vm_manager.cur_test)
                         vm_manager.restart_proc()
                 elif (not test_queue.empty()):
-                    if (get_idle_percent(self.hostname) > 10):
+                    if (get_idle_percent(self.hostname) > 0):
                         print("Tests remaining: %d" % test_queue.qsize())
                         vm_manager.assign_test(test_queue.get())
                         busy_start[vm_manager.get_id_string()] = time.time()
