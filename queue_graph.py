@@ -2,12 +2,31 @@
 import sys
 import numpy as np
 from graphing.utils import basic_graphs
+import matplotlib as mpl
+mpl.use("Agg")
+
+#print(mpl.rcParams.keys())
+
+mpl.rcParams['ps.useafm'] = True
+mpl.rcParams['pdf.use14corefonts'] = True
+mpl.rcParams['text.usetex'] = True
+
+
+"""
+font = {'style'  : 'normal',
+        'weight' : 'bold',
+        'size'   : 12}
+
+mpl.rc('font', **font)
+"""
+
 import matplotlib.pyplot as plt
 
 param_name = "Queue Size"
 param_unit = "KB"
 params = [1, 2, 3, 4, 5, 10, 100, 1000, 10000]
 format_string = "queue_sweep.%dpkt"
+format_string = "simple_%dpkt_queue"
 flow_name = "flow_1"
 
 def thpt_transform(data):
@@ -44,14 +63,18 @@ schemes = None
 if len(sys.argv) > 1:
     schemes = sys.argv[1].split(",")
 
+"""
 basic_graphs.make_sweep_table(format_string, params, flow_name, schemes, thpt_score, lat_score, loss_score)
 plt.savefig("queue_scores.pdf", bbox_inches='tight')
 plt.cla()
-
+"""
 
 fig, axes = basic_graphs.make_sweep_graph(format_string, params, flow_name,
-        schemes, show_spread=True, axes=axes)
+        schemes, show_spread=False, axes=axes)
 
 fig.legend(loc="center", bbox_to_anchor=(0.65, 0.65))
-axes[-1].set_xlabel("%s (%s)" % (param_name, param_unit))
-plt.savefig("queue_sensitivity.pdf")
+[ax.grid(True) for ax in axes]
+axes[-1].set_xlabel(r"\textbf{%s (%s)}" % (param_name, param_unit))
+axes[0].set_ylabel(r"\textbf{Link Utilization}")
+axes[1].set_ylabel(r"\textbf{Self-inflicted Latency (ms)}")
+plt.savefig("queue_sensitivity.pdf", bbox_inches='tight')

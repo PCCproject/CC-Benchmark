@@ -1,6 +1,9 @@
 #!/usr/bin/python3
+import sys
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+mpl.style.use("fivethirtyeight")
 from graphing.analysis.results_library import ResultsLibrary, TestResult
 from graphing.utils import data_utils
 from python_utils.file_locations import results_dir
@@ -14,6 +17,9 @@ format_string = "nsdi_satellite_%dpkt"
 flow_name = "flow_1"
 
 full_schemes = results.get_all_schemes_with_tests([format_string % p for p in params])
+if len(sys.argv) > 1:
+    used_schemes = sys.argv[1].split(" ")
+    full_schemes = list(set(full_schemes) & set(used_schemes))
 thpt_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,
         format_string, "Throughput")
 lat_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name, params,

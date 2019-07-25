@@ -7,18 +7,25 @@ import numpy as np
 #from graphing.utils import data_utils
 from graphing.utils import basic_graphs
 import matplotlib as mpl
+
+mpl.rcParams['ps.useafm'] = True
+mpl.rcParams['pdf.use14corefonts'] = True
+mpl.rcParams['text.usetex'] = True
+
+"""
 font = {'family' : 'normal',
         'weight' : 'bold',
         'size'   : 12}
 
 mpl.rc('font', **font)
+"""
 import matplotlib.pyplot as plt
 
 param_name = "Bandwidth"
 param_unit = "mbps"
 params = [1, 2, 4, 8, 16, 32, 64, 128]
-format_string = "bandwidth_sweep.%dmbps"
-#format_string = "simple_%dmbps"
+#format_string = "bandwidth_sweep.%dmbps"
+format_string = "simple_%dmbps"
 flow_name = "flow_1"
 
 def thpt_transform(data):
@@ -55,17 +62,22 @@ schemes = None
 if len(sys.argv) > 1:
     schemes = sys.argv[1].split(",")
 
+"""
 basic_graphs.make_sweep_table(format_string, params, flow_name, schemes, thpt_score, lat_score, loss_score)
 plt.savefig("bandwidth_scores.pdf", bbox_inches='tight')
 plt.cla()
+"""
 
 fig, axes = basic_graphs.make_sweep_graph(format_string, params, flow_name,
-        schemes, show_spread=True, axes=axes)
+        schemes, show_spread=False, axes=axes)
 
 fig.legend(loc='center', bbox_to_anchor=(0.65, 0.35))#loc='center right')
 axes[0].grid(True)
 axes[1].grid(True)
-axes[-1].set_xlabel("%s (%s)" % (param_name, param_unit))
+axes[-1].set_xlabel(r"\textbf{%s (%s)}" % (param_name, param_unit))
+axes[0].set_ylim((0.0, 1.0))
+axes[0].set_ylabel(r"\textbf{Link Utilization}")
+axes[1].set_ylabel(r"\textbf{Self-inflicted Latency (ms)}")
 #thpt_axis.set_ylim((0.0, 1.0))
 plt.savefig("bandwidth_sensitivity.pdf", bbox_inches='tight')
 plt.cla()

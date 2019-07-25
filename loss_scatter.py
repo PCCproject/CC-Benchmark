@@ -1,13 +1,14 @@
 #!/usr/bin/python3
+import sys
 import random
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+mpl.style.use("fivethirtyeight")
 from graphing.analysis.results_library import ResultsLibrary, TestResult
 from python_utils.file_locations import results_dir
 
 print(plt.style.available)
-mpl.style.use("fivethirtyeight")
 
 results = ResultsLibrary(results_dir)
 avail_markers = mpl.markers.MarkerStyle.markers.copy()
@@ -48,6 +49,9 @@ format_string = "simple_%sloss"
 flow_name = "flow_1"
 
 full_schemes = sorted(results.get_all_schemes_with_tests([format_string % p for p in params]))
+if len(sys.argv) > 1:
+    used_schemes = sys.argv[1].split(" ")
+    full_schemes = list(set(full_schemes) & set(used_schemes))
 markers = {}
 for scheme in full_schemes:
     markers[scheme] = get_random_marker()
