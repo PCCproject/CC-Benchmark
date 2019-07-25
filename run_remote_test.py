@@ -25,10 +25,9 @@ results_lib = ResultsLibrary(results_dir)
 
 local_testing_dir = "/home/njay2/PCC/testing/"
 local_results_dir = local_testing_dir + "results/"
-remote_testing_dir = "/home/njay2/PCC/testing/"
-remote_hosts = {
-    "ocean0.cs.illinois.edu":remote_testing_dir
-}
+remote_hosts = [
+    "ocean0.cs.illinois.edu"
+]
 
 tests_to_run = sys.argv[2]
 schemes_to_test = sys.argv[1].split(" ")
@@ -37,11 +36,10 @@ replicas = arg_or_default("--replicas", default=1)
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
 class RemoteVmManager:
-    def __init__(self, hostname, remote_testing_dir, vm_ip):
+    def __init__(self, hostname, vm_ip):
         print("Creating VM manager for %s:%s" % (hostname, vm_ip))
         self.has_run_test = False
         self.hostname = hostname
-        self.remote_testing_dir = remote_testing_dir
         self.vm_ip = vm_ip
         self.vm_test_queue = multiprocessing.Queue()
         self.busy = multiprocessing.Value('i', 0)
@@ -121,9 +119,8 @@ class RemoteVmManager:
         return "%s:%s" % (self.hostname, self.vm_ip)
 
 class RemoteHostManager:
-    def __init__(self, hostname, testing_dir, test_queue):
+    def __init__(self, hostname, test_queue):
         self.hostname = hostname
-        self.testing_dir = testing_dir
         self.done_queue = multiprocessing.Queue()
         self.kill_queue = multiprocessing.Queue()
         self.remote_vm_managers = []
@@ -134,8 +131,7 @@ class RemoteHostManager:
     def init_remote_vm_managers(self):
         vm_ips = get_remote_vm_ips(self.hostname)
         for vm_ip in vm_ips:
-            self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
-                vm_ip))
+            self.remote_vm_managers.append(RemoteVmManager(self.hostname, vm_ip))
 
     def cleanup_remote_vm_managers(self):
         for vm_manager in self.remote_vm_managers:
@@ -204,9 +200,9 @@ time.sleep(2.0)
 ##
 
 host_managers = []
-for hostname in remote_hosts.keys():
+for hostname in remote_hosts:
     print("Creating host manager for %s" % hostname)
-    host_managers.append(RemoteHostManager(hostname, remote_hosts[hostname], test_queue))
+    host_managers.append(RemoteHostManager(hostname, test_queue))
 
 ##
 #   Now, we wait until all managers have finished.
