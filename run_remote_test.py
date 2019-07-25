@@ -27,15 +27,13 @@ local_testing_dir = "/home/njay2/PCC/testing/"
 local_results_dir = local_testing_dir + "results/"
 remote_testing_dir = "/home/njay2/PCC/testing/"
 remote_hosts = {
-    "ocean0":remote_testing_dir
+    "ocean0.cs.illinois.edu":remote_testing_dir
 }
 
 tests_to_run = sys.argv[2]
 schemes_to_test = sys.argv[1].split(" ")
-replicas = 1
-if (len(sys.argv) > 3):
-    replicas = int(sys.argv[3])
 
+replicas = arg_or_default("--replicas", default=1)
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
 class RemoteVmManager:
@@ -134,8 +132,6 @@ class RemoteHostManager:
         self.proc.start()
 
     def init_remote_vm_managers(self):
-        #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
-        #vm_ips = ["192.168.122.35"]
         vm_ips = get_remote_vm_ips(self.hostname)
         for vm_ip in vm_ips:
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
