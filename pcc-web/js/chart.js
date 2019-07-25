@@ -40,7 +40,7 @@ function getNumTrials(titles) {
 
 function getIndexOfDataPoints(target, titles) {
   for (var i = 0; i < titles.length; i++) {
-    if (titles[i].split('.')[0] == target) {
+    if (titles[i].split('.json')[0] == target) {
       return i;
     }
   }
