@@ -23,8 +23,6 @@ from python_utils.file_locations import results_dir
 
 results_lib = ResultsLibrary(results_dir)
 
-local_testing_dir = "/home/njay2/PCC/testing/"
-local_results_dir = local_testing_dir + "results/"
 remote_hosts = [
     "ocean0.cs.illinois.edu"
 ]
@@ -176,7 +174,7 @@ class RemoteHostManager:
 
         print("Manager for %s done" % self.hostname)
         self.cleanup_remote_vm_managers()
-        remote_copyback(self.hostname, "/tmp/pcc_automated_testing/results/*", local_results_dir)
+        remote_copyback(self.hostname, "/tmp/pcc_automated_testing/results/*", results_dir)
         remote_call(self.hostname, "rm -rf /tmp/pcc_automated_testing/results/")
 
 
