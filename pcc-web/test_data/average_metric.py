@@ -61,6 +61,12 @@ def merge_metric_for_all_test(test_data_dir, multiflow_dir):
             data_path = test_path + '/data/'
             res = {}
             os.system('mkdir -p {}'.format(data_path))
+            try:
+                os.system('chmod 777 {}'.format(data_path))
+            except:
+                # No permission
+                pass
+                
             for scheme in os.listdir(data_path):
                 scheme_path = data_path + scheme
                 if os.path.isdir(scheme_path):

@@ -414,6 +414,7 @@ def run_test(test_dict):
 
     os.system("rm -rf %s/*" % data_dir)
 
+os.system("/home/pcc/PCC/testing/pantheon/test/setup.py --schemes {}".format(scheme_to_test))
 
 ##
 #   Load in the test descriptor files.
