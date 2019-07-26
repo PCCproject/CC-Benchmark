@@ -5,8 +5,8 @@ import numpy as np
 from pprint import pprint
 
 def _average_single_merged_metric(merged_metric):
-    sum = set()
-    sum.add('Link Util')
+    sum = set(['Avg Thrput', 'Link Util'])
+    # sum.add('Avg Thrput')
     # add more if necessary
 
     for k in merged_metric.keys():
