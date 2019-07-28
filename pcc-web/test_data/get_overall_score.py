@@ -66,8 +66,8 @@ def get_avg_loss_and_lossscore(loss_stat):
     denom = 1 - avg_rand_loss
 
     loss = max(avg_loss - avg_rand_loss, 0)
-    loss_score = (1 - 10*(num/denom))
-    return (loss, loss >= 0.1 ? 0, loss_score)
+    loss_score = (1 - 10*(num/denom)) if loss <= 0.1 else 0
+    return (loss, loss_score)
 
 def get_avg_delay_and_delayscore(delay_stat):
     avg_delay = np.mean([value for value in delay_stat.values()])
