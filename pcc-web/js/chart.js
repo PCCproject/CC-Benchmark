@@ -5,7 +5,8 @@ async: false
 const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr', 'pcc',
                                'taova', 'vegas', 'sprout', 'ledbat']);
 
-const COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#000075', '#000000', '#bfef45', '#fabebe';
+const COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4',
+ '#42d4f4', '#f032e6', '#000075', '#000000', '#bfef45', '#fabebe'];
 function searchChart(name, dict) {
   // console.log(dict);
   var testname = name.split('-')[0];
