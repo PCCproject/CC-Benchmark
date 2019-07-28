@@ -54,7 +54,7 @@ def get_avg_thrput_and_linkutil(link_util_stat):
     avg_thrput = np.mean([value for value in link_util_stat.values()])
     avg_linkcap = np.mean([metric.bw for metric in link_util_stat.keys()])
 
-    return avg_thrput, avg_thrput / avg_linkcap
+    return (avg_thrput, avg_thrput / avg_linkcap)
 
 def get_mean_metric_and_score(metric_stat):
     return np.mean([value for value in metric_stat.values()])
@@ -65,7 +65,9 @@ def get_avg_loss_and_lossscore(loss_stat):
     num = avg_loss - avg_rand_loss
     denom = 1 - avg_rand_loss
 
-    return max(avg_loss - avg_rand_loss, 0), (1 - 10*(num/denom))
+    loss = max(avg_loss - avg_rand_loss, 0)
+    loss_score = (1 - 10*(num/denom))
+    return (loss, loss >= 0.1 ? 0, loss_score)
 
 def get_avg_delay_and_delayscore(delay_stat):
     avg_delay = np.mean([value for value in delay_stat.values()])
@@ -73,7 +75,7 @@ def get_avg_delay_and_delayscore(delay_stat):
     # score = 1 - ((3 * avg_delay) / base_delay)
     score = 1 - (avg_delay / 60)
     # return avg_delay, score
-    return avg_delay, score
+    return (avg_delay, score)
 
 def get_overall_score_one_scheme(scheme, dir):
     # print(scheme)
