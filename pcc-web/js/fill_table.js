@@ -106,7 +106,7 @@ function disp_power_metric() {
   var s = table_formatter('overall');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: log(mean throughput / 95% delay) (Kleinrock\'s power metric)' +
-  '<br>Color: log(mean throughput / 95% delay) / 5';
+  '<br>Color: log(mean throughput / 95% delay) / 7';
 }
 
 function disp_latency() {

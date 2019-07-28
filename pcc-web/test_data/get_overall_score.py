@@ -65,7 +65,7 @@ def get_avg_loss_and_lossscore(loss_stat):
     num = avg_loss - avg_rand_loss
     denom = 1 - avg_rand_loss
 
-    return avg_loss, (1 - 10*(num/denom))
+    return avg_loss - avg_rand_loss, (1 - 10*(num/denom))
 
 def get_avg_delay_and_delayscore(delay_stat):
     avg_delay = np.mean([value for value in delay_stat.values()])
@@ -147,7 +147,7 @@ def add_metric_to_res(scheme, metric, testres):
     testres['95 qdelay'][scheme] = metric[1]
     testres['avg loss'][scheme] = metric[2]
     testres['overall'][scheme] = metric[3]
-    testres['overall'][scheme + ' score'] = (metric[3] / 5)
+    testres['overall'][scheme + ' score'] = (metric[3] / 7)
     testres['avg thrput'][scheme + ' score'] = metric[4]
     testres['95 qdelay'][scheme + ' score'] = metric[5]
     testres['avg loss'][scheme + ' score'] = metric[6]
