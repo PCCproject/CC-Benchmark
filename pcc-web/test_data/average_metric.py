@@ -5,8 +5,8 @@ import numpy as np
 from pprint import pprint
 
 def _average_single_merged_metric(merged_metric):
-    sum = set()
-    sum.add('Link Util')
+    sum = set(['Avg Thrput', 'Link Util'])
+    # sum.add('Avg Thrput')
     # add more if necessary
 
     for k in merged_metric.keys():
@@ -66,7 +66,7 @@ def merge_metric_for_all_test(test_data_dir, multiflow_dir):
             except:
                 # No permission
                 pass
-                
+
             for scheme in os.listdir(data_path):
                 scheme_path = data_path + scheme
                 if os.path.isdir(scheme_path):
