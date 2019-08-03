@@ -4,7 +4,7 @@
         "queue_sweep/all",
         "latency_sweep/all",
         "loss_sweep/all",
-        "custard_variable_link",
+	"jitter_sweep/all",
         "rtt_fairness3/all",
         "rtt_fairness4/all"
     ]

@@ -5,6 +5,8 @@ async: false
 const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr', 'pcc',
                                'taova', 'vegas', 'sprout', 'ledbat']);
 
+const COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4',
+ '#42d4f4', '#f032e6', '#000075', '#000000', '#bfef45', '#fabebe'];
 function searchChart(name, dict) {
   // console.log(dict);
   var testname = name.split('-')[0];
@@ -249,6 +251,7 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
 
   var utilData = new Array();
   var delayData = new Array();
+  var colorIdx = 0;
   for (var scheme in res) {
     var utilPoints = [];
     var delayPoints = [];
@@ -267,6 +270,7 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     utilData.push({
       // type:'scatter',
       type: 'line',
+      color: COLORS[colorIdx % COLORS.length],
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
       legendText: scheme,
@@ -276,11 +280,13 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     delayData.push({
       // type:'scatter',
       type: 'line',
+      color: COLORS[colorIdx % COLORS.length],
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
       legendText: scheme,
       dataPoints: delayPoints
     });
+    colorIdx++;
   }
 
   return new Array(utilData, delayData, logscale);
