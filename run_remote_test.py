@@ -32,18 +32,9 @@ from python_utils.file_locations import web_data_update_script_dir
 
 results_lib = ResultsLibrary(results_dir)
 
-<<<<<<< HEAD
-local_testing_dir = "/home/jaelee/PCC-Tester/"
-local_results_dir = local_testing_dir + "results/"
-remote_testing_dir = "/home/jaelee/PCC-Tester/"
-remote_hosts = {
-    "ocean0":remote_testing_dir
-}
-=======
 remote_hosts = [
     "ocean0.cs.illinois.edu"
 ]
->>>>>>> master
 
 tests_to_run = sys.argv[2]
 list_of_tests_to_run = read_test_list_to_list(tests_to_run)
@@ -56,7 +47,7 @@ replicas = arg_or_default("--replicas", default=1)
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
 num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
-for host in remote_hosts.keys():
+for host in remote_hosts:
     vm_booting = False
     up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
     curr_aval_vms = len(get_remote_vm_ips(host)[0])
@@ -91,7 +82,7 @@ def free_vms_and_close_gracefully(sig, frame):
     if occupied_vms is None:
         return
 
-    for host in remote_hosts.keys():
+    for host in remote_hosts:
         for ip in occupied_vms.values():
             cmd = "ssh {} -t ssh pcc@{} {}".format(host, str(ip), free_vm_script)
             os.system(cmd)
@@ -203,7 +194,6 @@ class RemoteHostManager:
         self.vm_ips = None
 
     def init_remote_vm_managers(self):
-<<<<<<< HEAD
         global occupied_vms
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
         self.vm_ips, waittime = get_remote_vm_ips(self.hostname)
@@ -217,11 +207,6 @@ class RemoteHostManager:
             self.occupy_vm(vm_ip)
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
                 vm_ip))
-=======
-        vm_ips = get_remote_vm_ips(self.hostname)
-        for vm_ip in vm_ips:
-            self.remote_vm_managers.append(RemoteVmManager(self.hostname, vm_ip))
->>>>>>> master
 
     def occupy_vm(self, vm_ip):
         global total_time_to_test
@@ -292,17 +277,12 @@ class RemoteHostManager:
 
         print("Manager for %s done" % self.hostname)
         self.cleanup_remote_vm_managers()
-<<<<<<< HEAD
         # if web_result:
         #     os.system('mkdir -p {}'.format(local_results_dir + 'web/'))
         #     remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir + 'web/')
         # else:
         os.system('mkdir -p {}'.format(local_results_dir))
         remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
-=======
-        remote_copyback(self.hostname, "/tmp/pcc_automated_testing/results/*", results_dir)
-        remote_call(self.hostname, "rm -rf /tmp/pcc_automated_testing/results/")
->>>>>>> master
 
         if web_result:
             remote_call(self.hostname, ocean0_copy_web_script_dir)
