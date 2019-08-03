@@ -3,7 +3,7 @@ import os
 # Important
 # Current host is ocean0
 
-rsa_path = '/srv/shared/PCC/.web_rsa/web_rsa'
+rsa_path = '~/.ssh/web_rsa'
 testdata_path = '/srv/shared/PCC/testing/pcc-web/*'
 website_path = 'pcctesting@web.illinois.edu:/home/pcctesting/public_html/'
 
