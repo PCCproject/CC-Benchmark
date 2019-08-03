@@ -32,12 +32,18 @@ from python_utils.file_locations import web_data_update_script_dir
 
 results_lib = ResultsLibrary(results_dir)
 
+<<<<<<< HEAD
 local_testing_dir = "/home/jaelee/PCC-Tester/"
 local_results_dir = local_testing_dir + "results/"
 remote_testing_dir = "/home/jaelee/PCC-Tester/"
 remote_hosts = {
     "ocean0":remote_testing_dir
 }
+=======
+remote_hosts = [
+    "ocean0.cs.illinois.edu"
+]
+>>>>>>> master
 
 tests_to_run = sys.argv[2]
 list_of_tests_to_run = read_test_list_to_list(tests_to_run)
@@ -45,10 +51,8 @@ total_time_to_test = get_total_test_time(list_of_tests_to_run, 3)
 # print(total_time_to_test)
 
 schemes_to_test = sys.argv[1].split(" ")
-replicas = 1
-if (len(sys.argv) > 3):
-    replicas = int(sys.argv[3])
 
+replicas = arg_or_default("--replicas", default=1)
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
 num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
@@ -95,11 +99,10 @@ def free_vms_and_close_gracefully(sig, frame):
 signal.signal(signal.SIGINT, free_vms_and_close_gracefully)
 
 class RemoteVmManager:
-    def __init__(self, hostname, remote_testing_dir, vm_ip):
+    def __init__(self, hostname, vm_ip):
         print("Creating VM manager for %s:%s" % (hostname, vm_ip))
         self.has_run_test = False
         self.hostname = hostname
-        self.remote_testing_dir = remote_testing_dir
         self.vm_ip = vm_ip
         self.vm_test_queue = multiprocessing.Queue()
         self.busy = multiprocessing.Value('i', 0)
@@ -189,9 +192,8 @@ class RemoteVmManager:
         return "%s:%s" % (self.hostname, self.vm_ip)
 
 class RemoteHostManager:
-    def __init__(self, hostname, testing_dir, test_queue):
+    def __init__(self, hostname, test_queue):
         self.hostname = hostname
-        self.testing_dir = testing_dir
         self.done_queue = multiprocessing.Queue()
         self.kill_queue = multiprocessing.Queue()
         self.remote_vm_managers = []
@@ -201,6 +203,7 @@ class RemoteHostManager:
         self.vm_ips = None
 
     def init_remote_vm_managers(self):
+<<<<<<< HEAD
         global occupied_vms
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
         self.vm_ips, waittime = get_remote_vm_ips(self.hostname)
@@ -214,6 +217,11 @@ class RemoteHostManager:
             self.occupy_vm(vm_ip)
             self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
                 vm_ip))
+=======
+        vm_ips = get_remote_vm_ips(self.hostname)
+        for vm_ip in vm_ips:
+            self.remote_vm_managers.append(RemoteVmManager(self.hostname, vm_ip))
+>>>>>>> master
 
     def occupy_vm(self, vm_ip):
         global total_time_to_test
@@ -251,6 +259,7 @@ class RemoteHostManager:
             time.sleep(2)
             vms_busy = 0
             for vm_manager in self.remote_vm_managers:
+                longest_busy = 0.0
                 if not vm_manager.is_up():
                     print("***********************************************")
                     print("Restarting dead VM at %s" % vm_manager.get_id_string())
@@ -261,7 +270,8 @@ class RemoteHostManager:
                 elif vm_manager.busy_or_test_queued():
                     vms_busy += 1
                     busy_time = time.time() - busy_start[vm_manager.get_id_string()]
-                    print("VM manager %s busy for %.2fs" % (vm_manager.get_id_string(), busy_time))
+                    if busy_time > longest_busy:
+                        longest_busy = busy_time
                     if busy_time > 500.0:
                         print("***********************************************")
                         print("Restarting stalled VM at %s" % vm_manager.get_id_string())
@@ -277,16 +287,22 @@ class RemoteHostManager:
                         vms_busy += 1
                     else:
                         print("Host %s is too busy." % self.hostname)
+                print("%d VM managers are working, longest has been busy on this test for %.2fs" % (vms_busy, longest_busy))
             done = test_queue.empty() and (vms_busy == 0)
 
         print("Manager for %s done" % self.hostname)
         self.cleanup_remote_vm_managers()
+<<<<<<< HEAD
         # if web_result:
         #     os.system('mkdir -p {}'.format(local_results_dir + 'web/'))
         #     remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir + 'web/')
         # else:
         os.system('mkdir -p {}'.format(local_results_dir))
         remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
+=======
+        remote_copyback(self.hostname, "/tmp/pcc_automated_testing/results/*", results_dir)
+        remote_call(self.hostname, "rm -rf /tmp/pcc_automated_testing/results/")
+>>>>>>> master
 
         if web_result:
             remote_call(self.hostname, ocean0_copy_web_script_dir)
@@ -317,9 +333,9 @@ for scheme_to_test in schemes_to_test:
 ##
 
 host_managers = []
-for hostname in remote_hosts.keys():
+for hostname in remote_hosts:
     print("Creating host manager for %s" % hostname)
-    host_managers.append(RemoteHostManager(hostname, remote_hosts[hostname], test_queue))
+    host_managers.append(RemoteHostManager(hostname, test_queue))
 
 ##
 #   Now, we wait until all managers have finished.

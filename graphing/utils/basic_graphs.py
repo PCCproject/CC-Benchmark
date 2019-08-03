@@ -25,6 +25,13 @@ def make_sweep_table(format_string, params, flow_name, schemes, thpt_score_func,
         params, format_string, "Avg Rtt")["Mean"]
     loss_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name,
         params, format_string, "Loss Rate")["Mean"]
+    
+    startup_thpt_data = data_utils.get_startup_stats_dict_from_param_test(results, full_schemes, flow_name,
+        params, format_string, "Throughput")["Mean"]
+    startup_lat_data = data_utils.get_startup_stats_dict_from_param_test(results, full_schemes, flow_name,
+        params, format_string, "Avg Rtt")["Mean"]
+    startup_loss_data = data_utils.get_startup_stats_dict_from_param_test(results, full_schemes, flow_name,
+        params, format_string, "Loss Rate")["Mean"]
 
     table_cells = []
     cell_colors = []
@@ -32,11 +39,27 @@ def make_sweep_table(format_string, params, flow_name, schemes, thpt_score_func,
         thpt_score = np.mean(thpt_score_func(thpt_data[scheme]))
         lat_score = np.mean(lat_score_func(lat_data[scheme]))
         loss_score = np.mean(loss_score_func(loss_data[scheme]))
-        table_cells.append(["%0.0f" % thpt_score, "%0.0f" % lat_score, "%0.0f" % loss_score])
+        startup_thpt_score = np.mean(thpt_score_func(startup_thpt_data[scheme]))
+        startup_lat_score = np.mean(lat_score_func(startup_lat_data[scheme]))
+        startup_loss_score = np.mean(loss_score_func(startup_loss_data[scheme]))
+        table_cells.append(["%0.0f" % thpt_score,
+                            "%0.0f" % startup_thpt_score,
+                            "%0.0f" % lat_score,
+                            "%0.0f" % startup_lat_score,
+                            "%0.0f" % loss_score,
+                            "%0.0f" % startup_loss_score])
         thpt_color = _score_to_color(thpt_score)
         lat_color = _score_to_color(lat_score)
         loss_color = _score_to_color(loss_score)
-        cell_colors.append([thpt_color, lat_color, loss_color])
+        startup_thpt_color = _score_to_color(startup_thpt_score)
+        startup_lat_color = _score_to_color(startup_lat_score)
+        startup_loss_color = _score_to_color(startup_loss_score)
+        cell_colors.append([thpt_color,
+                            startup_thpt_color,
+                            lat_color,
+                            startup_lat_color,
+                            loss_color,
+                            startup_loss_color])
   
     fig, ax = plt.subplots()
 
@@ -48,7 +71,7 @@ def make_sweep_table(format_string, params, flow_name, schemes, thpt_score_func,
     ax.table(cellText=table_cells,
              cellColours=cell_colors,
              rowLabels=full_schemes,
-             colLabels=["Throughput", "Latency", "Loss"])
+             colLabels=["Thpt", "Startup Thpt", "Lat", "Startup Lat", "Loss", "Startup Loss"])
 
 def make_sweep_graph(format_string, params, flow_name, schemes=None,
                      show_spread=False,
@@ -85,13 +108,13 @@ def make_sweep_graph(format_string, params, flow_name, schemes=None,
             
             label = None
             if i == 0:
-                label = nice_names.get_nice_name(scheme)
+                label = r'\textbf{%s}' % nice_names.get_nice_name(scheme)
 
             mean_data = plot_data[axis["data"]]["Mean"][scheme]
             if axis["transform"] is not None:
                 mean_data = axis["transform"](mean_data)
             if axis["func"] == "plot":
-                graph_axis.plot(params, mean_data, label=label, linewidth=3.0)
+                graph_axis.plot([float(p) for p in params], mean_data, label=label, linewidth=3.0)
             elif axis["func"] == "semilogx":
                 graph_axis.semilogx(params, mean_data, label=label,
                                     linewidth=3.0)

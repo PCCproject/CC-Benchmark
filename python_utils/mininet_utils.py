@@ -64,7 +64,7 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
           ip='10.123.123.1/32', routes=None, switch=None ):
     """Start a network, connect it to root ns, and run sshd on all hosts.
        ip: root-eth0 IP address in root namespace (10.123.123.1/32)
-       routes: Mininet host networks to route to (10.0/24)
+       routes: Mininet host networks to route to (10.0.0/24)
        switch: Mininet switch to connect to root namespace (s1)"""
     if not switch:
         names = network.keys()

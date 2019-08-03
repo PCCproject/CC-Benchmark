@@ -6,19 +6,19 @@ _supported_statistics = {}
 
 _invalid_values = {"Avg Rtt":-1.0}
 
-def _stat_mean(trace, field):
-    data = np.array(trace.get_event_data(field))
+def _stat_mean(trace, field, start_time=None, end_time=None):
+    data = np.array(trace.get_event_data(field, start_time=start_time, end_time=end_time))
     if field in _invalid_values.keys():
         bad_indexes = np.where(data == _invalid_values[field])
         data = np.delete(data, bad_indexes)
     return np.mean(data)
 
-def _stat_weighted_mean(trace, field, weight_field=None):
+def _stat_weighted_mean(trace, field, weight_field=None, start_time=None, end_time=None):
     if weight_field is None:
         return _stat_mean(trace, field)
 
-    weights = np.array(trace.get_event_data(weight_field))
-    data = np.array(trace.get_event_data(field))
+    weights = np.array(trace.get_event_data(weight_field, start_time=start_time, end_time=end_time))
+    data = np.array(trace.get_event_data(field, start_time=start_time, end_time=end_time))
 
     if field in _invalid_values.keys():
         bad_indexes = np.where(data == _invalid_values[field])
@@ -28,8 +28,8 @@ def _stat_weighted_mean(trace, field, weight_field=None):
     return np.sum((weights * np.array(data))) / float(np.sum(weights))
 
 _supported_statistics["Mean"] = _stat_mean
-_supported_statistics["Ack-weighted Mean"] = lambda trace, data: _stat_weighted_mean(trace, data,
-        weight_field="Acks Received")
+_supported_statistics["Ack-weighted Mean"] = lambda trace, data, start_time, end_time: _stat_weighted_mean(trace, data,
+        weight_field="Acks Received", start_time=start_time, end_time=end_time)
 _supported_statistics["Send-weighted Mean"] = lambda trace, data: _stat_weighted_mean(trace,
         data, weight_field="Packets Sent")
 
@@ -63,13 +63,21 @@ class FlowTrace():
             return self.data["Events"]
         return self.data["Events"][self.setup_end:]
 
-    def get_event_data(self, field_name, include_setup=False):
+    def get_event_data(self, field_name, include_setup=False, start_time=None, end_time=None):
         events = self.get_events(include_setup)
-        return [float(event[field_name]) for event in events]
+        time_offset = np.float64(events[0]["Time"])
+        result = []
+        for event in events:
+            event_time = np.float64(event["Time"]) - time_offset
+            if (start_time is None or event_time >= start_time):
+                #print("Event time: %s (end at %s)" % (str(event_time), str(end_time)))
+                if (end_time is None or event_time <= end_time):
+                    result.append(float(event[field_name]))
+        return result 
 
-    def get_statistic(self, field_name, statistic):
+    def get_statistic(self, field_name, statistic, start_time=None, end_time=None):
         if (statistic in _supported_statistics.keys()):
-            return _supported_statistics[statistic](self, field_name)
+            return _supported_statistics[statistic](self, field_name, start_time=start_time, end_time=end_time)
         
         print("ERROR: Statistic \"%s\" is not yet implemented." % statistic)
         print("Supported statistics are %s" % str(_supported_statistics.keys()))
