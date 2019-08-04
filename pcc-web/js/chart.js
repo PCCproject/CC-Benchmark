@@ -40,6 +40,14 @@ function getNumTrials(titles) {
   return ret;
 }
 
+function fillDetailedTraces(testname, setOfIndevSchemes) {
+  setOfIndevSchemes.forEach(item => {
+    var s = '<li><a href="' + testname + '_' + item + '_result.html' + '">' + item.replace(/,/g,':') + '</a></li>'
+    // console.log(s);
+    document.getElementById('detailed_traces').innerHTML += s;
+  });
+}
+
 function getIndexOfDataPoints(target, titles) {
   for (var i = 0; i < titles.length; i++) {
     if (titles[i].split('.json')[0] == target) {
@@ -201,7 +209,7 @@ function getMetricCoordForSingleScheme(data, testname) {
   var res2 = [];
   for (var name in data) {
     var x = undefined;
-    if (testname == undefined) {
+    if (testname == '') {
       x = parseFloat(name);
     } else if (testname.includes("rtt")) {
       var split = name.split('_to_');
@@ -234,17 +242,28 @@ function getMetricCoordForSingleScheme(data, testname) {
 }
 
 
-function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
+function getLinkUtilAndQueueingDelay(jsonfile, testname, public) {
+  console.log(public);
   var res = {};
   var logscale;
   $.getJSON(jsonfile, function(data) {
     for (var scheme in data) {
-      if (public_scheme.has(scheme)) {
-        var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
-        res[scheme] = new Array();
-        res[scheme].push(dataPoint[0]);
-        res[scheme].push(dataPoint[1]);
-        logscale = dataPoint[2];
+      if (public) {
+        if (public_scheme.has(scheme)) {
+          var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
+          res[scheme] = new Array();
+          res[scheme].push(dataPoint[0]);
+          res[scheme].push(dataPoint[1]);
+          logscale = dataPoint[2];
+        }
+      } else {
+        if (!public_scheme.has(scheme)) {
+          var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
+          res[scheme] = new Array();
+          res[scheme].push(dataPoint[0]);
+          res[scheme].push(dataPoint[1]);
+          logscale = dataPoint[2];
+        }
       }
     }
   });
@@ -273,7 +292,7 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
       color: COLORS[colorIdx % COLORS.length],
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
-      legendText: scheme,
+      legendText: scheme.replace(/,/g, ':'),
       dataPoints: utilPoints
     });
 
@@ -283,7 +302,7 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
       color: COLORS[colorIdx % COLORS.length],
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
-      legendText: scheme,
+      legendText: scheme.replace(/,/g, ':'),
       dataPoints: delayPoints
     });
     colorIdx++;

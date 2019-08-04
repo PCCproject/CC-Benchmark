@@ -141,7 +141,7 @@ function indev_table_formatter(type) {
     var metrics = curr_test[type];
     var displayName = getDisplayName(curr_test);
     console.log(metrics);
-    return_str += ("<th class='description'><a href=test_data/" + test_name + "/index.html>" + displayName + "</a></th>");
+    return_str += ("<th class='description'><a href=../test_data/" + test_name + "/indev_index.html>" + displayName + "</a></th>");
 
     listOfIndevScheme.forEach(item => {
       console.log(item);
