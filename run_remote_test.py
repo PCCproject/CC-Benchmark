@@ -49,7 +49,7 @@ EXTRA_ARGS = arg_or_default("--extra-args", default="")
 num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
 for host in remote_hosts:
     vm_booting = False
-    up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
+    up_vms = subprocess.check_output(['ssh', host, 'virsh', 'list']).decode('utf-8')
     curr_aval_vms = len(get_remote_vm_ips(host)[0])
 
     if curr_aval_vms >= num_vms_needed:
@@ -205,8 +205,7 @@ class RemoteHostManager:
 
         for name, vm_ip in self.vm_ips.items():
             self.occupy_vm(vm_ip)
-            self.remote_vm_managers.append(RemoteVmManager(self.hostname, self.testing_dir,
-                vm_ip))
+            self.remote_vm_managers.append(RemoteVmManager(self.hostname, vm_ip))
 
     def occupy_vm(self, vm_ip):
         global total_time_to_test
@@ -281,8 +280,8 @@ class RemoteHostManager:
         #     os.system('mkdir -p {}'.format(local_results_dir + 'web/'))
         #     remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir + 'web/')
         # else:
-        os.system('mkdir -p {}'.format(local_results_dir))
-        remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir)
+        os.system('mkdir -p {}'.format(vm_config.local_results_dir))
+        remote_copyback(self.hostname, vm_config.host_results_dir + "*", vm_config.local_results_dir)
 
         if web_result:
             remote_call(self.hostname, ocean0_copy_web_script_dir)
