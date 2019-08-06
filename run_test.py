@@ -391,7 +391,7 @@ def run_test(test_dict):
 
             flow_protocol = flow["protocol"]
             if flow_protocol == 'pcc_test_scheme':
-                flow_protocol = scheme
+                flow_protocol = scheme_name
 
             if flow_protocol not in metric:
                 metric[flow_protocol] = {}
