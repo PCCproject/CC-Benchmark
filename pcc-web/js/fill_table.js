@@ -141,10 +141,10 @@ function indev_table_formatter(type) {
     var metrics = curr_test[type];
     var displayName = getDisplayName(curr_test);
     console.log(metrics);
-    return_str += ("<th class='description'><a href=test_data/" + test_name + "/index.html>" + displayName + "</a></th>");
+    return_str += ("<th class='description'><a href=../test_data/" + test_name + "/indev_index.html>" + displayName + "</a></th>");
 
     listOfIndevScheme.forEach(item => {
-      console.log(item);
+      // console.log(item);
       var raw_score = (metrics[item] == undefined) ? "N/A" : round(metrics[item]);
       var bg_color = get_rgb(metrics[item+' score']);
       return_str += ("<th class='cell' style='" + bg_color + "'>" + raw_score + "</th>");

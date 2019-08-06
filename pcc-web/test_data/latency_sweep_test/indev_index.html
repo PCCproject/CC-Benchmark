@@ -3,11 +3,12 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Queue Sweep</title>
+  <title>Latency Sweep</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
   <script src="../../js/chart.js"></script>
+  <script src="../../js/get_indev_scheme.js"></script>
 </head>
 
 <body>
@@ -25,12 +26,11 @@
     <div class='topo-inner-container'>
       <p class='topo-explain'>
         This test measures the performance (link utilization and queueing delay) of various
-        congestion control protocols of a single flow with <b>varying queue sizes</b>.
+        congestion control protocols of a single flow with <b>varying latency</b>.
         The network topology used is dumbell topology which is illustrated below.
       </p>
       <p class='topo-explain'>
-        The bandwidth is 30Mbps and the latency per packet is 30ms
-        from one end to the other.
+        The bandwidth is 30Mbps and the latency varies per test.
       </p>
     </div>
     <div class='dumbell-img-container'>
@@ -40,16 +40,16 @@
   </div>
 
   <script>
-    var datas = getLinkUtilAndQueueingDelay('metrics.json', '', true);
+    var datas = getLinkUtilAndQueueingDelay('metrics.json', '', false);
     var utilData = datas[0];
     var delayData = datas[1];
     var logscale = datas[2] == 1 ? true : false;
-    var x_axis_label = 'Queue Size';
+    var x_axis_label = 'Latency(ms)';
 
-    if (logscale) {
+    if (logscale == 1) {
       x_axis_label += '-log scale';
     }
-    console.log(logscale);
+
     window.onload = function() {
       renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)', logscale);
       renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)', logscale);
@@ -66,36 +66,8 @@
   </div>
 
   <h2>Detailed Traces</h2>
-  <ul>
-    <li>
-      <a href="q_sweep_defaulttcp_result.html">TCP Cubic</a>
-    </li>
-    <li>
-      <a href="q_sweep_vivace_result.html">PCC Vivace</a>
-    </li>
-    <li>
-      <a href="q_sweep_copa_result.html">Copa</a>
-    </li>
-    <li>
-      <a href="q_sweep_bbr_result.html">BBR</a>
-    </li>
-    <li>
-      <a href="q_sweep_ledbat_result.html">Ledbat</a>
-    </li>
-    <li>
-      <a href="q_sweep_pcc_result.html">PCC</a>
-    </li>
-    <li>
-      <a href="q_sweep_sprout_result.html">Sprout</a>
-    </li>
-    <li>
-      <a href="q_sweep_taova_result.html">Taova</a>
-    </li>
-    <li>
-      <a href="q_sweep_vegas_result.html">Vegas</a>
-    </li>
-  </ul>
-
+    <ul id='detailed_traces'></ul>
+    <script type="text/javascript">fillDetailedTraces('lat_sweep', listOfIndevScheme)</script>
   </div>
   <hr />
   <br /><br />
