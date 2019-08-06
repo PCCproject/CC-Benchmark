@@ -49,8 +49,8 @@ EXTRA_ARGS = arg_or_default("--extra-args", default="")
 num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
 for host in remote_hosts:
     vm_booting = False
-    up_vms = subprocess.check_output(['ssh', host, 'virsh', 'list']).decode('utf-8')
-    curr_aval_vms = len(get_remote_vm_ips(host)[0])
+    up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
+    curr_aval_vms = len(get_remote_vm_ips(host, -1)[0])
 
     if curr_aval_vms >= num_vms_needed:
         break
@@ -194,9 +194,9 @@ class RemoteHostManager:
         self.vm_ips = None
 
     def init_remote_vm_managers(self):
-        global occupied_vms
+        global occupied_vms, list_of_tests_to_run
         #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
-        self.vm_ips, waittime = get_remote_vm_ips(self.hostname)
+        self.vm_ips, waittime = get_remote_vm_ips(self.hostname, len(list_of_tests_to_run))
         occupied_vms = copy.deepcopy(self.vm_ips)
         if len(self.vm_ips) == 0:
             print("All the vms are busy")
