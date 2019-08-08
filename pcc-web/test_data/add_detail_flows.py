@@ -73,7 +73,7 @@ def create_detailed_flow_html(testname, scheme):
 
 	return new_contents
 
-def add_detail_flows(path)
+def add_detail_flows(path):
 	for file in os.listdir(path):
 		if not file.endswith('_test'):
 			continue
