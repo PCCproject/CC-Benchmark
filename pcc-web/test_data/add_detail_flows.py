@@ -13,7 +13,7 @@ test_nickname = {
 
 display_name = {
 	'bbr': 'BBR',
-	'default_tcp': 'TCP Cubuc',
+	'default_tcp': 'TCP Cubic',
 	'vivace_latency': 'PCC Vivace',
 }
 
