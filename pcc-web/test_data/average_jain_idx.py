@@ -3,6 +3,15 @@ import os
 import sys
 import numpy as np
 
+def extract_xcoord_from_name(name):
+    ret = ''
+    for c in name:
+        if c.isdigit():
+            ret += c
+        else:
+            break
+    return int(ret)
+
 def _add_jain_idx(scheme_list, to_add):
     for elem in scheme_list:
         if int(elem['x']) == int(to_add['x']):
@@ -18,7 +27,10 @@ def _merge_jain_idx(scheme_dir):
             file_path = scheme_dir + '/' + file
             with open(file_path) as f:
                 obj = json.load(f)
-                x = obj['Ratio']
+                try:
+                    x = obj['Ratio']
+                except:
+                    x = extract_xcoord_from_name(file) 
                 y = obj['Jain idx']
                 to_add = {'x':x, 'y':y}
                 _add_jain_idx(res, to_add)
