@@ -56,7 +56,7 @@ function getIndexOfDataPoints(target, titles) {
   }
 }
 
-function renderRttFairnessChart(id, chartData) {
+function renderRttFairnessChart(id, chartData, x_name) {
   var chart = new CanvasJS.Chart(id, {
     animationEnabled: true,
     zoomEnabled: true,
@@ -64,7 +64,7 @@ function renderRttFairnessChart(id, chartData) {
       text: "Fairness Metrics"
     },
     axisX: {
-      title: "Rtt Ratio",
+      title: x_name,
       minimum: 0
     },
     axisY: {
@@ -311,7 +311,7 @@ function getLinkUtilAndQueueingDelay(jsonfile, testname, public) {
   return new Array(utilData, delayData, logscale);
 }
 
-function getJainIndexCoord(jsonfile) {
+function getJainIndexCoord(jsonfile, x_name) {
   var res = new Array();
   $.getJSON(jsonfile, function(data) {
     // console.log(data)
@@ -330,7 +330,7 @@ function getJainIndexCoord(jsonfile) {
         // type:'scatter',
         type: 'line',
         showInLegend: true,
-        toolTipContent: "<b>Rtt Ratio: </b>{x}<br/><b>Jain's Fairness Index: </b>{y}",
+        toolTipContent: "<b>" + x_name + ": </b>{x}<br/><b>Jain's Fairness Index: </b>{y}",
         legendText: scheme,
         dataPoints: points
       });
