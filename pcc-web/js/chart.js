@@ -384,7 +384,7 @@ function getAllPoints(dir) {
       while (true) {
         var j = 0
         var key = 'flow' + (j + 1);
-        if (!data..hasOwnProperty(key)) {
+        if (!data.hasOwnProperty(key)) {
           break;
         }
         var legend = 'flow ' + (j + 1);
