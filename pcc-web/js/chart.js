@@ -381,8 +381,16 @@ function getAllPoints(dir) {
     var flows = allFileName[i].split(".json")[0].split("_to_");
     $.getJSON(filename, function(data) {
       console.log(Object.keys(data));
-      for (var j = 0; j < flows.length; j++) {
-        var legend = flows[j];
+      while (true) {
+        var j = 0
+        var key = 'flow' + (j + 1);
+        if (!data..hasOwnProperty(key)) {
+          break;
+        }
+        var legend = 'flow ' + (j + 1);
+        if (allFileName[i].includes('_to_')) {
+          legend = flows[j];
+        }
 
         if (legend.includes('-')) {
           legend = legend.split('-')[0];
@@ -423,8 +431,9 @@ function getAllPoints(dir) {
         // lat_line.dataPoints.sort(pointSort);
         thrput_points.push(thrput_line);
         lat_points.push(lat_line);
-      }
 
+        j++;
+      }
     });
     files.push({"title": allFileName[i], "dataPoints": thrput_points});
     files2.push({"title": allFileName[i], "dataPoints": lat_points});
