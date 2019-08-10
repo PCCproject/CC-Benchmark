@@ -64,12 +64,12 @@ function renderRttFairnessChart(id, chartData, x_name) {
       text: "Fairness Metrics"
     },
     axisX: {
-      title: x_name,
-      minimum: 0
+      title: x_name
+      // minimum: 0
     },
     axisY: {
-      title: "Jain's Fairness Index",
-      maximum: 1.1
+      title: "Jain's Fairness Index"
+      // maximum: 1.1
     },
     data: chartData,
   });
