@@ -380,6 +380,7 @@ function getAllPoints(dir) {
     var lat_points = new Array();
     var flows = allFileName[i].split(".json")[0].split("_to_");
     $.getJSON(filename, function(data) {
+      console.log(Object.keys(data));
       for (var j = 0; j < flows.length; j++) {
         var legend = flows[j];
 
