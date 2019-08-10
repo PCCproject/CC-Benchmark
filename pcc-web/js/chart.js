@@ -382,6 +382,7 @@ function getAllPoints(dir) {
     $.getJSON(filename, function(data) {
       console.log(Object.keys(data));
       while (true) {
+        console.log(j);
         var j = 0
         var key = 'flow' + (j + 1);
         if (!data.hasOwnProperty(key)) {
