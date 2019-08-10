@@ -381,9 +381,9 @@ function getAllPoints(dir) {
     var flows = allFileName[i].split(".json")[0].split("_to_");
     $.getJSON(filename, function(data) {
       console.log(Object.keys(data));
+      var j = 0
       while (true) {
         console.log(j);
-        var j = 0
         var key = 'flow' + (j + 1);
         if (!data.hasOwnProperty(key)) {
           break;
