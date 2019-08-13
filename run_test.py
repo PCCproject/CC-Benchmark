@@ -327,7 +327,7 @@ def run_test(test_dict):
 
     if web_result:
         if is_git_repo:
-            scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][-5:]).replace('-', '_')
+            scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][:7]).replace('-', '_')
 
         print("Saving test results to pcc-web directory...")
         # web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
