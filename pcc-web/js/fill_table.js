@@ -1,16 +1,28 @@
 var json_data = undefined;
 var indev_data = undefined;
 var listOfIndevScheme = new Set();
+var publicTestSchemes = ['copa', 'vivace_latency', 'default_tcp', 'bbr', 'vegas', 'ledbat'];
+var benchmarkSchemes = ['copa', 'vivace_latency', 'bbr'];
+var g_indev_branches = [];
 
 $.getJSON('../test_data/public_scheme_metrics.json', function(data) {
   json_data = data;
 });
+
+function getBranchName(scheme_name) {
+   var scheme_parts = scheme_name.split(',');
+   return scheme_parts[0] + "," + scheme_parts[1]; 
+}
 
 $.getJSON('../test_data/indev_scheme_metrics.json', function(data) {
   indev_data = data;
   for (var i = 0; i < indev_data.Tests.length; i++) {
     var curr_test = indev_data.Tests[i].overall;
     Object.keys(curr_test).forEach(item => {
+      var branch_name = getBranchName(item);
+      if (g_indev_branches.includes(branch_name) == false) {
+          g_indev_branches.push(branch_name);
+      }
       var c = item[item.length - 6];
       if (c != ' ') {
         listOfIndevScheme.add(item);
@@ -19,10 +31,95 @@ $.getJSON('../test_data/indev_scheme_metrics.json', function(data) {
   }
 });
 
+function getIndevSchemeHeader(branch_name) {
+    var result = "<thead><tr>";
+    result += "<th class='description' style='text-decoration: none;'>Test Scenario</th>";
+    var html_bracket = '<th class="cell" style="white-space:pre">';
+    var html_bracket_end = '</th>';
+
+    benchmarkSchemes.forEach(item => {
+        result += html_bracket;
+        result += item;
+        result += html_bracket_end;
+    });
+
+    listOfIndevScheme.forEach(item => {
+        if (getBranchName(item) == branch_name) {
+            result += html_bracket;
+            var split = item.split(',');
+            result += split[0];
+            result += ':<br>';
+            result += split[1];
+            result += ':<br>';
+            result += split[2];
+            result += html_bracket_end;
+        }
+    });
+    
+    result += "</tr></thead>";
+    return result;
+}
+
+function getIndevTableBody(branch_name, type) {
+  var return_str = "<tbody>";
+  for (var i = 0; i < indev_data.Tests.length; i++) {
+    return_str += "<tr>";
+    var curr_test = indev_data.Tests[i];
+    var test_name = curr_test.name;
+    var benchmarkTest = getBenchmarkTest(test_name);
+    var benchmarkMetrics = benchmarkTest[type];
+    var metrics = curr_test[type];
+    var displayName = getDisplayName(curr_test);
+    return_str += ("<th class='description'><a href=../test_data/" + test_name + "/indev_index.html>" + displayName + "</a></th>");
+
+    benchmarkSchemes.forEach(item => {
+        var displayNumber = (benchmarkMetrics[item] == undefined ? 'N/A' : round(benchmarkMetrics[item]));
+        var displayRGB = get_rgb(benchmarkMetrics[item + ' score']);
+        return_str += ("<th class='cell' style='" + displayRGB + "'>" + displayNumber + "</th>");
+    });
+
+    listOfIndevScheme.forEach(item => {
+      if (getBranchName(item) == branch_name) {
+          var raw_score = (metrics[item] == undefined) ? "N/A" : round(metrics[item]);
+          var bg_color = get_rgb(metrics[item+' score']);
+          return_str += ("<th class='cell' style='" + bg_color + "'>" + raw_score + "</th>");
+      }
+    });
+
+    return_str += "</tr>";
+  }
+  return_str += "</tbody>";
+
+  return return_str;
+}
+
+function getIndevTable(branch_name) {
+    var result = "<div style='overflow-x:auto;'><table id='indev-table-" + branch_name + "'>";
+    //result += getIndevSchemeHeader(branch_name);
+    //result += getIndevTableBody(branch_name);
+    result += "</table></div><hr />";
+    return result;
+}
+
+function createIndevTables() {
+    var table_string = "";
+    g_indev_branches.forEach(item => {
+        table_string += getIndevTable(item);
+    });
+    document.getElementById('indev-scheme-tables').innerHTML = table_string;
+}
+
+
 function populateIndevScheme() {
   var tableHead = "<th class='description' style='text-decoration: none;'>Test Scenario</th>";
   var html_bracket = '<th class="cell" style="white-space:pre">';
   var html_bracket_end = '</th>';
+
+    benchmarkSchemes.forEach(item => {
+        tableHead += html_bracket;
+        tableHead += item;
+        tableHead += html_bracket_end;
+    });
 
   listOfIndevScheme.forEach(item => {
     tableHead += html_bracket;
@@ -96,68 +193,31 @@ function table_formatter(type) {
     var curr_test = json_data.Tests[i];
     var test_name = curr_test.name;
     var metrics = curr_test[type];
+    return_str += ("<th class='description'><a href=test_data/" + test_name + "/index.html>" + getDisplayName(curr_test) + "</a></th>");
+    
+    for (var j = 0; j < publicTestSchemes.length; j++) {
+        var scheme = publicTestSchemes[j];
+        var displayNumber = (metrics[scheme] == undefined) ? 'N/A' : round(metrics[scheme]);
+        var displayRGB = get_rgb(metrics[scheme + " score"]);
+        return_str += ("<th class='cell' style='" + displayRGB + "'>" + displayNumber + "</th>");
+    }
 
-    var copa = (metrics.copa == undefined) ? "N/A" : round(metrics.copa);
-    var vivace = (metrics.vivace_latency == undefined) ? "N/A" : round(metrics.vivace_latency);
-    var cubic = (metrics.default_tcp == undefined) ? "N/A" : round(metrics.default_tcp);
-    var bbr = (metrics.bbr == undefined) ? "N/A" : round(metrics.bbr);
-    var taova = (metrics.taova == undefined) ? "N/A" : round(metrics.taova);
-    var vegas = (metrics.vegas == undefined) ? "N/A" : round(metrics.vegas);
-    var sprout = (metrics.sprout == undefined) ? "N/A" : round(metrics.sprout);
-    var ledbat = (metrics.ledbat == undefined) ? "N/A" : round(metrics.ledbat);
-
-    var copa_bg = get_rgb(metrics["copa score"]);
-    var vivace_bg = get_rgb(metrics["vivace_latency score"]);
-    var cubic_bg = get_rgb(metrics["default_tcp score"]);
-    var bbr_bg = get_rgb(metrics["bbr score"]);
-    var taova_bg = get_rgb(metrics["taova score"]);
-    var vegas_bg = get_rgb(metrics["vegas score"]);
-    var sprout_bg = get_rgb(metrics["sprout score"]);
-    var ledbat_bg = get_rgb(metrics["ledbat score"]);
-   
-    var displayName = getDisplayName(curr_test);
-
-    return_str += ("<th class='description'><a href=test_data/" + test_name + "/index.html>" + displayName + "</a></th>");
-    return_str += ("<th class='cell' style='" + copa_bg + "'>" + copa + "</th>");
-    return_str += ("<th class='cell' style='" + vivace_bg + "'>" + vivace + "</th>");
-    return_str += ("<th class='cell' style='" + cubic_bg + "'>" + cubic + "</th>");
-    return_str += ("<th class='cell' style='" + bbr_bg + "'>" + bbr + "</th>");
-    return_str += ("<th class='cell' style='" + taova_bg + "'>" + taova + "</th>");
-    return_str += ("<th class='cell' style='" + vegas_bg + "'>" + vegas + "</th>");
-    return_str += ("<th class='cell' style='" + sprout_bg + "'>" + sprout + "</th>");
-    return_str += ("<th class='cell' style='" + ledbat_bg + "'>" + ledbat + "</th>");
     return_str += "</tr>";
   }
 
   return return_str;
 }
 
-function indev_table_formatter(type) {
-  var return_str = "";
-  for (var i = 0; i < indev_data.Tests.length; i++) {
-    return_str += "<tr>";
-    var curr_test = indev_data.Tests[i];
-    var test_name = curr_test.name;
-    var metrics = curr_test[type];
-    var displayName = getDisplayName(curr_test);
-    console.log(metrics);
-    return_str += ("<th class='description'><a href=../test_data/" + test_name + "/indev_index.html>" + displayName + "</a></th>");
-
-    listOfIndevScheme.forEach(item => {
-      // console.log(item);
-      var raw_score = (metrics[item] == undefined) ? "N/A" : round(metrics[item]);
-      var bg_color = get_rgb(metrics[item+' score']);
-      return_str += ("<th class='cell' style='" + bg_color + "'>" + raw_score + "</th>");
-    });
-
-    return_str += "</tr>";
-  }
-
-  return return_str;
+function getBenchmarkTest(test_name) {
+    for (var i = 0; i < json_data.Tests.length; i++) {
+        if (json_data.Tests[i].name == test_name) {
+            return json_data.Tests[i];
+        }
+    }
+    return undefined;
 }
 
 function disp_power_metric() {
-  // console.log(json_data);
   var s = table_formatter('overall');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: log(mean throughput / 95% delay) (Kleinrock\'s power metric)' +
@@ -165,7 +225,6 @@ function disp_power_metric() {
 }
 
 function disp_latency() {
-  // console.log(json_data);
   var s = table_formatter('95 qdelay');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: 95% queueing delay among all tests, in ms' +
@@ -173,7 +232,6 @@ function disp_latency() {
 }
 
 function disp_thpt() {
-  // console.log(json_data);
   var s = table_formatter('avg thrput');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: Mean throughput among all tests, in Mbps' +
@@ -181,43 +239,31 @@ function disp_thpt() {
 }
 
 function disp_loss() {
-  // console.log(json_data);
   var s = table_formatter('avg loss');
   document.getElementById("table-body").innerHTML = s;
   document.getElementById("metric-description").innerHTML = '<pre>Number: Mean fraction of packets lost' +
   '<br>Color: 1 - 10*( (measured loss - random loss) / (1 - random loss) )';
 }
 
-function disp_indev_power_metric() {
-  // console.log(json_data);
-  var s = indev_table_formatter('overall');
-  document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: log(mean throughput / 95% delay) (Kleinrock\'s power metric)' +
-  '<br>Color: log(mean throughput / 95% delay) / 5';
-}
+var g_score_descriptions = {
+    'avg thrput':'<pre>Number: Mean throughput among all tests, in Mbps'
+                + '<br>Color: Mean throughput / link bottleneck',
+    '95 qdelay':'<pre>Number: 95% queueing delay among all tests, in ms'
+              + '<br>Color: 1 - (95% delay / 60ms)',
+    'avg loss': '<pre>Number: Mean fraction of packets lost'
+              + '<br>Color: 1 - 10*( (measured loss - random loss) / (1 - random loss) )',
+    'overall': '<pre>Number: log(mean throughput / 95% delay) (Kleinrock\'s power metric)'
+             + '<br>Color: log(mean throughput / 95% delay) / 5'
+};
 
-function disp_indev_latency() {
-  // console.log(json_data);
-  var s = indev_table_formatter('95 qdelay');
-  document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: 95% queueing delay among all tests, in ms' +
-  '<br>Color: 1 - (95% delay / 60ms)';
-}
-
-function disp_indev_thpt() {
-  // console.log(json_data);
-  var s = indev_table_formatter('avg thrput');
-  document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: Mean throughput among all tests, in Mbps' +
-  '<br>Color: Mean throughput / link bottleneck';
-}
-
-function disp_indev_loss() {
-  // console.log(json_data);
-  var s = indev_table_formatter('avg loss');
-  document.getElementById("table-body").innerHTML = s;
-  document.getElementById("metric-description").innerHTML = '<pre>Number: Mean fraction of packets lost' +
-  '<br>Color: 1 - 10*( (measured loss - random loss) / (1 - random loss) )';
+function disp_indev_scores(score_type) {
+    document.getElementById("metric-description").innerHTML = g_score_descriptions[score_type];
+    g_indev_branches.forEach(branch_name => {
+        var result = getIndevSchemeHeader(branch_name);
+        result += getIndevTableBody(branch_name, score_type);
+        console.log("indev-table-" + branch_name);
+        document.getElementById("indev-table-" + branch_name).innerHTML = result;
+    });
 }
 
 function saveData(key,value) {
