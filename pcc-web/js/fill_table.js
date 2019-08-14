@@ -147,19 +147,26 @@ function get_rgb(normalized_val) {
   }
 
   var green = 0;
-  if (normalized_val >= 0.5) {
+  if (normalized_val >= 0.75) {
     green = 255;
   } else {
-    green = 255 * (normalized_val / 0.5);
+    green = 255 * (normalized_val / 0.75);
   }
+  green = (0.9 * green) + 25;
 
   var red = 0;
-  if (normalized_val <= 0.5) {
+  if (normalized_val <= 0.75) {
     red = 255;
   } else {
-    red = 255 * (1 - normalized_val) / 0.5;
+    red = 255 * (1 - normalized_val) / 0.25;
   }
-  return 'background-color: rgb(' + red + ',' + green + ',0)'
+
+  var blue = 0;
+  if (normalized_val > 0.75) {
+    blue = 255 * (normalized_val - 0.75) / 0.25;
+  }
+  blue = (0.9 * blue) + 25;
+  return 'background-color: rgb(' + red + ',' + green + ',' + blue + ')'
 }
 
 function upperCaseFirst(string) {
@@ -261,7 +268,6 @@ function disp_indev_scores(score_type) {
     g_indev_branches.forEach(branch_name => {
         var result = getIndevSchemeHeader(branch_name);
         result += getIndevTableBody(branch_name, score_type);
-        console.log("indev-table-" + branch_name);
         document.getElementById("indev-table-" + branch_name).innerHTML = result;
     });
 }
