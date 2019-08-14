@@ -337,7 +337,7 @@ def run_test(test_dict):
 
     if web_result:
         if is_git_repo:
-            scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][-5:]).replace('-', '_')
+            scheme_name = '{},{},{}'.format(metadata["Repo"], metadata["Branch"], metadata["Checksum"][:7]).replace('-', '_')
 
         print("Saving test results to pcc-web directory...")
         # web_dir = '/home/pcc/PCC/testing/pcc-web/test_data/'
@@ -401,7 +401,7 @@ def run_test(test_dict):
 
             flow_protocol = flow["protocol"]
             if flow_protocol == 'pcc_test_scheme':
-                flow_protocol = scheme
+                flow_protocol = scheme_name
 
             if flow_protocol not in metric:
                 metric[flow_protocol] = {}

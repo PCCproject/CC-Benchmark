@@ -1,0 +1,8 @@
+{
+    "Tests": [
+        "multiflow_sweep/2_flow",
+        "multiflow_sweep/3_flow",
+        "multiflow_sweep/4_flow",
+        "multiflow_sweep/5_flow"
+    ]
+}

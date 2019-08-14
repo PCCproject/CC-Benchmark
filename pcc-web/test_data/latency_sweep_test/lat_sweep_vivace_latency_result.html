@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Jitter Sweep using PCC Vivace</title>
+  <title>Latency Sweep using PCC Vivace</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
@@ -19,14 +19,14 @@
       </ul>
     </div>
   </header>
-  <h3>PCC-Vivace Results</h3>
+  <h3>PCC Vivace Results</h3>
   <hr />
   <div id='chartdata'></div>
   <script>
     var dataPoints = getAllPoints("data/vivace_latency/");
     var allFiles = dataPoints[0];
     var allFiles2 = dataPoints[1];
-    
+
     var titles = [];
     var points = [];
     for (var i = 0; i < allFiles.length; i++) {

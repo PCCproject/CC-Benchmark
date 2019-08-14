@@ -56,7 +56,7 @@ function getIndexOfDataPoints(target, titles) {
   }
 }
 
-function renderRttFairnessChart(id, chartData) {
+function renderRttFairnessChart(id, chartData, x_name) {
   var chart = new CanvasJS.Chart(id, {
     animationEnabled: true,
     zoomEnabled: true,
@@ -64,12 +64,12 @@ function renderRttFairnessChart(id, chartData) {
       text: "Fairness Metrics"
     },
     axisX: {
-      title: "Rtt Ratio",
-      minimum: 0
+      title: x_name
+      // minimum: 0
     },
     axisY: {
-      title: "Jain's Fairness Index",
-      maximum: 1.1
+      title: "Jain's Fairness Index"
+      // maximum: 1.1
     },
     data: chartData,
   });
@@ -311,7 +311,7 @@ function getLinkUtilAndQueueingDelay(jsonfile, testname, public) {
   return new Array(utilData, delayData, logscale);
 }
 
-function getJainIndexCoord(jsonfile) {
+function getJainIndexCoord(jsonfile, x_name) {
   var res = new Array();
   $.getJSON(jsonfile, function(data) {
     // console.log(data)
@@ -330,7 +330,7 @@ function getJainIndexCoord(jsonfile) {
         // type:'scatter',
         type: 'line',
         showInLegend: true,
-        toolTipContent: "<b>Rtt Ratio: </b>{x}<br/><b>Jain's Fairness Index: </b>{y}",
+        toolTipContent: "<b>" + x_name + ": </b>{x}<br/><b>Jain's Fairness Index: </b>{y}",
         legendText: scheme,
         dataPoints: points
       });
@@ -380,8 +380,18 @@ function getAllPoints(dir) {
     var lat_points = new Array();
     var flows = allFileName[i].split(".json")[0].split("_to_");
     $.getJSON(filename, function(data) {
-      for (var j = 0; j < flows.length; j++) {
-        var legend = flows[j];
+      console.log(Object.keys(data));
+      var j = 0
+      while (true) {
+        console.log(j);
+        var key = 'flow' + (j + 1);
+        if (!data.hasOwnProperty(key)) {
+          break;
+        }
+        var legend = 'flow ' + (j + 1);
+        if (allFileName[i].includes('_to_')) {
+          legend = flows[j];
+        }
 
         if (legend.includes('-')) {
           legend = legend.split('-')[0];
@@ -422,8 +432,9 @@ function getAllPoints(dir) {
         // lat_line.dataPoints.sort(pointSort);
         thrput_points.push(thrput_line);
         lat_points.push(lat_line);
-      }
 
+        j++;
+      }
     });
     files.push({"title": allFileName[i], "dataPoints": thrput_points});
     files2.push({"title": allFileName[i], "dataPoints": lat_points});

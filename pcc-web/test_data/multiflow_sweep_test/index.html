@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Queue Sweep</title>
+  <title>Multiflow Sweep</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
@@ -24,13 +24,12 @@
     <h2>Test Description</h2>
     <div class='topo-inner-container'>
       <p class='topo-explain'>
-        This test measures the performance (link utilization and queueing delay) of various
-        congestion control protocols of a single flow with <b>varying queue sizes</b>.
-        The network topology used is dumbell topology which is illustrated below.
+        This test measures the performance of various congestion control protocols with
+        <b>varying number of flows</b> The network topology used is dumbell topology which is
+        illustrated below.
       </p>
       <p class='topo-explain'>
-        The bandwidth is 30Mbps and the latency per packet is 30ms
-        from one end to the other.
+        The bandwidth is 30Mbps and the latency per packet is 30ms from one end to the other.
       </p>
     </div>
     <div class='dumbell-img-container'>
@@ -38,27 +37,30 @@
     </div>
 
   </div>
-
   <script>
+    var fairness_x = "Number of Flows";
+    var point = getJainIndexCoord("jain.json", fairness_x);
     var datas = getLinkUtilAndQueueingDelay('metrics.json', '', true);
     var utilData = datas[0];
     var delayData = datas[1];
     var logscale = datas[2] == 1 ? true : false;
-    var x_axis_label = 'Queue Size';
+    var x_axis_label = fairness_x;
 
     if (logscale) {
       x_axis_label += '-log scale';
     }
-    console.log(logscale);
+
     window.onload = function() {
+      renderRttFairnessChart('rtt_fairness_3_star', point, fairness_x);
       renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)', logscale);
       renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)', logscale);
     }
   </script>
-
   <br />
   <br />
-  <div>
+  <div id='3-star'>
+    <h2>Jain Fairness Index Scores</h2>
+    <div id="rtt_fairness_3_star" class='fairness-graph'></div>
     <h2>Average Throughput</h2>
     <div id="utilChart" class='fairness-graph'></div>
     <h2>95% Queueing Delay</h2>
@@ -68,31 +70,31 @@
   <h2>Detailed Traces</h2>
   <ul>
     <li>
-      <a href="q_sweep_default_tcp_result.html">TCP Cubic</a>
+      <a href="multiflow_sweep_default_tcp_result.html">TCP Cubic</a>
     </li>
     <li>
-      <a href="q_sweep_vivace_latency_result.html">PCC Vivace</a>
+      <a href="multiflow_sweep_vivace_latency_result.html">Vivace Latency</a>
     </li>
     <li>
-      <a href="q_sweep_copa_result.html">Copa</a>
+      <a href="multiflow_sweep_copa_result.html">Copa</a>
     </li>
     <li>
-      <a href="q_sweep_bbr_result.html">BBR</a>
+      <a href="multiflow_sweep_bbr_result.html">BBR</a>
     </li>
     <li>
-      <a href="q_sweep_ledbat_result.html">Ledbat</a>
+      <a href="multiflow_sweep_ledbat_result.html">Ledbat</a>
     </li>
     <li>
-      <a href="q_sweep_pcc_result.html">PCC</a>
+      <a href="multiflow_sweep_pcc_result.html">PCC</a>
     </li>
     <li>
-      <a href="q_sweep_sprout_result.html">Sprout</a>
+      <a href="multiflow_sweep_sprout_result.html">Sprout</a>
     </li>
     <li>
-      <a href="q_sweep_taova_result.html">Taova</a>
+      <a href="multiflow_sweep_taova_result.html">Taova</a>
     </li>
     <li>
-      <a href="q_sweep_vegas_result.html">Vegas</a>
+      <a href="multiflow_sweep_vegas_result.html">Vegas</a>
     </li>
   </ul>
 

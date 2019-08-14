@@ -4,8 +4,9 @@
         "queue_sweep/all",
         "latency_sweep/all",
         "loss_sweep/all",
-	"jitter_sweep/all",
+        "jitter_sweep/all",
         "rtt_fairness3/all",
-        "rtt_fairness4/all"
+        "rtt_fairness4/all",
+        "multiflow_sweep/all"
     ]
 }

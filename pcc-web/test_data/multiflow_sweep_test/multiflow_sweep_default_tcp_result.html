@@ -1,9 +1,18 @@
+<!-- <TODO>
+  Please replace only the capitalized text and DO NOT fix other fields unless you know what you are doing!
+
+  ==================TEXT REPLACEMENT========================
+  Line 15: Replace the title of the page.
+  Line 31: Replace what scheme you are adding.
+  Line 36: Replace SCHEME from 'data/SCHEME/'.
+  ==================TEXT REPLACEMENT========================
+</TODO> -->
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
 <head>
   <meta charset="utf-8">
-  <title>Rtt Fairness using PCC Vivace</title>
+  <title>Multiflow Test using TCP Cubic</title>
   <link rel="stylesheet" href="../../css/style.css">
   <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
   <script src="../../js/jquery-3.4.1.min.js"></script>
@@ -19,11 +28,11 @@
       </ul>
     </div>
   </header>
-  <h3>PCC-Vivace Results</h3>
+  <h3>TCP Cubic Results</h3>
   <hr />
   <div id='chartdata'></div>
   <script>
-    var dataPoints = getAllPoints("data/vivace_latency/");
+    var dataPoints = getAllPoints("data/default_tcp/");
     var allFiles = dataPoints[0];
     var allFiles2 = dataPoints[1];
 
@@ -44,6 +53,8 @@
       titles2.push(title);
       points2.push(dataPoints);
     }
+    console.log(points);
+    console.log(points2);
 
     var thrputCharts = {};
     var latCharts = {};

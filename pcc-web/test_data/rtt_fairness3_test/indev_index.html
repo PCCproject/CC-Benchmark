@@ -39,7 +39,8 @@
 
   </div>
   <script>
-    var rtt3_points = getJainIndexCoord("jain.json");
+    var fairness_x = "Ratio";
+    var rtt3_points = getJainIndexCoord("jain.json", fairness_x);
     var datas = getLinkUtilAndQueueingDelay('metrics.json', 'rtt_fairness', false);
     var utilData = datas[0];
     var delayData = datas[1];
@@ -51,7 +52,7 @@
     }
 
     window.onload = function() {
-      renderRttFairnessChart('rtt_fairness_3_star', rtt3_points);
+      renderRttFairnessChart('rtt_fairness_3_star', rtt3_points, fairness_x);
       renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)', logscale);
       renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)', logscale);
     }
