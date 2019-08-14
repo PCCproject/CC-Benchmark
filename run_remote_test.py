@@ -242,8 +242,8 @@ class RemoteHostManager:
         while (not done):
             time.sleep(2)
             vms_busy = 0
+            longest_busy = 0.0
             for vm_manager in self.remote_vm_managers:
-                longest_busy = 0.0
                 if not vm_manager.is_up():
                     print("***********************************************")
                     print("Restarting dead VM at %s" % vm_manager.get_id_string())
@@ -271,7 +271,7 @@ class RemoteHostManager:
                         vms_busy += 1
                     else:
                         print("Host %s is too busy." % self.hostname)
-                print("%d VM managers are working, longest has been busy on this test for %.2fs" % (vms_busy, longest_busy))
+            print("%d VM managers are working, longest has been busy on this test for %.2fs" % (vms_busy, longest_busy))
             done = test_queue.empty() and (vms_busy == 0)
 
         print("Manager for %s done" % self.hostname)
