@@ -39,7 +39,7 @@
   </div>
   <script>
   var rtt4_points = getJainIndexCoord("jain.json");
-  var datas = getPublicLinkUtilAndQueueingDelay('metrics.json', 'rtt_fairness');
+  var datas = getLinkUtilAndQueueingDelay('metrics.json', 'rtt_fairness', true);
   var utilData = datas[0];
   var delayData = datas[1];
   var logscale = datas[2] == 1 ? true : false;

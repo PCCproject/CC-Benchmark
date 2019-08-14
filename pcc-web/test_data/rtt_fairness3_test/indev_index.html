@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rtt Fairness 2 flows</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
+  <script src="../../js/jquery-3.4.1.min.js"></script>
+  <script src="../../js/chart.js"></script>
+  <script src="../../js/get_indev_scheme.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../../index.html">Home</a></li>
+        <li class='left'><a href="../../indev/index.html">In-development Schemes</a></li>
+      </ul>
+    </div>
+  </header>
+  <div class='body-container'>
+  <div class='topo-outer-container'>
+    <h2>Test Description</h2>
+    <div class='topo-inner-container'>
+      <p class='topo-explain'>
+        This test measures the fairness (measured using jain's fairness index)
+        of various congestion control protocols of 2 flows with <b>unequal latencies</b>.
+        The network topology used is 3-point-star topology which is illustrated below.
+      </p>
+      <p class='topo-explain'>
+        The bandwidth is 30Mbps and the latency per packet varies for each flow.
+      </p>
+    </div>
+    <div class='topo-img-container'>
+      <img class='fit-div' src='../3-point-star.png' />
+    </div>
+
+  </div>
+  <script>
+    var rtt3_points = getJainIndexCoord("jain.json");
+    var datas = getLinkUtilAndQueueingDelay('metrics.json', 'rtt_fairness', false);
+    var utilData = datas[0];
+    var delayData = datas[1];
+    var logscale = datas[2] == 1 ? true : false;
+    var x_axis_label = 'Ratio';
+
+    if (logscale == 1) {
+      x_axis_label += '-log scale';
+    }
+
+    window.onload = function() {
+      renderRttFairnessChart('rtt_fairness_3_star', rtt3_points);
+      renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)', logscale);
+      renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)', logscale);
+    }
+  </script>
+  <br />
+  <br />
+  <div id='3-star'>
+    <h2>Jain Fairness Index Scores</h2>
+    <div id="rtt_fairness_3_star" class='fairness-graph'></div>
+    <h2>Average Throughput</h2>
+    <div id="utilChart" class='fairness-graph'></div>
+    <h2>95% Queueing Delay</h2>
+    <div id="delayChart" class='fairness-graph'></div>
+  </div>
+
+  <h2>Detailed Traces</h2>
+    <ul id='detailed_traces'></ul>
+    <script type="text/javascript">fillDetailedTraces('rtt3', listOfIndevScheme)</script>
+  </div>
+  <hr />
+  <br /><br />
+</body>
+
+</html>

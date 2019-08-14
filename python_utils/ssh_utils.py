@@ -58,7 +58,7 @@ def check_idle_from_local(hostname, ip):
             return float(rsp_list[1]) - (time.time() - float(rsp_list[2]))
     return 0
 
-def get_remote_vm_ips(hostname):
+def get_remote_vm_ips(hostname, num_tests):
     ## Getting IP using arp command
     # return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
     # lines = return_str.split("\n")
@@ -94,7 +94,9 @@ def get_remote_vm_ips(hostname):
                 max_waittime = curr_waittime
 
     print("Available VM IP Addr are: " + str(aval_addr))
-
+    if num_tests > 0:
+        while len(aval_addr) > num_tests:
+            aval_addr.pop(list(aval_addr.keys())[-1])
     return aval_addr, max_waittime
 
 def cleanup_ssh_connections():

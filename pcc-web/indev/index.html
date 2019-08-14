@@ -1,4 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-  
+<!doctype html>
+<html lang='en'>
+
+<head>
+  <title>PCC</title>
+
+  <!-- <script src="canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script> -->
+  <script src="../js/jquery-3.4.1.min.js"></script>
+  <script src="../js/chart.js"></script>
+  <script src="../js/fill_table.js"></script>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../css/style.css">
+  <script>
+  $(document).ready(function() {
+    $('input[type="radio"]').click(function() {
+      // console.log($('input[type="radio"]'));
+      // setActiveBox($(this));
+        setActiveBox($(this));
+    });
+
+    function setActiveBox($radioButton) {
+      if(!($radioButton instanceof jQuery)) {
+          $radioButton = $($radioButton);
+      }
+      var value = $radioButton.attr("value");
+      // console.log("VALUE");
+      // console.log(value);
+      if (value == 'thrput') {
+        disp_indev_thpt();
+      } else if (value == 'lat') {
+        disp_indev_latency();
+      } else if (value == 'loss') {
+        disp_indev_loss();
+      } else if (value == 'overall') {
+        disp_indev_power_metric();
+      }
+      saveData("indev-activeRadio",value);
+    }
+    
+    //check stored radioButton on page load
+    var $radioButton = $("[value=" + getData("indev-activeRadio") + "]");
+    $($radioButton).attr("checked",true);
+    setActiveBox($radioButton);
+    });
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../index.html">Home</a></li>
+        <li class='left'><a href="index.html">In-development Schemes</a></li>
+      </ul>
+    </div>
+
+  </header>
+
+  <div class='body-container'>
+
+  <h2>Test Results</h2>
+  <div class="switch-field">
+    <input type="radio" id="thrput-radio" name="metric-radio" value="thrput" checked/>
+    <label for="thrput-radio">Throughput</label>
+
+    <input type="radio" id="latency-radio" name="metric-radio" value="lat" />
+    <label for="latency-radio">Latency</label>
+
+    <input type="radio" id="loss-radio" name="metric-radio" value="loss" />
+    <label for="loss-radio">Loss</label>
+
+    <input type="radio" id="overall-radio" name="metric-radio" value="overall" />
+    <label for="overall-radio">Overall</label>
+  </div>
+  <div class='metric-explaination'>
+    <p id='metric-description'>
+
+    </p>
+  </div>
+
+  <hr />
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr id='indev-scheme'>
+        <script type="text/javascript">populateIndevScheme();</script>
+        
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+  <script>
+    disp_indev_thpt();
+  </script>
+  <br />
+  <br />
+  <br />
+  <br />
+  </div>
+
+</body>
+
 </html>

@@ -40,7 +40,7 @@
   </div>
 
   <script>
-    var datas = getPublicLinkUtilAndQueueingDelay('metrics.json');
+    var datas = getLinkUtilAndQueueingDelay('metrics.json', '', true);
     var utilData = datas[0];
     var delayData = datas[1];
     var logscale = datas[2] == 1 ? true : false;

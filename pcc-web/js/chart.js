@@ -5,6 +5,8 @@ async: false
 const public_scheme = new Set(['copa', 'vivace_latency', 'default_tcp', 'bbr', 'pcc',
                                'taova', 'vegas', 'sprout', 'ledbat']);
 
+const COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4',
+ '#42d4f4', '#f032e6', '#000075', '#000000', '#bfef45', '#fabebe'];
 function searchChart(name, dict) {
   // console.log(dict);
   var testname = name.split('-')[0];
@@ -36,6 +38,14 @@ function getNumTrials(titles) {
     }
   }
   return ret;
+}
+
+function fillDetailedTraces(testname, setOfIndevSchemes) {
+  setOfIndevSchemes.forEach(item => {
+    var s = '<li><a href="' + testname + '_' + item + '_result.html' + '">' + item.replace(/,/g,':') + '</a></li>'
+    // console.log(s);
+    document.getElementById('detailed_traces').innerHTML += s;
+  });
 }
 
 function getIndexOfDataPoints(target, titles) {
@@ -199,7 +209,7 @@ function getMetricCoordForSingleScheme(data, testname) {
   var res2 = [];
   for (var name in data) {
     var x = undefined;
-    if (testname == undefined) {
+    if (testname == '') {
       x = parseFloat(name);
     } else if (testname.includes("rtt")) {
       var split = name.split('_to_');
@@ -232,23 +242,35 @@ function getMetricCoordForSingleScheme(data, testname) {
 }
 
 
-function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
+function getLinkUtilAndQueueingDelay(jsonfile, testname, public) {
+  console.log(public);
   var res = {};
   var logscale;
   $.getJSON(jsonfile, function(data) {
     for (var scheme in data) {
-      if (public_scheme.has(scheme)) {
-        var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
-        res[scheme] = new Array();
-        res[scheme].push(dataPoint[0]);
-        res[scheme].push(dataPoint[1]);
-        logscale = dataPoint[2];
+      if (public) {
+        if (public_scheme.has(scheme)) {
+          var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
+          res[scheme] = new Array();
+          res[scheme].push(dataPoint[0]);
+          res[scheme].push(dataPoint[1]);
+          logscale = dataPoint[2];
+        }
+      } else {
+        if (!public_scheme.has(scheme)) {
+          var dataPoint = getMetricCoordForSingleScheme(data[scheme], testname);
+          res[scheme] = new Array();
+          res[scheme].push(dataPoint[0]);
+          res[scheme].push(dataPoint[1]);
+          logscale = dataPoint[2];
+        }
       }
     }
   });
 
   var utilData = new Array();
   var delayData = new Array();
+  var colorIdx = 0;
   for (var scheme in res) {
     var utilPoints = [];
     var delayPoints = [];
@@ -267,20 +289,23 @@ function getPublicLinkUtilAndQueueingDelay(jsonfile, testname) {
     utilData.push({
       // type:'scatter',
       type: 'line',
+      color: COLORS[colorIdx % COLORS.length],
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
-      legendText: scheme,
+      legendText: scheme.replace(/,/g, ':'),
       dataPoints: utilPoints
     });
 
     delayData.push({
       // type:'scatter',
       type: 'line',
+      color: COLORS[colorIdx % COLORS.length],
       showInLegend: true,
       toolTipContent: "<b>x: </b>{x}<br/><b>y: </b>{y}",
-      legendText: scheme,
+      legendText: scheme.replace(/,/g, ':'),
       dataPoints: delayPoints
     });
+    colorIdx++;
   }
 
   return new Array(utilData, delayData, logscale);
