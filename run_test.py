@@ -81,9 +81,21 @@ mptcp = "mptcp" in sys.argv[2]
 if (":" in scheme_to_test):
     is_git_repo = True
     parts = scheme_to_test.split(":")
-    repo_name = parts[0]
-    branch = parts[1]
+    git_repo = parts[0]
+    git_branch = parts[1]
+    if (len(parts) == 3):
+        git_checksum = parts[2]
 
+    # Make a build directory if it doesn't already exist.
+    if (not os.path.isdir(default_build_dir)):
+        os.system("mkdir -p %s" % default_build_dir)
+    
+    # This will check if the repo has already been checked out and built.
+    # If not, it will checkout and build the repo.
+    checksum = github_utils.build_as_needed(git_repo, git_branch, default_build_dir, checksum=git_checksum)
+    git_checksum = checksum
+       
+    """     
     # Check if a repo exists in the usual build location
     if (os.path.isdir(os.path.join(default_build_dir, ".git"))):
 
@@ -96,12 +108,10 @@ if (":" in scheme_to_test):
         # No dir? Make it and clone there
         os.system("mkdir -p %s" % default_build_dir)
         git_checksum = github_utils.build_repo_in_dir(repo_name, branch, default_build_dir)
+    """
 
-    repo = github_utils.BuildableRepo.get_by_short_name(repo_name)
+    repo = github_utils.BuildableRepo.get_by_short_name(git_repo)
     scheme_to_test = os.path.join(default_build_dir, repo.src_dir)
-
-    git_repo = repo_name
-    git_branch = branch
 
 extra_args = arg_helpers.arg_or_default("--extra-args", None)
 if extra_args is not None:
@@ -436,9 +446,10 @@ except Exception as e:
     print(e)
     traceback.print_exc()
 
-if "--is-remote" in sys.argv:
+if remote_test:
     ssh_utils.cleanup_ssh_connections()
     os.system("sudo killall ssh")
+    #os.system("rm /tmp/pantheon-tmp/*")
 else:
     clear_testfile_and_exit()
 
