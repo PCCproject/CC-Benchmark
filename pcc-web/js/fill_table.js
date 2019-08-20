@@ -134,6 +134,7 @@ function populateIndevScheme() {
   document.getElementById('indev-scheme').innerHTML = tableHead;
 }
 
+/*
 function get_rgb(normalized_val) {
   if (normalized_val === "N/A" || normalized_val == undefined) {
     return 'background-color: rgb(255, 255, 255)'
@@ -147,20 +148,61 @@ function get_rgb(normalized_val) {
   }
 
   var green = 0;
-  if (normalized_val >= 0.5) {
+  if (normalized_val >= 0.75) {
     green = 255;
   } else {
-    green = 255 * (normalized_val / 0.5);
+    green = 255 * (normalized_val / 0.75);
   }
+  green = (0.9 * green) + 25;
 
   var red = 0;
-  if (normalized_val <= 0.5) {
+  if (normalized_val <= 0.75) {
     red = 255;
   } else {
-    red = 255 * (1 - normalized_val) / 0.5;
+    red = 255 * (1 - normalized_val) / 0.25;
   }
-  return 'background-color: rgb(' + red + ',' + green + ',0)'
+
+  var blue = 0;
+  if (normalized_val > 0.75) {
+    blue = 255 * (normalized_val - 0.75) / 0.25;
+  }
+  blue = (0.9 * blue) + 25;
+  return 'background-color: rgb(' + red + ',' + green + ',' + blue + ')'
 }
+//*/
+
+function get_rgb(normalized_val) {
+  if (normalized_val === "N/A" || normalized_val == undefined) {
+    return 'background-color: rgb(255, 255, 255)'
+  }
+  if (normalized_val > 1) {
+    normalized_val = 1;
+  }
+
+  if (normalized_val < 0) {
+    normalized_val = 0;
+  }
+
+  var green = 0;
+  var red = 0;
+  if (normalized_val < 0.7) {
+    green = normalized_val / 0.7;
+    red = 1.0;
+  } else if (normalized_val < 0.9) {
+    green = 1.0;
+    red = 1.0 - (normalized_val - 0.7);
+  } else {
+    green = 1.0;
+    red = 0.8 - 8.0 * (normalized_val - 0.9);
+  }
+
+  green = green * 255;
+  red = red * 255;
+
+  blue = 0;
+  return 'background-color: rgb(' + red + ',' + green + ',' + blue + ')'
+}
+//*/
 
 function upperCaseFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -261,7 +303,6 @@ function disp_indev_scores(score_type) {
     g_indev_branches.forEach(branch_name => {
         var result = getIndevSchemeHeader(branch_name);
         result += getIndevTableBody(branch_name, score_type);
-        console.log("indev-table-" + branch_name);
         document.getElementById("indev-table-" + branch_name).innerHTML = result;
     });
 }

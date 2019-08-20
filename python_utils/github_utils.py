@@ -47,18 +47,24 @@ def get_repo_checksum(dir_path):
     return subprocess.check_output(["git", "log", "-1", "--format=\"%H\""],
         cwd=dir_path).decode("utf-8").replace("\"", "").replace("\n", "")
 
-def pull_repo_to_dir(repo, branch, dir_path):
+def pull_repo_to_dir(repo, branch, dir_path, checksum=None):
     os.system("rm -rf %s" % dir_path)
     os.system("mkdir -p %s" % dir_path)
     Repo.clone_from(github_url(repo), dir_path)
-    subprocess.check_output(["git", "checkout", branch], cwd=dir_path)
-    return get_repo_checksum(dir_path)
+    checkout_token = branch
+    if (checksum is not None):
+        checkout_token = checksum
+    subprocess.check_output(["git", "checkout", checkout_token], cwd=dir_path)
 
-def build_repo_in_dir(repo_name, branch, dir_path):
-    checksum = pull_repo_to_dir(repo_name, branch, dir_path)
+def build_repo_in_dir(repo_name, branch, dir_path, checksum=None):
+    pull_repo_to_dir(repo_name, branch, dir_path, checksum=checksum)
     repo = BuildableRepo.get_by_short_name(repo_name)
     repo.build(dir_path)
-    return checksum
+
+def build_as_needed(repo_name, branch, build_dir, checksum=None):
+    if (not dir_has_repo(repo_name, branch, build_dir, checksum=checksum)):
+    	build_repo_in_dir(repo_name, branch, build_dir, checksum=checksum)
+    return get_repo_checksum(build_dir)
 
 def dir_repo_name_matches(dir_path, repo_name):
     expected_name = BuildableRepo.get_by_short_name(repo_name).full_name
@@ -72,11 +78,14 @@ def dir_repo_name_matches(dir_path, repo_name):
     print("URL: %s" % url)
     return name == expected_name
 
-def dir_has_repo(repo, branch, dir_path):
+def dir_has_repo(repo, branch, dir_path, checksum=None):
     if (not dir_repo_name_matches(dir_path, repo)):
         return False
-    subprocess.check_output(["git", "pull"], cwd=dir_path)
-    checksum = get_repo_checksum(dir_path)
-    subprocess.check_output(["git", "checkout", branch], cwd=dir_path)
-    new_checksum = get_repo_checksum(dir_path)
-    return new_checksum == checksum
+    
+    # If we have no checksum, we will pull the most recent ver of this branch.
+    # If there's no change in checksum, then we were already up to date.
+    if (checksum is None):
+        checksum = get_repo_checksum(dir_path)
+        subprocess.check_output(["git", "checkout", branch], cwd=dir_path)
+        subprocess.check_output(["git", "pull"], cwd=dir_path)
+    return get_repo_checksum(dir_path) == checksum
