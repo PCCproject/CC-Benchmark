@@ -20,8 +20,6 @@ from python_utils.ssh_utils import get_idle_percent
 from python_utils.ssh_utils import remote_call
 from python_utils.ssh_utils import remote_copy
 from python_utils.ssh_utils import remote_copyback
-from python_utils.ssh_utils import get_remote_vm_ips
-from python_utils.ssh_utils import VM_NAMES
 from python_utils.arg_helpers import arg_or_default
 
 from graphing.analysis.results_library import ResultsLibrary
@@ -29,11 +27,14 @@ from graphing.utils import data_utils
 from python_utils.file_locations import results_dir
 from python_utils.file_locations import ocean0_copy_web_script_dir
 from python_utils.file_locations import web_data_update_script_dir
+from python_utils import vm_utils
+from python_utils import file_locations
 
 results_lib = ResultsLibrary(results_dir)
 
 remote_hosts = [
-    "ocean0.cs.illinois.edu"
+#    "ocean0.cs.illinois.edu",
+    "ocean5.cs.illinois.edu"
 ]
 
 tests_to_run = sys.argv[2]
@@ -46,28 +47,7 @@ schemes_to_test = sys.argv[1].split(" ")
 replicas = arg_or_default("--replicas", default=1)
 EXTRA_ARGS = arg_or_default("--extra-args", default="")
 
-num_vms_needed = min(len(list_of_tests_to_run), len(VM_NAMES))
-for host in remote_hosts:
-    vm_booting = False
-    up_vms = subprocess.check_output(['ssh', 'ocean0', 'virsh', 'list']).decode('utf-8')
-    curr_aval_vms = len(get_remote_vm_ips(host, -1)[0])
-
-    if curr_aval_vms >= num_vms_needed:
-        break
-
-    for i, vm in enumerate(VM_NAMES):
-        if vm not in up_vms:
-            vm_booting = True
-            cmd = "ssh {} virsh start {}".format(host, vm)
-            print(cmd)
-            os.system(cmd)
-            curr_aval_vms += 1
-            if curr_aval_vms >= num_vms_needed:
-                break
-
-    if vm_booting:
-        print("VM(s) are booting up. Please wait 30 seconds")
-        time.sleep(30)
+vm_utils.boot_vms_if_needed(remote_hosts, list_of_tests_to_run)
 
 web_result = False
 for arg in sys.argv:
@@ -114,7 +94,6 @@ class RemoteVmManager:
 
     def is_up(self):
         return (self.proc.exitcode is None) and psutil.pid_exists(self.child_pid)
-        #return self.proc.is_alive() # Why doesn't this work?
 
     def restart_proc(self):
         if self.proc is not None:
@@ -163,6 +142,7 @@ class RemoteVmManager:
         self.run_on_vm_host("scp -r pcc@%s:%s/* %s" % (self.vm_ip, vm_config.vm_results_dir,
             vm_config.host_results_dir))
         self.run_on_vm("sudo rm -rf %s" % (vm_config.vm_results_dir))
+        self.run_on_vm("sudo rm -rf /tmp/panthon-tmp/*")
         self.run_on_vm("sudo killall python")
 
     def run_manager(self, test_queue, done_queue, error_queue):
@@ -195,8 +175,7 @@ class RemoteHostManager:
 
     def init_remote_vm_managers(self):
         global occupied_vms, list_of_tests_to_run
-        #vm_ips = ["192.168.122.35", "192.168.122.22", "192.168.122.24", "192.168.122.25"]
-        self.vm_ips, waittime = get_remote_vm_ips(self.hostname, len(list_of_tests_to_run))
+        self.vm_ips, waittime = vm_utils.get_remote_vm_ips(self.hostname, len(list_of_tests_to_run))
         occupied_vms = copy.deepcopy(self.vm_ips)
         if len(self.vm_ips) == 0:
             print("All the vms are busy")
@@ -223,8 +202,7 @@ class RemoteHostManager:
 
         if shutdown and vm_ip not in result_str:
             print("Shutting down {}".format(name))
-            cmd = "ssh {} virsh shutdown {}".format(self.hostname, name)
-            os.system(cmd)
+            vm_utils.shutdown_vm_on_host(self.hostname, name)
 
     def free_and_shutdown_all_vms(self, result_str):
         for name, vm_ip in self.vm_ips.items():
@@ -244,21 +222,24 @@ class RemoteHostManager:
             vms_busy = 0
             longest_busy = 0.0
             for vm_manager in self.remote_vm_managers:
+                id_string = vm_manager.get_id_string()
                 if not vm_manager.is_up():
                     print("***********************************************")
-                    print("Restarting dead VM at %s" % vm_manager.get_id_string())
+                    print("Restarting dead VM at %s" % id_string)
                     print("***********************************************")
                     test_queue.put(vm_manager.cur_test)
                     vm_manager.restart_proc()
                     vms_busy += 1
                 elif vm_manager.busy_or_test_queued():
                     vms_busy += 1
-                    busy_time = time.time() - busy_start[vm_manager.get_id_string()]
+                    if (id_string not in busy_start.keys()):
+                        busy_start[id_string] = time.time()
+                    busy_time = time.time() - busy_start[id_string]
                     if busy_time > longest_busy:
                         longest_busy = busy_time
                     if busy_time > 500.0:
                         print("***********************************************")
-                        print("Restarting stalled VM at %s" % vm_manager.get_id_string())
+                        print("Restarting stalled VM at %s" % id_string)
                         print("***********************************************")
                         test_queue.put(vm_manager.cur_test)
                         vm_manager.restart_proc()
@@ -266,7 +247,7 @@ class RemoteHostManager:
                     if (get_idle_percent(self.hostname) > 0):
                         print("Tests remaining: %d" % test_queue.qsize())
                         vm_manager.assign_test(test_queue.get())
-                        busy_start[vm_manager.get_id_string()] = time.time()
+                        busy_start[id_string] = time.time()
                         time.sleep(1)
                         vms_busy += 1
                     else:
@@ -280,12 +261,13 @@ class RemoteHostManager:
         #     os.system('mkdir -p {}'.format(local_results_dir + 'web/'))
         #     remote_copyback(self.hostname, vm_config.host_results_dir + "*", local_results_dir + 'web/')
         # else:
-        os.system('mkdir -p {}'.format(vm_config.local_results_dir))
-        remote_copyback(self.hostname, vm_config.host_results_dir + "*", vm_config.local_results_dir)
+        os.system('mkdir -p {}'.format(results_dir))
+        remote_copyback(self.hostname, vm_config.host_results_dir + "*", results_dir)
 
-        if web_result:
-            remote_call(self.hostname, ocean0_copy_web_script_dir)
-            remote_call(self.hostname, web_data_update_script_dir)
+        if web_result and (not self.hostname == file_locations.web_results_host):
+            remote_call(file_locations.web_results_host, "mkdir -p %s" % vm_config.host_results_dir)
+            os.system("scp -r %s:%s/* %s:%s" % (self.hostname, vm_config.host_results_dir,
+                file_locations.web_results_host, vm_config.host_results_dir))
 
         remote_call(self.hostname, "rm -rf " + vm_config.host_results_dir)
         result_str = subprocess.check_output(['ssh', self.hostname, 'w']).decode('utf-8')
@@ -299,7 +281,9 @@ test_queue = multiprocessing.Queue()
 for scheme_to_test in schemes_to_test:
     for test_name in list_of_tests_to_run:
         # print(test_name)
-        n_tests_done = results_lib.get_num_tests_done(test_name, scheme_to_test)
+        n_tests_done = 0
+        if arg_or_default("--use-existing-results", False):
+            n_tests_done = results_lib.get_num_tests_done(test_name, scheme_to_test)
         # print("Have %d tests for %s:%s, need %d more" % (n_tests_done, test_name, scheme_to_test, replicas - n_tests_done))
         for i in range(0, replicas - n_tests_done):
             test_queue.put((test_name, scheme_to_test))
@@ -322,5 +306,9 @@ for hostname in remote_hosts:
 
 for manager in host_managers:
     manager.proc.join()
+
+if web_result:
+    remote_call(file_locations.web_results_host, ocean0_copy_web_script_dir)
+    remote_call(file_locations.web_results_host, web_data_update_script_dir)
 
 free_vms_and_close_gracefully(None, None)

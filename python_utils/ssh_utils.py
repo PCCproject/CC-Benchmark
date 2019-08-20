@@ -5,17 +5,6 @@ import time
 from python_utils import test_utils
 from python_utils import file_locations
 
-MANNUALLY_MAMANGED_VM_IPS = [
-    "192.168.122.22"
-]
-
-VM_NAMES = [
-    "pcc_test_vm_1",
-    # "pcc_test_vm_2", Mannually mannaged VM
-    "pcc_test_vm_3",
-    "pcc_test_vm_4"
-]
-
 ocean0_web_dir = '/srv/shared/PCC/testing/pcc-web/test_data'
 ocean0_res_dir = '/srv/shared/PCC/results'
 
@@ -40,64 +29,6 @@ def remote_copyback(host, src, dst):
 
 def get_address_from_arp_line(line):
     return (line.split('(')[1]).split(')')[0]
-
-def check_idle_from_local(hostname, ip):
-    vm_dir = file_locations.local_test_running_dir
-    remote_dir = file_locations.remote_test_running_dir
-    res = subprocess.check_output(["ssh", "ocean0", "-t", "ssh", "pcc@"+str(ip),  "cat", remote_dir, vm_dir]).decode("utf-8")
-    # print(res)
-    for rsp in res.split('\r\n'):
-        rsp = rsp.rstrip()
-        # print("RES " + rsp)
-        if rsp == "":
-            continue
-
-        rsp_list = rsp.split(" ")
-        # print(rsp_list)
-        if not rsp.startswith('false'):
-            return float(rsp_list[1]) - (time.time() - float(rsp_list[2]))
-    return 0
-
-def get_remote_vm_ips(hostname, num_tests):
-    ## Getting IP using arp command
-    # return_str = subprocess.check_output(["ssh", hostname, "\"\"arp -an\"\""]).decode("utf-8")
-    # lines = return_str.split("\n")
-    # virtual_lines = [l for l in lines if ("vir" in l and "incomplete" not in l)]
-    #
-    addresses = {}
-    # for line in virtual_lines:
-    #     addr = get_address_from_arp_line(line)
-    #     if addr not in MANNUALLY_MAMANGED_VM_IPS:
-    #         addresses.append(addr)
-
-    ## Getting IP using VM_name(Used to automatically start/shutdown VMs)
-    for vm_name in VM_NAMES:
-        return_str = ''
-        try:
-            return_str = subprocess.check_output(["ssh", hostname, "virsh", "domifaddr", vm_name]).decode("utf-8")
-        except:
-            continue
-
-        ip_line = return_str.split("\n")[2]
-        ip_addr = ip_line.split(' ')[-1][:-3]
-        # if ip_addr not in MANNUALLY_MAMANGED_VM_IPS:
-        addresses[vm_name] = ip_addr
-
-    aval_addr = {}
-    max_waittime = 0
-    for name, ip in addresses.items():
-        curr_waittime = check_idle_from_local(hostname, ip)
-        if curr_waittime == 0:
-            aval_addr[name] = ip
-        else:
-            if curr_waittime > max_waittime:
-                max_waittime = curr_waittime
-
-    print("Available VM IP Addr are: " + str(aval_addr))
-    if num_tests > 0:
-        while len(aval_addr) > num_tests:
-            aval_addr.pop(list(aval_addr.keys())[-1])
-    return aval_addr, max_waittime
 
 def cleanup_ssh_connections():
 
