@@ -56,6 +56,8 @@ if "--is-remote" not in sys.argv:
         with open(file_locations.local_test_running_dir, 'w') as f:
             f.write("true {} {}\r\n".format(test_dur, time.time()))
 
+os.system("mkdir -p /tmp/pantheon-tmp/ && chmod 777 /tmp/pantheon-tmp/")
+
 remote_test = '--is-remote' in sys.argv
 print("Remote Test {}".format(remote_test))
 
