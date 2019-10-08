@@ -137,6 +137,9 @@ def parse_test_remote(remote):
     remote.add_argument(
         '--remote-desc', metavar='DESC',
         help='extra description of the remote side')
+    remote.add_argument(
+        '--latency-log', metavar='TRACE',
+        help='per-packet latency log')
 
 
 def verify_test_args(args):

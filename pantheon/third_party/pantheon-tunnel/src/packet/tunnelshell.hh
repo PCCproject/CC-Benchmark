@@ -31,7 +31,8 @@ class TunnelShell
                 std::unique_ptr<std::ofstream> &ingress_logfile,
                 std::unique_ptr<std::ofstream> &egress_logfile,
                 const std::string & shell_prefix,
-                const std::vector< std::string > & command );
+                const std::vector< std::string > & command,
+                const std::string &latency_log_name );
 
         int wait_for_exit( void );
 

@@ -19,7 +19,7 @@ void usage_error( const string & program_name )
 {
     cerr << "Usage: " << program_name << " IP PORT LOCAL-PRIVATE-IP SERVER-PRIVATE-IP [OPTION]... [COMMAND]" << endl;
     cerr << endl;
-    cerr << "Options = --ingress-log=FILENAME --egress-log=FILENAME --interface=INTERFACE" << endl;
+    cerr << "Options = --ingress-log=FILENAME --egress-log=FILENAME --latency-log=FILENAME --interface=INTERFACE" << endl;
 
     throw runtime_error( "invalid arguments" );
 }
@@ -40,11 +40,12 @@ int main( int argc, char *argv[] )
         const option command_line_options[] = {
             { "ingress-log", required_argument, nullptr, 'n' },
             { "egress-log",  required_argument, nullptr, 'e' },
+            { "latency-log", required_argument, nullptr, 'l' },
             { "interface",   required_argument, nullptr, 'i' },
             { 0,                             0, nullptr,  0  }
         };
 
-        string ingress_log_name, egress_log_name, if_name;
+        string ingress_log_name, egress_log_name, latency_log_name, if_name;
 
         while ( true ) {
             const int opt = getopt_long( argc, argv, "",
@@ -59,6 +60,9 @@ int main( int argc, char *argv[] )
                 break;
             case 'e':
                 egress_log_name = optarg;
+                break;
+            case 'l':
+                latency_log_name = optarg;
                 break;
             case 'i':
                 if_name = optarg;
@@ -147,7 +151,8 @@ int main( int argc, char *argv[] )
                                  local_private_address, server_private_address,
                                  ingress_log, egress_log,
                                  "[tunnelclient " + server.str() + "] ",
-                                 command );
+                                 command,
+                                 latency_log_name );
         return tunnelclient.wait_for_exit();
     } catch ( const exception & e ) {
         cerr << "Tunnelclient got an exception. ";

@@ -64,6 +64,7 @@ class Test(object):
             self.remote_if = args.remote_if
             self.local_desc = args.local_desc
             self.remote_desc = args.remote_desc
+            self.latency_log = args.latency_log
 
             self.ntp_addr = args.ntp_addr
             self.local_ofst = None
@@ -304,6 +305,9 @@ class Test(object):
             else:
                 if self.remote_if is not None:
                     tc_cmd += ' --interface=' + self.remote_if
+
+        if self.mode == 'remote' and self.latency_log is not None:
+            tc_cmd += ' --latency-log=' + self.latency_log
 
         tc_cmd = 'tunnel %s %s\n' % (tun_id, tc_cmd)
         readline_cmd = 'tunnel %s readline\n' % tun_id

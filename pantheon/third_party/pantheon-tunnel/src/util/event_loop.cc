@@ -22,6 +22,12 @@ void EventLoop::add_simple_input_handler( FileDescriptor & fd,
     poller_.add_action( Poller::Action( fd, Direction::In, callback ) );
 }
 
+void EventLoop::add_self_input_handler( FileDescriptor & fd,
+                                        const Poller::Action::CallbackType & callback )
+{
+    poller_.add_action( Poller::Action( fd, Direction::Out, callback, true ) );
+}
+
 Result EventLoop::handle_signal( const signalfd_siginfo & sig )
 {
     switch ( sig.ssi_signo ) {

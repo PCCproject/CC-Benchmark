@@ -128,7 +128,7 @@ int main( int argc, char *argv[] )
         tunnelserver.start_link( user_environment, listening_socket,
                                  local_private_address, client_private_address,
                                  ingress_log, egress_log,
-                                 "[tunnelserver] ", command );
+                                 "[tunnelserver] ", command, "" );
         return tunnelserver.wait_for_exit();
     } catch ( const exception & e ) {
         cerr << "Tunnelserver got an exception. ";

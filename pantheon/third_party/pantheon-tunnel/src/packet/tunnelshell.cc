@@ -1,5 +1,6 @@
 /* -*-mode:c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
+#include <deque>
 #include <thread>
 #include <chrono>
 
@@ -21,6 +22,15 @@
 using namespace std;
 using namespace PollerShortNames;
 
+uint64_t CalcAdditionalDelay(float delay_ts_prev,
+                             float delay_prev,
+                             float delay_ts_next,
+                             float delay_next,
+                             uint64_t tc) {
+    // TODO: can add smoothing based on delay timestamp
+    return static_cast<uint64_t>(delay_next);
+}
+
 TunnelShell::TunnelShell( void )
     : outside_shell_loop()
 {
@@ -36,11 +46,24 @@ void TunnelShell::start_link( char ** const user_environment, UDPSocket & peer_s
                   std::unique_ptr<std::ofstream> &ingress_log,
                   std::unique_ptr<std::ofstream> &egress_log,
                   const string & shell_prefix,
-                  const vector< string > & command)
+                  const vector< string > & command,
+                  const std::string &latency_log_name)
 {
     /* Fork */
     outside_shell_loop.add_child_process( "packetshell", [&]() { // XXX add special child process?
             TunDevice tun( "tunnel", local_private_address, peer_private_address, false );
+            deque<uint64_t> timestamp_list;
+            deque<string> packet_list;
+            float delay_ts_prev = 0, delay_ts_next = 0;
+            float delay_prev = 0, delay_next = 0;
+
+            std::unique_ptr<std::ifstream> latency_log;
+            if (!latency_log_name.empty()) {
+                latency_log.reset( new std::ifstream( latency_log_name ) );
+                if ( not latency_log->good() ) {
+                    throw runtime_error( "Error Open Latency Log" );
+                }
+            }
 
             interface_ioctl( SIOCSIFMTU, "tunnel",
                              [] ( ifreq &ifr ) { ifr.ifr_mtu = 1500 - UDP_PACKET_HEADER_SIZE - sizeof( wrapped_packet_header ); } );
@@ -88,11 +111,48 @@ void TunnelShell::start_link( char ** const user_environment, UDPSocket & peer_s
 
                     string uid_wrapped_packet = string( (char *) &to_send, sizeof(struct wrapped_packet_header) ) + packet;
 
+                    uint64_t ts = timestamp_usecs();
                     if ( egress_log ) {
-                        *egress_log << pretty_microseconds( timestamp_usecs() ) << " - " << to_send.uid << " - " << uid_wrapped_packet.length() + UDP_PACKET_HEADER_SIZE << endl;
+                        *egress_log << pretty_microseconds( ts ) << " - " << to_send.uid << " - " << uid_wrapped_packet.length() + UDP_PACKET_HEADER_SIZE << endl;
                     }
 
-                    peer_socket.write( uid_wrapped_packet );
+                    packet_list.push_back(uid_wrapped_packet);
+                    if (latency_log && latency_log->good()) {
+                        while (delay_ts_next < ts) {
+                            delay_ts_prev = delay_ts_next;
+                            delay_prev = delay_next;
+
+                            *latency_log >> delay_ts_next;
+                            *latency_log >> delay_next;
+                            if ( not latency_log->good() ) {
+                                /*latency_log.reset( new std::ifstream( latency_log_name ) );
+                                *latency_log >> delay_ts;
+                                *latency_log >> delay;*/
+
+                                delay_ts_next = delay_ts_prev;
+                                delay_next = delay_prev;
+                                cerr << "Reach Delay Trace End: additional delay stays " << delay_next << endl;
+                                break;
+                            }
+                        }
+                        timestamp_list.push_back(ts + CalcAdditionalDelay(delay_ts_prev, delay_prev, delay_ts_next, delay_next, ts));
+                    } else {
+                        timestamp_list.push_back(ts + static_cast<uint64_t>(delay_next));
+                    }
+
+                    return ResultType::Continue;
+                    } );
+
+            inner_loop.add_self_input_handler( peer_socket,
+                    [&] () {
+                    while (!packet_list.empty()) {
+                        if (timestamp_list.front() > timestamp_usecs()) {
+                            break;
+                        }
+                        peer_socket.write( packet_list.front() );
+                        packet_list.pop_front();
+                        timestamp_list.pop_front();
+                    }
 
                     return ResultType::Continue;
                     } );

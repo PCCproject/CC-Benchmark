@@ -29,6 +29,7 @@ public:
     EventLoop();
 
     void add_simple_input_handler( FileDescriptor & fd, const Poller::Action::CallbackType & callback );
+    void add_self_input_handler( FileDescriptor & fd, const Poller::Action::CallbackType & callback );
 
     template <typename... Targs>
     void add_child_process( Targs&&... Fargs )
