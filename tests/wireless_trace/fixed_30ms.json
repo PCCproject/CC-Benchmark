@@ -1,0 +1,23 @@
+{
+    "Name":"wireless_trace.fixed_30ms",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":60.0,
+            "trace":"wireless_trace/30ms.txt"
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":50,
+            "dl":"30ms",
+            "queue":250
+        }
+    }
+
+}

@@ -252,8 +252,12 @@ def run_test(test_dict):
     for i in range(0, len(flows)):
         flow = flows[i]
         run_id = run_ids[i] = get_free_run_id()
+        trace_str = ""
         if flow["protocol"] == "TEST":
             flow["protocol"] = scheme_to_test
+        if ("trace" in flow.keys()):
+            # TODO: add start time offset to trace logs
+            trace_str = "--latency-log %s/%s" % (file_locations.tests_dir, flow["trace"])
         run_dur = 30
         if ("dur" in flow.keys()):
             run_dur = flow["dur"]
@@ -263,8 +267,8 @@ def run_test(test_dict):
         sleep_dur = flow["start"] + time_offset - time.time()
         if (sleep_dur > 0.0):
             time.sleep(sleep_dur)
-        test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir,
-            flow["protocol"], flow["dst"], file_locations.pantheon_dir)
+        test_command = "%s/test/test.py remote -t %d --start-run-id %d --data-dir %s --schemes %s %s %s:%s" % (file_locations.pantheon_dir, run_dur, run_id, data_dir,
+            flow["protocol"], trace_str, flow["dst"], file_locations.pantheon_dir)
 
         cmd = "sudo -u %s ssh -i ~/.ssh/id_mininet_rsa %s \"%s\" &" % (username, flow["src"], test_command)
         # if mptcp:
