@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Bandwidth Sweep with Trace</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
+  <script src="../../js/jquery-3.4.1.min.js"></script>
+  <script src="../../js/chart.js"></script>
+  <script src="../../js/get_indev_scheme.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../../index.html">Home</a></li>
+        <li class='left'><a href="../../indev/index.html">In-development Schemes</a></li>
+      </ul>
+    </div>
+  </header>
+  <div class='body-container'>
+    <div class='topo-outer-container'>
+      <h2>Test Description</h2>
+      <div class='topo-inner-container'>
+        <p class='topo-explain'>
+          This test measures the performance (link utilization and queueing delay) of various
+          congestion control protocols of a single flow with <b>varying bandwidths</b>, while
+          the flow is fed with a latency trace collected from real-world connection.
+          The network topology used is dumbell topology which is illustrated below.
+        </p>
+        <p class='topo-explain'>
+          The bandwidth varies per test and the latency per packet is 30ms
+          from one end to the other.
+        </p>
+      </div>
+      <div class='dumbell-img-container'>
+        <img class='fit-div' src='../dumbell.png' />
+      </div>
+    </div>
+
+    <script>
+      var datas = getLinkUtilAndQueueingDelay('metrics.json', '', false);
+      var utilData = datas[0];
+      var delayData = datas[1];
+      var logscale = datas[2] == 1 ? true : false;
+      var x_axis_label = 'Bandwidth(Mbps)';
+
+      if (logscale == 1) {
+        x_axis_label += '-log scale';
+      }
+
+      window.onload = function() {
+        renderChartwithData('utilChart', utilData, 'Throughput', x_axis_label, 'Avg Throughput(Mbps)', logscale);
+        renderChartwithData('delayChart', delayData, '95% Queueing Delay', x_axis_label, '95% Queueing Delay(ms)', logscale);
+      }
+    </script>
+
+    <br />
+    <br />
+    <div>
+      <h2>Average Throughput</h2>
+      <div id="utilChart" class='fairness-graph'></div>
+      <h2>95% Queueing Delay</h2>
+      <div id="delayChart" class='fairness-graph'></div>
+    </div>
+
+    <h2>Detailed Traces</h2>
+    <ul id='detailed_traces'></ul>
+    <script type="text/javascript">fillDetailedTraces('bw_sweep_w_trace', listOfIndevScheme)</script>
+  </div>
+  <hr />
+  <br /><br />
+</body>
+
+</html>

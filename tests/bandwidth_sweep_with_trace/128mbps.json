@@ -1,0 +1,23 @@
+{
+    "Name":"bandwidth_sweep_with_trace.128mbps",
+    "Topology":"dumbell-1",
+    "Flows":[
+        {
+            "name":"flow_1",
+            "protocol":"TEST",
+            "src":"10.0.0.1",
+            "dst":"10.0.0.2",
+            "start":0.0,
+            "dur":120.0,
+            "trace":"bandwidth_sweep_with_trace/delay.txt"
+        }
+    ],
+    "Link Types":{
+        "L1":{
+            "bw":128,
+            "dl":"5ms",
+            "queue":1000
+        }
+    }
+
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Bandwidth Sweep using Taova</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../../canvasjs-non-commercial-2.3.1/canvasjs.min.js"></script>
+  <script src="../../js/jquery-3.4.1.min.js"></script>
+  <script src="../../js/chart.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <ul>
+        <li class='left'><a href="../../index.html">Home</a></li>
+        <li class='left'><a href="../../indev/index.html">In-development Schemes</a></li>
+      </ul>
+    </div>
+  </header>
+  <h3>Taova Results</h3>
+  <hr />
+  <div id='chartdata'></div>
+  <script>
+    var dataPoints = getAllPoints("data/taova/");
+    var allFiles = dataPoints[0];
+    var allFiles2 = dataPoints[1];
+
+    var titles = [];
+    var points = [];
+    for (var i = 0; i < allFiles.length; i++) {
+      var title = allFiles[i]["title"];
+      var dataPoints = allFiles[i]["dataPoints"];
+      titles.push(title);
+      points.push(dataPoints);
+    }
+
+    var titles2 = [];
+    var points2 = [];
+    for (var i = 0; i < allFiles2.length; i++) {
+      var title = allFiles2[i]["title"] + 'lat';
+      var dataPoints = allFiles2[i]["dataPoints"];
+      titles2.push(title);
+      points2.push(dataPoints);
+    }
+
+    var thrputCharts = {};
+    var latCharts = {};
+
+    var testTrials = getTestTrials(titles);
+    var tests = Object.keys(testTrials);
+
+    window.onload = function() {
+      for (var i = 0; i < tests.length; i++) {
+        var key = tests[i];
+        var date = testTrials[key][0];
+        var target = key + '-' + date + '.json';
+        var idx = getMatchingIdx(titles, target);
+
+        thrputCharts[key] = renderChartwithData(titles[idx], points[idx], titles[idx].split(".json")[0], "Time(ms)", "Throughput");
+        latCharts[key] = renderChartwithData(titles2[idx], points2[idx], titles2[idx].split(".json")[0], "Time(ms)", "Latency");
+      }
+    }
+    document.getElementById('chartdata').innerHTML += '<hr />';
+
+    for (var i = 0; i < tests.length; i++) {
+      var key = tests[i];
+      var date = testTrials[key][0];
+      var target = key + '-' + date + '.json';
+      var idx = getMatchingIdx(titles, target);
+
+      var content = '';
+
+      for (var j = 0; j < testTrials[key].length; j++) {
+        var testStr = key + '-' + testTrials[key][j];
+        content += '<option value=' + testStr + '>' + testTrials[key][j] + '</option>';
+      }
+
+      var id = titles[idx];
+      document.getElementById('chartdata').innerHTML += ('<select>' + content + '</select>');
+      var s = "<div class='timechart' id='" + id + "'></div>";
+      document.getElementById('chartdata').innerHTML += s;
+      id = titles2[idx];
+      s = "<div class='timechart' id='" + id + "'></div>";
+      document.getElementById('chartdata').innerHTML += s;
+      document.getElementById('chartdata').innerHTML += '<hr />';
+      document.getElementById('chartdata').innerHTML += '<hr />';
+
+      document.getElementById('chartdata').innerHTML += '<br />';
+      document.getElementById('chartdata').innerHTML += '<br />';
+      document.getElementById('chartdata').innerHTML += '<br />';
+    }
+
+    $( "select" ).change(function() {
+      var chart;
+      var selected = this.value;
+      var thrputChart = searchChart(selected, thrputCharts);
+      var latChart = searchChart(selected, latCharts);
+      console.log(thrputChart.options)
+      thrputChart.options.title.text = selected;
+      latChart.options.title.text = selected;
+      var idx = getIndexOfDataPoints(selected, titles);
+      thrputChart.options.data = points[idx];
+      latChart.options.data = points2[idx];
+      thrputChart.render();
+      latChart.render();
+    })// Do not put semicolon here!!
+  </script>
+  <hr />
+  <br /><br />
+
+  <a href="#" id="scroll" style="display: none;"><span></span></a>
+  <script>
+    $(document).ready(function() {
+      $(window).scroll(function() {
+        if ($(this).scrollTop() > 100) {
+          $('#scroll').fadeIn();
+        } else {
+          $('#scroll').fadeOut();
+        }
+      });
+      $('#scroll').click(function() {
+        $("html, body").animate({
+          scrollTop: 0
+        }, 600);
+        return false;
+      });
+    });
+  </script>
+
+</body>
+
+</html>

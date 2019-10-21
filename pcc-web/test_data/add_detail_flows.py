@@ -5,6 +5,7 @@ test_nickname = {
     'rtt3':'Rtt Fairness',
     'rtt4':'Rtt Fairness',
     'bw_sweep':'Bandwidth Sweep',
+    'bw_sweep_w_trace':'Bandwidth Sweep with Trace',
     'q_sweep':'Queue Sweep',
     'loss_sweep':'Loss Sweep',
     'jitter_sweep':'Jitter Sweep',
