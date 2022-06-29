@@ -9,3 +9,8 @@ jain.json
 .htaccess
 ._data/
 ._*
+
+*.vscode
+
+converted_log.json
+*.txt

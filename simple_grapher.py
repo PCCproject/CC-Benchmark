@@ -11,11 +11,13 @@ from python_utils.file_locations import results_dir
 ##
 #   First, just define a few variables looking at which test, scheme and flow we care about"
 ##
-params = ["bandwidth_sweep.1mbps"]
 params = ["queue_sweep.1pkt"]
 params = ["custard_variable_link"]
+params = ["bandwidth_sweep.1mbps"]
+
 #params =["latency_test_256ms"]
 test_name = params[0]
+print(test_name)
 scheme_name = "PCC:stat_controller:e6b4a"
 scheme_name = "PCC:stat_controller:6c83f"
 scheme_name = "PCC:fls_controller:3e685"

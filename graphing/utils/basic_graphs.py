@@ -19,6 +19,8 @@ def make_sweep_table(format_string, params, flow_name, schemes, thpt_score_func,
         full_schemes = list(set(full_schemes) & set(used_schemes))
     full_schemes = sorted(full_schemes)
 
+
+
     thpt_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name,
         params, format_string, "Throughput")["Mean"]
     lat_data = data_utils.get_stats_dict_from_param_test(results, full_schemes, flow_name,
@@ -62,11 +64,14 @@ def make_sweep_table(format_string, params, flow_name, schemes, thpt_score_func,
                             startup_loss_color])
   
     fig, ax = plt.subplots()
+    print("hi")
 
     # Hide axes
     ax.axis("off")
     #ax.xaxis.set_visible(False) 
     #ax.yaxis.set_visible(False)
+
+    print("hi")
 
     ax.table(cellText=table_cells,
              cellColours=cell_colors,

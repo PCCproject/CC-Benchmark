@@ -20,12 +20,14 @@ class PccExperimentLog:
             return
 
         self.event_dict = {}
-        for event in self.dict["Events"]:
-            event_type = event["Name"]
-            if event_type not in self.event_dict.keys():
-                self.event_dict[event_type] = []
-            ev = dict_str_to_num(event)
-            self.event_dict[event_type].append(ev)
+        if "Events" in self.dict:
+            for event in self.dict["Events"]:
+                if "Name" in event:
+                    event_type = event["Name"]
+                    if event_type not in self.event_dict.keys():
+                        self.event_dict[event_type] = []
+                    ev = dict_str_to_num(event)
+                    self.event_dict[event_type].append(ev)
     
     def get_param(self, param):
         if "Experiment Parameters" not in self.dict.keys():
