@@ -27,13 +27,13 @@ def main():
         pass # Assume the other scripts have done all the setup.
 
     if args.option == 'receiver':
-        os.environ['LD_LIBRARY_PATH'] = '/home/pcc/pcc_test_scheme/src/core'
-        cmd = ('/home/pcc/pcc_test_scheme/src/app/pccserver recv').split(' ') + [args.port]
+        os.environ['LD_LIBRARY_PATH'] = 'sprout copa/core'
+        cmd = ('sprout copa/app/pccserver recv').split(' ') + [args.port]
         check_call(cmd)
 
     if args.option == 'sender':
-        os.environ['LD_LIBRARY_PATH'] = '/home/pcc/pcc_test_scheme/src/core'
-        cmd = ('/home/pcc/pcc_test_scheme/src/app/pccclient send').split(' ') + [args.ip, args.port] + ['']
+        os.environ['LD_LIBRARY_PATH'] = 'sprout copa/core'
+        cmd = ('sprout copa/app/pccclient send').split(' ') + [args.ip, args.port] # Replaced with extra args if needed
         check_call(cmd)
 
 

@@ -22,7 +22,7 @@ def install_deps(cc_src):
 def setup(args):
     if not args.install_deps:
         # update submodules
-        # update_submodules()
+        # update_submodules() This is the only line changed from pantheon fork
 
         # enable IP forwarding
         sh_cmd = 'sudo sysctl -w net.ipv4.ip_forward=1'

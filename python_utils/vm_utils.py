@@ -34,6 +34,7 @@ def boot_vm_on_host(hostname, vm_name):
 
 def get_vm_info_on_host(hostname):
     vm_info = []
+    print(['ssh', hostname, VIRSH_ENV_PREFIX, 'virsh', 'list', '--all'])
     virsh_result = subprocess.check_output(['ssh', hostname, VIRSH_ENV_PREFIX, 'virsh', 'list', '--all']).decode('utf-8')
     lines = virsh_result.split("\n")
 

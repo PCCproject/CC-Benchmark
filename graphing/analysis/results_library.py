@@ -6,10 +6,12 @@ from python_utils.pantheon_log_conversion import convert_pantheon_log
 class TestResult():
     def __init__(self, test_name, dir_name):
         self.name = test_name
+        #dir_name is all the way to and include timestamp dir in results
         self.dir_name = dir_name
         self.flows = {}
         self.metadata = None
         self.loaded = False
+        #when initalizing object, it also loads in metadata
         self.load_metadata()
 
     def load_metadata(self):
@@ -22,6 +24,7 @@ class TestResult():
     def is_loaded(self):
         return self.loaded
 
+    #load all .json files (other than metadata.json) into flows
     def load(self):
         if self.loaded:
             return
@@ -60,14 +63,22 @@ class TestResult():
 
 class ResultsLibrary():
     def __init__(self, dir_name):
+        #init with results dir
         self.dir_name = dir_name
 
         # Test results are entered in the dictionary by name, then a list of all results for the
         # test of that name.
+        #By "all results", it means a dict of test_name: TestResult object(test_name. timestamp_dir) 
         self.test_results = {}
 
+    '''This function, given test_name, first go to test_name (eg. bandwidth_sweep.1mbps) dir, 
+    and initalize each and every subfolder in test_name dir as TestResult object, loading name of test, 
+    name of subfolder dir, metadata etc, then returns a list of TestResult objects that actually have metadata.
+    Basically, this function adds an entry to test_results according to file structure.'''
     def get_all_results_matching(self, test_name, filter_func=None):
+        #this first writes to test_results
         self.load_all_metadata_for_test(test_name)
+        #this reads from test_results
         returned_results = []
         for test_result in self.test_results[test_name]:
             if test_result.has_metadata() and (filter_func is None or filter_func(test_result)):
@@ -77,14 +88,20 @@ class ResultsLibrary():
     def is_test_loaded(self, test_name):
         return test_name in self.test_results.keys()
 
+    '''initalize each and every subfolder in test_name dir as TestResult object, loading name of test, 
+    name of subfolder dir, metadata e'''
+
     def load_all_metadata_for_test(self, test_name):
         if self.is_test_loaded(test_name):
             return
+        #test_name dir
         this_test_dir = os.path.join(self.dir_name, test_name)
         tests = []
         if os.path.isdir(this_test_dir):
             for test_time_dir in os.listdir(this_test_dir):
+        #Tries to load metadata () in TestResult initialization
                 tests.append(TestResult(test_name, os.path.join(this_test_dir, test_time_dir)))
+        #test_results are updated here (only place)
         self.test_results[test_name] = tests
 
     def load_all_metadata(self):
@@ -101,11 +118,12 @@ class ResultsLibrary():
                 schemes.append(scheme)
         return schemes
 
+    #Don't know what num_replica is for. The function run get_all_schemes_with_test on every test of list_of_tests
+    #and take an intersection of all results.
     def get_all_schemes_with_tests(self, list_of_tests, num_replicas=1):
         schemes = self.get_all_schemes_with_test(list_of_tests[0], num_replicas)
         if len(list_of_tests) == 1:
             return schemes
-
         for test_name in list_of_tests[1:]:
             new_schemes = self.get_all_schemes_with_test(test_name, num_replicas)
             schemes_with_both = set(schemes) & set(new_schemes)
