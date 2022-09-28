@@ -8,7 +8,6 @@ from python_utils.file_locations import results_dir
 
 results = ResultsLibrary(results_dir)
 
-#This is the filter function that match name of scheme?
 def matching_func(test_result):
     print("Checking test result %s for %s" % (test_result.name, test_result.metadata["Scheme"]))
     return test_result.metadata["Scheme"] == sys.argv[1]

@@ -34,8 +34,7 @@ results_lib = ResultsLibrary(results_dir)
 
 remote_hosts = [
 #    "ocean0.cs.illinois.edu",
-    #"ocean5.cs.illinois.edu"
-    "weishen4@ocean5.cs.illinois.edu"
+    "ocean5.cs.illinois.edu"
 ]
 
 tests_to_run = sys.argv[2]

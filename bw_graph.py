@@ -25,7 +25,7 @@ param_name = "Bandwidth"
 param_unit = "mbps"
 params = [1, 2, 4, 8, 16, 32, 64, 128]
 #format_string = "bandwidth_sweep.%dmbps"
-format_string = "bandwidth_sweep.%dmbps"
+format_string = "simple_%dmbps"
 flow_name = "flow_1"
 
 def thpt_transform(data):

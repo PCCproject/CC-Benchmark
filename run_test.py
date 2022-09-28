@@ -257,7 +257,6 @@ def run_test(test_dict):
             flow["protocol"] = scheme_to_test
         if ("trace" in flow.keys()):
             # TODO: add start time offset to trace logs
-            # This is to consume trace in .json then?
             trace_str = "--latency-log %s/%s" % (file_locations.tests_dir, flow["trace"])
         run_dur = 30
         if ("dur" in flow.keys()):
@@ -431,7 +430,6 @@ def run_test(test_dict):
 
     os.system("rm -rf %s/*" % data_dir)
 
-#Run pantheon schemes?
 os.system("/home/pcc/PCC/testing/pantheon/test/setup.py --schemes {}".format(scheme_to_test))
 
 ##

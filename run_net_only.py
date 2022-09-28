@@ -18,7 +18,6 @@ tests_to_run = sys.argv[1]
 username = "pcc"
 
 def run_net_for_test(test_dict):
-    print("HI==================HI")
     print("Removing any running mininet instance.")
     mininet_clean_output = subprocess.check_output(["sudo", "mn", "-c"])
     test_topo_dict = read_topology_to_dict(test_dict["Topology"])

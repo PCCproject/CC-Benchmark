@@ -1,7 +1,0 @@
-{
-    "Tests": [
-        "latency_sweep/all",
-	"jitter_sweep/all",
-	"rtt_fairness3/all"
-    ]
-}

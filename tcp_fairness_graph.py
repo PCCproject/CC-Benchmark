@@ -12,7 +12,7 @@ results = ResultsLibrary(results_dir)
 param_name = "Competing TCP Flows"
 param_unit = "N flows"
 params = [1, 2, 4, 8]#, 12, 16, 20, 24, 28, 32]
-format_string = "tcp_fairness.%d_flow"
+format_string = "tcp_fairness_%d_flow"
 flow_name = "test_flow"
 
 full_schemes = results.get_all_schemes_with_tests([format_string % p for p in params])
