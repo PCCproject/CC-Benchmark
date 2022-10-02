@@ -10,7 +10,7 @@ results = ResultsLibrary(results_dir)
 param_name = "Latency"
 param_unit = "ms"
 params = [1, 2, 3, 4, 5, 8, 16, 32, 48, 64, 96, 128, 192, 256, 384, 512]
-format_string = "latency_test_%dms"
+format_string = "latency_sweep.%dms"
 flow_name = "flow_1"
 
 full_schemes = results.get_all_schemes_with_tests([format_string % p for p in params])
