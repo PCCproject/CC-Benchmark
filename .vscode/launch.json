@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "internalConsole",
+            "justMyCode": true,
+            "python": "/usr/bin/python3",
+        },
+        {
+            "name": "run wireless trace",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+
+            "python": "/usr/bin/python3",
+
+            "console": "externalTerminal",
+            "sudo": true,
+            //"args": ["--key1", "value1", "value2", "--key2", "value3", "value4"]
+            "args": ["default_tcp", "wireless_trace/fixed_30ms"]
+
+        },
+
+
+    ]
+}
